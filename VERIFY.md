@@ -1,0 +1,49 @@
+# Verification Report
+
+## Repo build verification
+- Command: `npm run review`
+- Expected: PASS (lint, typecheck, build)
+
+## Dev billing proof routes verification
+Never paste secrets into chat; set env locally.
+
+### Status route
+- Command: `curl -i http://localhost:3005/api/dev/billing/status`
+- Expected (dev): `200` JSON with:
+  - `billingConfigured` boolean
+  - `hasSecretKey` boolean
+  - `hasFeaturedPriceId` boolean
+  - `featuredDurationDays` number
+  - `priceLabel` string|null
+- Expected (prod): `404` JSON `{ "error": { "code": "NOT_FOUND" } }`
+
+### Create checkout route
+- Wrong secret:
+  - Command: `curl -i -X POST http://localhost:3005/api/dev/billing/create-checkout \
+  -H "content-type: application/json" \
+  -H "x-dev-secret: wrong" \
+  -d '{"job_id":"demo"}'`
+  - Expected: `401` JSON `{ "error": { "code": "UNAUTHORIZED" } }`
+- Correct secret, Stripe missing:
+  - Command: `curl -i -X POST http://localhost:3005/api/dev/billing/create-checkout \
+  -H "content-type: application/json" \
+  -H "x-dev-secret: $DEV_TOOLS_SECRET" \
+  -d '{"job_id":"<job-id>"}'`
+  - Expected: `503` JSON `{ "error": { "code": "STRIPE_NOT_CONFIGURED" } }`
+- Stripe present (optional):
+  - Expected: `200` JSON `{ "url": "https://checkout.stripe.com/...", "session_id": "cs_test_..." }`
+
+## Regression checklist
+- Login page loads (no prerender crash).
+- Signup page loads.
+- Employer jobs page loads.
+- Pricing page loads.
+- /jobs list loads with Meili on/off.
+- Feature CTA disabled when Stripe missing.
+
+## Dev routes presence
+- `app/api/dev/billing/status/route.ts`
+- `app/api/dev/billing/create-checkout/route.ts`
+
+## Secret-handling hygiene
+- No docs instruct pasting secrets into chat.
