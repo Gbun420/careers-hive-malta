@@ -46,12 +46,12 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch (error) {
-    return jsonError("INVALID_INPUT", "Invalid JSON body.", 400);
+    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
   }
 
   const parsed = BodySchema.safeParse(payload);
   if (!parsed.success) {
-    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
+    return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
   const { data: job, error: jobError } = await supabase
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (jobError || !job) {
-    return jsonError("NOT_FOUND", "Job not found.", 404);
+    return jsonError("JOB_NOT_FOUND", "Job not found.", 404);
   }
 
   const origin =
@@ -76,7 +76,12 @@ export async function POST(request: Request) {
   });
 
   if ("error" in result) {
-    return jsonError(result.error.code, result.error.message, result.error.status);
+    return jsonError(
+      result.error.code,
+      result.error.message,
+      result.error.status,
+      result.error.details
+    );
   }
 
   return NextResponse.json({ url: result.url });

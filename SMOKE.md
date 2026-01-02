@@ -131,3 +131,8 @@
   - Expected: `billingConfigured: true`, `hasSecretKey: true`, `hasFeaturedPriceId: true`.
   - `curl -i -X POST http://localhost:3005/api/dev/billing/create-checkout -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
   - Expected: `200` JSON with `{ "url": "https://checkout.stripe.com/...", "session_id": "cs_test_..." }`.
+ - Troubleshooting matrix:
+   - `STRIPE_PRICE_INVALID`: verify `STRIPE_FEATURED_PRICE_ID` exists and matches key mode (test vs live).
+   - `STRIPE_AUTH_ERROR`: rotate Stripe secret key; confirm mode matches price id.
+   - `STRIPE_ERROR`: inspect `error.details.stripe_type` and `stripe_message`.
+   - `DB_INSERT_FAILED`: apply `0004_billing.sql`, verify purchases table exists.

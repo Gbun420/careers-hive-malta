@@ -33,6 +33,12 @@ Never paste secrets into chat; set env locally.
 - Stripe present (optional):
   - Expected: `200` JSON `{ "url": "https://checkout.stripe.com/...", "session_id": "cs_test_..." }`
 
+### Troubleshooting matrix
+- `STRIPE_PRICE_INVALID`: confirm `STRIPE_FEATURED_PRICE_ID` exists and matches secret key mode (test vs live).
+- `STRIPE_AUTH_ERROR`: rotate Stripe secret key; confirm mode matches price id.
+- `STRIPE_ERROR`: check `error.details.stripe_type` / `stripe_message`.
+- `DB_INSERT_FAILED`: apply `0004_billing.sql`, confirm purchases table exists.
+
 ## Regression checklist
 - Login page loads (no prerender crash).
 - Signup page loads.

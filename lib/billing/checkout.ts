@@ -3,6 +3,7 @@ import {
   createStripeClient,
   getStripeFeaturedPriceId,
   isStripeConfigured,
+  mapStripeError,
 } from "@/lib/billing/stripe";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import type { ErrorCode } from "@/lib/api/errors";
@@ -11,10 +12,16 @@ export type CheckoutError = {
   code: ErrorCode;
   message: string;
   status: number;
+  details?: Record<string, unknown>;
 };
 
 export type FeaturedCheckoutResult =
-  | { url: string; sessionId: string }
+  | {
+      url: string;
+      sessionId: string;
+      dbRecorded: boolean;
+      dbError?: CheckoutError;
+    }
   | { error: CheckoutError };
 
 type FeaturedCheckoutInput = {
@@ -22,6 +29,7 @@ type FeaturedCheckoutInput = {
   jobId: string;
   customerEmail?: string | null;
   origin: string;
+  allowDbFailure?: boolean;
 };
 
 export async function createFeaturedCheckoutSession(
@@ -75,21 +83,22 @@ export async function createFeaturedCheckoutSession(
       customer_email: input.customerEmail ?? undefined,
     });
   } catch (stripeError) {
+    const mapped = mapStripeError(stripeError);
+    console.error("stripe_checkout_error", mapped.details);
     return {
-      error: {
-        code: "DB_ERROR",
-        message: "Unable to create checkout session.",
-        status: 500,
-      },
+      error: mapped,
     };
   }
 
   if (!session.url) {
     return {
       error: {
-        code: "DB_ERROR",
-        message: "Unable to create checkout session.",
+        code: "STRIPE_ERROR",
+        message: "Stripe session URL missing.",
         status: 500,
+        details: {
+          stripe_session_id: session.id,
+        },
       },
     };
   }
@@ -103,14 +112,27 @@ export async function createFeaturedCheckoutSession(
   });
 
   if (insertError) {
-    return {
-      error: {
-        code: "DB_ERROR",
+    const error: CheckoutError = {
+      code: "DB_INSERT_FAILED",
+      message: "Unable to record purchase.",
+      status: 500,
+      details: {
+        table: "purchases",
         message: insertError.message,
-        status: 500,
       },
     };
+
+    if (input.allowDbFailure) {
+      return {
+        url: session.url,
+        sessionId: session.id,
+        dbRecorded: false,
+        dbError: error,
+      };
+    }
+
+    return { error };
   }
 
-  return { url: session.url, sessionId: session.id };
+  return { url: session.url, sessionId: session.id, dbRecorded: true };
 }
