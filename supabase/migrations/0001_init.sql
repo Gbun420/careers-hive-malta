@@ -20,9 +20,27 @@ create table if not exists public.jobs (
 create table if not exists public.saved_searches (
   id uuid primary key default uuid_generate_v4(),
   jobseeker_id uuid references public.profiles(id) on delete cascade,
+  frequency text check (frequency in ('instant', 'daily', 'weekly')) default 'instant',
   search_criteria jsonb default '{}'::jsonb,
   created_at timestamptz default now()
 );
+
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, role)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'role', 'jobseeker')
+  );
+  return new;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
 alter table public.profiles enable row level security;
 alter table public.jobs enable row level security;
