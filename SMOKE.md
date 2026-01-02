@@ -46,6 +46,28 @@
 - Manual: visit `/jobs`, run a keyword search and location filter.
 - Expected: results update; page shows “Search powered by fast index.”
 
+## Employer verification (env missing)
+- Not run.
+- Manual: leave Supabase env unset, visit `/employer/verification`.
+- Expected: gating message with link to `/setup`, no crash.
+
+## Employer verification (env present + SQL applied)
+- Not run.
+- Manual: sign in as employer, submit request at `/employer/verification`.
+- Manual: admin approves via `/admin/verifications`.
+- Expected: employer sees Approved status; job listings show Verified badge.
+
+## Job reports (env present + SQL applied)
+- Not run.
+- Manual: sign in as jobseeker and submit report from `/jobs/[id]`.
+- Manual: admin resolves report via `/admin/reports`.
+- Expected: report status updates; audit log entry created.
+
+## Audit logs (env present)
+- Not run.
+- Manual: `curl -i http://localhost:3005/api/admin/audit`.
+- Expected: JSON array of recent admin actions.
+
 ## Alerts matching + dispatch (env missing)
 - Not run.
 - Manual: `curl -i -X POST http://localhost:3005/api/alerts/dispatch`.

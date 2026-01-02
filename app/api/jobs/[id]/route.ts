@@ -5,6 +5,7 @@ import { getUserRole } from "@/lib/auth/roles";
 import { JobUpdateSchema, normalizeJobPayload } from "@/lib/jobs/schema";
 import { removeJobs, upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
+import { attachEmployerVerified } from "@/lib/trust/verification";
 
 type RouteParams = {
   params: { id: string };
@@ -38,7 +39,8 @@ export async function GET(_: Request, { params }: RouteParams) {
       .single();
 
     if (!error && data) {
-      return NextResponse.json({ data });
+      const [enriched] = await attachEmployerVerified([data as Job]);
+      return NextResponse.json({ data: enriched ?? data });
     }
   }
 
@@ -55,13 +57,8 @@ export async function GET(_: Request, { params }: RouteParams) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
 
-  try {
-    await upsertJobs([data as Job]);
-  } catch (indexError) {
-    // Best-effort indexing only.
-  }
-
-  return NextResponse.json({ data });
+  const [enriched] = await attachEmployerVerified([data as Job]);
+  return NextResponse.json({ data: enriched ?? data });
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
@@ -107,7 +104,15 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
 
-  return NextResponse.json({ data });
+  const [enriched] = await attachEmployerVerified([data as Job]);
+
+  try {
+    await upsertJobs([(enriched ?? data) as Job]);
+  } catch (indexError) {
+    // Best-effort indexing only.
+  }
+
+  return NextResponse.json({ data: enriched ?? data });
 }
 
 export async function DELETE(_: Request, { params }: RouteParams) {

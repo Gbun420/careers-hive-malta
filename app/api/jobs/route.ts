@@ -7,6 +7,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { matchJobToSearch } from "@/lib/alerts/match";
 import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 import { searchJobs, upsertJobs } from "@/lib/search/meili";
+import { attachEmployerVerified, isEmployerVerified } from "@/lib/trust/verification";
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient();
@@ -48,7 +49,8 @@ export async function GET(request: Request) {
       return jsonError("DB_ERROR", error.message, 500);
     }
 
-    return NextResponse.json({ data, source: "db" });
+    const enriched = await attachEmployerVerified(data ?? []);
+    return NextResponse.json({ data: enriched, source: "db" });
   }
 
   try {
@@ -59,8 +61,9 @@ export async function GET(request: Request) {
     });
 
     if (meiliResult) {
+      const enriched = await attachEmployerVerified(meiliResult.hits);
       return NextResponse.json({
-        data: meiliResult.hits,
+        data: enriched,
         source: "meili",
       });
     }
@@ -94,7 +97,8 @@ export async function GET(request: Request) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  return NextResponse.json({ data, source: "db" });
+  const enriched = await attachEmployerVerified(data ?? []);
+  return NextResponse.json({ data: enriched, source: "db" });
 }
 
 export async function POST(request: Request) {
@@ -149,9 +153,14 @@ export async function POST(request: Request) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
+  const employerVerified = await isEmployerVerified(authData.user.id);
+  const jobWithVerification = data
+    ? ({ ...data, employer_verified: employerVerified } as Job)
+    : null;
+
   try {
-    if (data) {
-      await upsertJobs([data as Job]);
+    if (jobWithVerification) {
+      await upsertJobs([jobWithVerification]);
     }
   } catch (enqueueError) {
     // Best-effort indexing only.
@@ -173,7 +182,7 @@ export async function POST(request: Request) {
       if (searchesError) {
         notificationsSkippedReason = "SAVED_SEARCH_FETCH_FAILED";
       } else if (searches && data) {
-        const job = data as Job;
+        const job = jobWithVerification ?? (data as Job);
         const matches = searches
           .map((search) => {
             const criteriaResult = SavedSearchCriteriaSchema.safeParse(
@@ -240,7 +249,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json(
     {
-      data,
+      data: jobWithVerification ?? data,
       notifications_enqueued: notificationsEnqueued,
       notifications_skipped_reason: notificationsSkippedReason,
     },

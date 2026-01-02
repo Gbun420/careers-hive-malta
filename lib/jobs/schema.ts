@@ -9,6 +9,7 @@ export const JobSchema = z.object({
   salary_range: z.string().nullable().optional(),
   created_at: z.string(),
   is_active: z.boolean(),
+  employer_verified: z.boolean().optional(),
 });
 
 export const JobCreateSchema = z.object({

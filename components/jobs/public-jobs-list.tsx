@@ -129,7 +129,14 @@ export default function PublicJobsList() {
             href={`/jobs/${job.id}`}
             className="block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-200"
           >
-            <p className="text-sm font-semibold text-slate-900">{job.title}</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm font-semibold text-slate-900">{job.title}</p>
+              {job.employer_verified ? (
+                <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+                  Verified
+                </span>
+              ) : null}
+            </div>
             <p className="mt-1 text-xs text-slate-600">
               {job.location || "Remote/On-site"} · {job.salary_range || "Salary TBD"}
             </p>

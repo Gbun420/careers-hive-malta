@@ -27,6 +27,10 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith("/jobseeker/alerts") ||
       pathname.startsWith("/jobseeker/notifications") ||
       pathname.startsWith("/employer/jobs") ||
+      pathname.startsWith("/employer/verification") ||
+      pathname.startsWith("/admin/verifications") ||
+      pathname.startsWith("/admin/reports") ||
+      pathname.startsWith("/admin/audit") ||
       pathname.startsWith("/jobs")
     ) {
       return NextResponse.next();

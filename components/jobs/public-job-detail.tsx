@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Job } from "@/lib/jobs/schema";
+import ReportJobDialog from "@/components/jobs/report-job-dialog";
 
 type ApiError = {
   error?: {
@@ -81,12 +82,22 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <p className="text-sm font-semibold text-slate-900">{job.title}</p>
-      <p className="mt-1 text-xs text-slate-600">
-        {job.location || "Remote/On-site"} · {job.salary_range || "Salary TBD"}
-      </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">{job.title}</p>
+          <p className="mt-1 text-xs text-slate-600">
+            {job.location || "Remote/On-site"} · {job.salary_range || "Salary TBD"}
+          </p>
+          {job.employer_verified ? (
+            <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+              Verified employer
+            </span>
+          ) : null}
+        </div>
+        <ReportJobDialog jobId={job.id} />
+      </div>
       <div className="mt-4 space-y-3 text-sm text-slate-700">
-        {job.description.split("\n").map((line, index) => (
+        {(job.description || "").split("\n").map((line, index) => (
           <p key={`${job.id}-line-${index}`}>{line}</p>
         ))}
       </div>
