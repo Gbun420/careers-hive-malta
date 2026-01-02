@@ -25,6 +25,7 @@ export async function middleware(request: NextRequest) {
     if (
       pathname === "/setup" ||
       pathname.startsWith("/jobseeker/alerts") ||
+      pathname.startsWith("/jobseeker/notifications") ||
       pathname.startsWith("/employer/jobs") ||
       pathname.startsWith("/jobs")
     ) {

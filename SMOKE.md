@@ -33,3 +33,13 @@
 ## Jobs (env present + SQL applied)
 - Not run.
 - Manual: create, edit, delete a job under `/employer/jobs` and confirm it appears in `/jobs` when active.
+
+## Alerts matching + dispatch (env missing)
+- Not run.
+- Manual: `curl -i -X POST http://localhost:3005/api/alerts/dispatch`.
+- Expected: `403` or `503` depending on missing secret/Supabase.
+
+## Alerts matching + dispatch (env present + SQL applied)
+- Not run.
+- Manual: create a job matching an instant saved search; check job POST response includes `notifications_enqueued > 0`.
+- Manual: run `curl -i -X POST http://localhost:3005/api/alerts/dispatch -H \"x-alert-dispatch-secret: <secret>\"` and verify notifications are marked sent.

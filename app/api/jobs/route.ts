@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
-import { JobCreateSchema, normalizeJobPayload } from "@/lib/jobs/schema";
+import { JobCreateSchema, normalizeJobPayload, type Job } from "@/lib/jobs/schema";
+import { createServiceRoleClient } from "@/lib/supabase/server";
+import { matchJobToSearch } from "@/lib/alerts/match";
+import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient();
@@ -109,5 +112,93 @@ export async function POST(request: Request) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  return NextResponse.json({ data }, { status: 201 });
+  const serviceClient = createServiceRoleClient();
+  let notificationsEnqueued = 0;
+  let notificationsSkippedReason: string | null = null;
+
+  if (!serviceClient) {
+    notificationsSkippedReason = "SERVICE_ROLE_NOT_CONFIGURED";
+  } else {
+    try {
+      const { data: searches, error: searchesError } = await serviceClient
+        .from("saved_searches")
+        .select("id, jobseeker_id, frequency, search_criteria")
+        .eq("frequency", "instant");
+
+      if (searchesError) {
+        notificationsSkippedReason = "SAVED_SEARCH_FETCH_FAILED";
+      } else if (searches && data) {
+        const job = data as Job;
+        const matches = searches
+          .map((search) => {
+            const criteriaResult = SavedSearchCriteriaSchema.safeParse(
+              search.search_criteria
+            );
+            if (!criteriaResult.success) {
+              return null;
+            }
+            const result = matchJobToSearch(job, criteriaResult.data);
+            if (!result.match) {
+              return null;
+            }
+            return {
+              user_id: search.jobseeker_id as string,
+              job_id: job.id,
+              saved_search_id: search.id as string,
+              channel: "email",
+              status: "pending",
+            };
+          })
+          .filter(Boolean) as Array<{
+          user_id: string;
+          job_id: string;
+          saved_search_id: string;
+          channel: "email";
+          status: "pending";
+        }>;
+
+        if (matches.length > 0) {
+          const searchIds = matches.map((match) => match.saved_search_id);
+          const { data: existing } = await serviceClient
+            .from("notifications")
+            .select("user_id, saved_search_id")
+            .eq("job_id", job.id)
+            .in("saved_search_id", searchIds);
+
+          const existingKeys = new Set(
+            (existing ?? []).map(
+              (item) => `${item.user_id}:${item.saved_search_id}`
+            )
+          );
+
+          const inserts = matches.filter(
+            (match) =>
+              !existingKeys.has(`${match.user_id}:${match.saved_search_id}`)
+          );
+
+          if (inserts.length > 0) {
+            const { error: insertError } = await serviceClient
+              .from("notifications")
+              .insert(inserts);
+            if (insertError) {
+              notificationsSkippedReason = "NOTIFICATION_INSERT_FAILED";
+            } else {
+              notificationsEnqueued = inserts.length;
+            }
+          }
+        }
+      }
+    } catch (enqueueError) {
+      notificationsSkippedReason = "NOTIFICATION_ENQUEUE_FAILED";
+    }
+  }
+
+  return NextResponse.json(
+    {
+      data,
+      notifications_enqueued: notificationsEnqueued,
+      notifications_skipped_reason: notificationsSkippedReason,
+    },
+    { status: 201 }
+  );
 }
