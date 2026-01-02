@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   trackCheckoutCreated,
@@ -26,6 +26,12 @@ type FeatureCTAProps = {
   redirectPath?: string;
 };
 
+type CTAError = {
+  message: string;
+  actionHref?: string;
+  actionLabel?: string;
+};
+
 export default function FeatureCTA({
   jobId,
   billingEnabled,
@@ -35,14 +41,13 @@ export default function FeatureCTA({
   className,
   redirectPath,
 }: FeatureCTAProps) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<CTAError | null>(null);
 
   const handleClick = async () => {
     if (!billingEnabled) {
       const message = "Billing is not configured.";
-      setError(message);
+      setError({ message, actionHref: "/setup", actionLabel: "View setup" });
       trackCheckoutFailed({ jobId, reason: "STRIPE_NOT_CONFIGURED" });
       return;
     }
@@ -66,31 +71,36 @@ export default function FeatureCTA({
         const message =
           payload.error?.message ?? "Unable to start checkout.";
 
-        if (code === "UNAUTHORIZED") {
+        if (code === "UNAUTHORIZED" || code === "FORBIDDEN") {
           const redirect = redirectPath ?? window.location.pathname;
-          router.push(`/login?redirectedFrom=${encodeURIComponent(redirect)}`);
-          return;
-        }
-
-        if (code === "FORBIDDEN") {
-          setError("Employer access required to feature a job.");
+          setError({
+            message: "Sign in as an employer to feature a job.",
+            actionHref: `/login?redirectedFrom=${encodeURIComponent(redirect)}`,
+            actionLabel: "Go to login",
+          });
           trackCheckoutFailed({ jobId, reason: "FORBIDDEN" });
           return;
         }
 
+        if (code === "NOT_FOUND") {
+          setError({ message: "Job not found or not yours." });
+          trackCheckoutFailed({ jobId, reason: "NOT_FOUND" });
+          return;
+        }
+
         if (code === "STRIPE_NOT_CONFIGURED") {
-          setError("Billing is not configured.");
+          setError({ message: "Billing is not configured.", actionHref: "/setup", actionLabel: "View setup" });
           trackCheckoutFailed({ jobId, reason: "STRIPE_NOT_CONFIGURED" });
           return;
         }
 
-        setError(message);
+        setError({ message: message ?? "Unable to start checkout." });
         trackCheckoutFailed({ jobId, reason: code ?? "UNKNOWN" });
         return;
       }
 
       if (!payload.url) {
-        setError("Checkout URL missing. Try again.");
+        setError({ message: "Checkout URL missing. Try again." });
         trackCheckoutFailed({ jobId, reason: "MISSING_URL" });
         return;
       }
@@ -98,7 +108,7 @@ export default function FeatureCTA({
       trackCheckoutCreated({ jobId, sessionUrl: payload.url });
       window.location.href = payload.url;
     } catch (err) {
-      setError("Network error. Please retry.");
+      setError({ message: "Network error. Please retry." });
       trackCheckoutFailed({ jobId, reason: "NETWORK_ERROR" });
     } finally {
       setLoading(false);
@@ -112,11 +122,28 @@ export default function FeatureCTA({
         variant={variant}
         disabled={!billingEnabled || loading}
         onClick={handleClick}
+        title={!billingEnabled ? "Billing not configured" : undefined}
       >
         {loading ? "Redirecting..." : label}
       </Button>
+      {!billingEnabled ? (
+        <p className="mt-2 text-xs text-slate-500">
+          Billing not configured.{" "}
+          <Link href="/setup" className="underline">
+            View setup
+          </Link>
+          .
+        </p>
+      ) : null}
       {error ? (
-        <p className="mt-2 text-xs text-rose-600">{error}</p>
+        <p className="mt-2 text-xs text-rose-600">
+          {error.message}{" "}
+          {error.actionHref ? (
+            <Link href={error.actionHref} className="underline">
+              {error.actionLabel ?? "Learn more"}
+            </Link>
+          ) : null}
+        </p>
       ) : null}
     </div>
   );

@@ -8,9 +8,10 @@ import {
 } from "@/lib/billing/stripe";
 
 export default function PricingPage() {
-  const stripeEnabled = isStripeConfigured();
+  const billingConfigured = isStripeConfigured();
   const featuredDurationDays = getFeaturedDurationDays();
   const featuredPriceLabel = getFeaturedPriceLabel();
+  const showBillingStatus = process.env.NODE_ENV !== "production";
 
   return (
     <div className="min-h-screen">
@@ -50,7 +51,7 @@ export default function PricingPage() {
               Featured upgrade
             </p>
             <p className="mt-2 text-sm text-slate-700">
-              {stripeEnabled && featuredPriceLabel
+              {billingConfigured && featuredPriceLabel
                 ? `Feature a job for ${featuredPriceLabel}`
                 : "Feature a job to unlock premium placement."}
             </p>
@@ -60,15 +61,24 @@ export default function PricingPage() {
               <li>• Featured badge on listings</li>
             </ul>
             <div className="mt-6">
-              {stripeEnabled ? (
+              {billingConfigured ? (
                 <Button asChild size="lg">
                   <Link href="/signup?role=employer">Upgrade a job</Link>
                 </Button>
               ) : (
                 <Button size="lg" disabled>
-                  Billing coming soon
+                  Billing not configured
                 </Button>
               )}
+              {!billingConfigured ? (
+                <p className="mt-2 text-xs text-slate-600">
+                  Billing not configured.{" "}
+                  <Link href="/setup" className="underline">
+                    View setup
+                  </Link>
+                  .
+                </p>
+              ) : null}
             </div>
             <p className="mt-4 text-xs text-slate-600">
               Verified employers stand out with trust badges.
@@ -93,6 +103,12 @@ export default function PricingPage() {
           </div>
         </section>
       </main>
+      {showBillingStatus ? (
+        <footer className="mx-auto w-full max-w-6xl px-6 pb-10 text-xs text-slate-500">
+          Billing: {billingConfigured ? "configured" : "not configured"} ·
+          Featured duration: {featuredDurationDays} days
+        </footer>
+      ) : null}
     </div>
   );
 }

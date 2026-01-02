@@ -129,3 +129,18 @@
 - Expected: pricing cards render; featured CTA disabled when Stripe env missing; CTA links to employer signup when enabled.
 - Manual: create a job and confirm `/employer/jobs?created=1&jobId=<id>` shows Boost CTA.
 - Manual: visit `/employer/jobs/<id>/edit` and confirm Feature panel shows benefits + CTA or featured until date.
+
+## Pricing + upsell proof (Stripe missing)
+- Not run.
+- Manual: unset `STRIPE_SECRET_KEY` and `STRIPE_FEATURED_PRICE_ID`, restart dev server.
+- Manual: visit `/pricing` -> Featured CTA disabled with “Billing not configured” helper text.
+- Manual: visit `/employer/jobs` -> Feature buttons disabled with tooltip; no network call to `/api/billing/checkout-featured` on click.
+- Manual: `curl -i -X POST http://localhost:3005/api/billing/checkout-featured -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
+- Expected: `503` with `error.code == "STRIPE_NOT_CONFIGURED"`.
+
+## Pricing + upsell proof (Stripe present)
+- Not run.
+- Manual: set Stripe env vars + apply `0004_billing.sql`, then login as employer.
+- Manual: click Feature CTA on `/employer/jobs` or `/employer/jobs/<id>/edit`.
+- Expected: redirected to Stripe Checkout URL.
+- Manual: open DevTools Network, confirm `/api/billing/checkout-featured` returns `200` with `{ "url": "https://checkout.stripe.com/..." }`.

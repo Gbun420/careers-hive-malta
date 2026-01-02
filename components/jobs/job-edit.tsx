@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import JobForm from "@/components/jobs/job-form";
 import type { Job, JobCreate } from "@/lib/jobs/schema";
 import FeatureCTA from "@/components/billing/feature-cta";
@@ -128,9 +129,17 @@ export default function JobEdit({
               redirectPath={`/employer/jobs/${id}/edit`}
             />
             <span className="text-xs text-slate-500">
-              {billingEnabled
-                ? "Stripe checkout opens in a new page."
-                : "Billing coming soon."}
+              {billingEnabled ? (
+                "Stripe checkout opens in a new page."
+              ) : (
+                <>
+                  Billing not configured.{" "}
+                  <Link href="/setup" className="underline">
+                    View setup
+                  </Link>
+                  .
+                </>
+              )}
             </span>
           </div>
         )}

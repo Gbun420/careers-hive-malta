@@ -5,7 +5,7 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const featuredPriceId = process.env.STRIPE_FEATURED_PRICE_ID;
 const featuredPriceLabel =
-  process.env.STRIPE_FEATURED_PRICE_LABEL ?? process.env.FEATURED_PRICE_LABEL;
+  process.env.FEATURED_PRICE_LABEL ?? process.env.STRIPE_FEATURED_PRICE_LABEL;
 
 export function isStripeConfigured(): boolean {
   return Boolean(stripeSecretKey && featuredPriceId);

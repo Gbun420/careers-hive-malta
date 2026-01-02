@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/jobs/schema";
 import FeatureCTA from "@/components/billing/feature-cta";
@@ -26,6 +26,7 @@ export default function EmployerJobList({
   featuredPriceLabel,
 }: EmployerJobListProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
@@ -51,7 +52,9 @@ export default function EmployerJobList({
       }
 
       setJobs(payload.data ?? []);
-      setBillingEnabled(Boolean(payload.meta?.billing_enabled));
+      if (typeof payload.meta?.billing_enabled === "boolean") {
+        setBillingEnabled(payload.meta.billing_enabled);
+      }
     } catch (err) {
       setError({
         error: {
@@ -89,6 +92,9 @@ export default function EmployerJobList({
   const createdJob = createdJobId
     ? jobs.find((job) => job.id === createdJobId)
     : null;
+  const handleDismissBanner = () => {
+    router.replace("/employer/jobs");
+  };
 
   if (loading) {
     return <p className="text-sm text-slate-600">Loading jobs...</p>;
@@ -125,7 +131,16 @@ export default function EmployerJobList({
     <div className="space-y-4">
       {showCreatedBanner ? (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
-          <p className="font-semibold">Job posted successfully.</p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="font-semibold">Job posted successfully.</p>
+            <button
+              type="button"
+              onClick={handleDismissBanner}
+              className="text-xs font-semibold uppercase tracking-wide text-emerald-800 underline"
+            >
+              Dismiss
+            </button>
+          </div>
           <p className="mt-2 text-emerald-800">
             Boost this role with a featured upgrade for {featuredDurationDays}{" "}
             days and appear first in search.
