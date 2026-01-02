@@ -91,6 +91,28 @@
 - Manual: click “Feature” in `/employer/jobs` and confirm checkout session URL returned.
 - Manual: send Stripe webhook for `checkout.session.completed`, then verify job shows Featured badge and `featured_until` updated.
 
+## Stripe Featured Proof
+### A) Stripe env-missing
+- Run:
+  - `curl -i -X POST http://localhost:3005/api/billing/checkout-featured -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
+- Expected: `503` with `error.code == "STRIPE_NOT_CONFIGURED"`.
+
+### B) Stripe env-present
+- Manual: set `STRIPE_SECRET_KEY`, `STRIPE_FEATURED_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `FEATURED_DURATION_DAYS`, apply `0004_billing.sql`.
+- Manual (UI): `/employer/jobs` → Feature → expect JSON `{ "url": "https://checkout.stripe.com/..." }`.
+- Webhook:
+  - `stripe listen --forward-to http://localhost:3005/api/billing/webhook`
+  - `stripe trigger checkout.session.completed`
+- Verify featured order + source marker:
+  - `curl -s "http://localhost:3005/api/jobs?q=<keyword>&location=<city>" | jq .`
+  - Expected: `source` is `"db"` or `"meili"` and the first job has `is_featured: true` (or `featured_until` in the future).
+
+### C) Meili boost proof (optional)
+- Manual: ensure Meili is configured and reindex.
+  - `curl -i -X POST http://localhost:3005/api/search/reindex -H "x-search-reindex-secret: <secret>"`
+  - `curl -s "http://localhost:3005/api/jobs?q=<keyword>" | jq .`
+- Expected: `source: "meili"` and featured job appears first.
+
 ## Landing responsiveness
 - Not run.
 - Manual: open `/` at 375px, 768px, 1024px, 1440px widths.

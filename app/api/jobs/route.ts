@@ -8,7 +8,11 @@ import { matchJobToSearch } from "@/lib/alerts/match";
 import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 import { searchJobs, upsertJobs } from "@/lib/search/meili";
 import { attachEmployerVerified, isEmployerVerified } from "@/lib/trust/verification";
-import { attachFeaturedStatus, sortFeaturedJobs } from "@/lib/billing/featured";
+import {
+  attachFeaturedStatus,
+  isJobFeatured,
+  sortFeaturedJobs,
+} from "@/lib/billing/featured";
 import { isStripeConfigured } from "@/lib/billing/stripe";
 
 export async function GET(request: Request) {
@@ -70,8 +74,19 @@ export async function GET(request: Request) {
     if (meiliResult) {
       const withFeatured = await attachFeaturedStatus(meiliResult.hits);
       const enriched = await attachEmployerVerified(withFeatured);
+      const ordered = enriched
+        .map((job, index) => ({ job, index }))
+        .sort((a, b) => {
+          const aFeatured = isJobFeatured(a.job);
+          const bFeatured = isJobFeatured(b.job);
+          if (aFeatured !== bFeatured) {
+            return aFeatured ? -1 : 1;
+          }
+          return a.index - b.index;
+        })
+        .map(({ job }) => job);
       return NextResponse.json({
-        data: enriched,
+        data: ordered,
         source: "meili",
       });
     }
