@@ -4,6 +4,8 @@ import Stripe from "stripe";
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const featuredPriceId = process.env.STRIPE_FEATURED_PRICE_ID;
+const featuredPriceLabel =
+  process.env.STRIPE_FEATURED_PRICE_LABEL ?? process.env.FEATURED_PRICE_LABEL;
 
 export function isStripeConfigured(): boolean {
   return Boolean(stripeSecretKey && featuredPriceId);
@@ -19,6 +21,10 @@ export function getStripeWebhookSecret(): string | null {
 
 export function getStripeFeaturedPriceId(): string | null {
   return featuredPriceId ?? null;
+}
+
+export function getFeaturedPriceLabel(): string | null {
+  return featuredPriceLabel ?? null;
 }
 
 export function getFeaturedDurationDays(): number {

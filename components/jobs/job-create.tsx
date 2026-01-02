@@ -21,7 +21,13 @@ export default function JobCreate() {
       throw new Error(data?.error?.message ?? "Unable to create job.");
     }
 
-    router.push("/employer/jobs");
+    const data = await response.json().catch(() => null);
+    const jobId = data?.data?.id as string | undefined;
+    if (jobId) {
+      router.push(`/employer/jobs?created=1&jobId=${jobId}`);
+    } else {
+      router.push("/employer/jobs");
+    }
   };
 
   return <JobForm submitLabel="Create job" onSubmit={handleSubmit} />;

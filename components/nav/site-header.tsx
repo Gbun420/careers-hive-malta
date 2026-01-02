@@ -6,9 +6,9 @@ import { Menu, X, ShieldCheck } from "lucide-react";
 
 const navLinks = [
   { label: "Jobs", href: "/jobs" },
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "For Employers", href: "#for-employers" },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "For Employers", href: "/#for-employers" },
   { label: "Sign in", href: "/login" },
 ];
 

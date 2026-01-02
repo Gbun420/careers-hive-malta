@@ -2,12 +2,21 @@ import Link from "next/link";
 import JobEdit from "@/components/jobs/job-edit";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
+import {
+  getFeaturedDurationDays,
+  getFeaturedPriceLabel,
+  isStripeConfigured,
+} from "@/lib/billing/stripe";
 
 type EditPageProps = {
   params: { id: string };
 };
 
 export default function EmployerJobEditPage({ params }: EditPageProps) {
+  const billingEnabled = isStripeConfigured();
+  const featuredDurationDays = getFeaturedDurationDays();
+  const featuredPriceLabel = getFeaturedPriceLabel();
+
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
@@ -37,7 +46,12 @@ export default function EmployerJobEditPage({ params }: EditPageProps) {
           Keep your listing accurate and up to date.
         </p>
       </header>
-      <JobEdit id={params.id} />
+      <JobEdit
+        id={params.id}
+        billingEnabled={billingEnabled}
+        featuredDurationDays={featuredDurationDays}
+        featuredPriceLabel={featuredPriceLabel}
+      />
     </main>
   );
 }

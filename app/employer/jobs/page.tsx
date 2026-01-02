@@ -2,8 +2,17 @@ import Link from "next/link";
 import EmployerJobList from "@/components/jobs/employer-job-list";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
+import {
+  getFeaturedDurationDays,
+  getFeaturedPriceLabel,
+  isStripeConfigured,
+} from "@/lib/billing/stripe";
 
 export default function EmployerJobsPage() {
+  const billingEnabled = isStripeConfigured();
+  const featuredDurationDays = getFeaturedDurationDays();
+  const featuredPriceLabel = getFeaturedPriceLabel();
+
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-16">
@@ -35,7 +44,11 @@ export default function EmployerJobsPage() {
           <Link href="/employer/jobs/new">Create job</Link>
         </Button>
       </header>
-      <EmployerJobList />
+      <EmployerJobList
+        billingEnabled={billingEnabled}
+        featuredDurationDays={featuredDurationDays}
+        featuredPriceLabel={featuredPriceLabel}
+      />
     </main>
   );
 }

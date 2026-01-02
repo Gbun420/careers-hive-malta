@@ -122,3 +122,10 @@
 - Not run.
 - Manual: open `/` at 375px, 768px, 1024px, 1440px widths.
 - Expected: hero headline wraps cleanly, navbar works with hamburger on mobile, and CTAs remain visible without awkward breaks.
+
+## Pricing + upsell surfaces
+- Not run.
+- Manual: visit `/pricing` on desktop + mobile.
+- Expected: pricing cards render; featured CTA disabled when Stripe env missing; CTA links to employer signup when enabled.
+- Manual: create a job and confirm `/employer/jobs?created=1&jobId=<id>` shows Boost CTA.
+- Manual: visit `/employer/jobs/<id>/edit` and confirm Feature panel shows benefits + CTA or featured until date.

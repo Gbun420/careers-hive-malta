@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/jobs/schema";
+import FeatureCTA from "@/components/billing/feature-cta";
 
 type ApiError = {
   error?: {
@@ -12,13 +14,24 @@ type ApiError = {
   };
 };
 
-export default function EmployerJobList() {
+type EmployerJobListProps = {
+  billingEnabled: boolean;
+  featuredDurationDays: number;
+  featuredPriceLabel: string | null;
+};
+
+export default function EmployerJobList({
+  billingEnabled: billingEnabledDefault,
+  featuredDurationDays,
+  featuredPriceLabel,
+}: EmployerJobListProps) {
+  const searchParams = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
-  const [billingEnabled, setBillingEnabled] = useState(false);
-  const [billingError, setBillingError] = useState<string | null>(null);
-  const [featureLoadingId, setFeatureLoadingId] = useState<string | null>(null);
+  const [billingEnabled, setBillingEnabled] = useState(
+    billingEnabledDefault
+  );
 
   const loadJobs = async () => {
     setLoading(true);
@@ -70,38 +83,12 @@ export default function EmployerJobList() {
     await loadJobs();
   };
 
-  const handleFeature = async (id: string) => {
-    if (!billingEnabled) {
-      setBillingError("Billing is not configured.");
-      return;
-    }
-
-    setBillingError(null);
-    setFeatureLoadingId(id);
-    try {
-      const response = await fetch("/api/billing/checkout-featured", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ job_id: id }),
-      });
-      const payload = (await response.json().catch(() => ({}))) as ApiError & {
-        url?: string;
-      };
-
-      if (!response.ok) {
-        setBillingError(
-          payload.error?.message ?? "Unable to start checkout."
-        );
-        return;
-      }
-
-      if (payload.url) {
-        window.location.href = payload.url;
-      }
-    } finally {
-      setFeatureLoadingId(null);
-    }
-  };
+  const createdJobId = searchParams.get("jobId");
+  const showCreatedBanner =
+    searchParams.get("created") === "1" && Boolean(createdJobId);
+  const createdJob = createdJobId
+    ? jobs.find((job) => job.id === createdJobId)
+    : null;
 
   if (loading) {
     return <p className="text-sm text-slate-600">Loading jobs...</p>;
@@ -136,10 +123,24 @@ export default function EmployerJobList() {
 
   return (
     <div className="space-y-4">
-      {billingError ? (
-        <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
-          {billingError}
-        </p>
+      {showCreatedBanner ? (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
+          <p className="font-semibold">Job posted successfully.</p>
+          <p className="mt-2 text-emerald-800">
+            Boost this role with a featured upgrade for {featuredDurationDays}{" "}
+            days and appear first in search.
+          </p>
+          {createdJob && !createdJob.is_featured ? (
+            <FeatureCTA
+              jobId={createdJob.id}
+              billingEnabled={billingEnabled}
+              label="Boost this job"
+              size="lg"
+              className="mt-3"
+              redirectPath="/employer/jobs"
+            />
+          ) : null}
+        </div>
       ) : null}
       {jobs.map((job) => (
         <div
@@ -158,25 +159,28 @@ export default function EmployerJobList() {
                   {new Date(job.featured_until).toLocaleDateString()}
                 </p>
               ) : null}
+              {job.employer_verified ? (
+                <p className="mt-1 text-xs text-emerald-700">
+                  Verified employers stand out.
+                </p>
+              ) : null}
             </div>
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" asChild>
                 <Link href={`/employer/jobs/${job.id}/edit`}>Edit</Link>
               </Button>
-              <Button
-                variant="outline"
-                disabled={!billingEnabled || job.is_featured || featureLoadingId === job.id}
-                title={
-                  !billingEnabled
-                    ? "Billing not configured"
-                    : job.is_featured
-                    ? "Job is already featured"
-                    : undefined
-                }
-                onClick={() => handleFeature(job.id)}
-              >
-                {featureLoadingId === job.id ? "Redirecting..." : "Feature"}
-              </Button>
+              {!job.is_featured ? (
+                <FeatureCTA
+                  jobId={job.id}
+                  billingEnabled={billingEnabled}
+                  label={
+                    featuredPriceLabel
+                      ? `Feature (${featuredPriceLabel})`
+                      : "Feature"
+                  }
+                  redirectPath="/employer/jobs"
+                />
+              ) : null}
               <Button variant="outline" onClick={() => handleDelete(job.id)}>
                 Delete
               </Button>
