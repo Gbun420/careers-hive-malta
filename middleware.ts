@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase/server";
 import { getMissingSupabaseEnv } from "@/lib/auth/session";
 import { getDashboardPath, getRoleFromPath, getUserRole } from "@/lib/auth/roles";
+import { isAdminAllowedEmail } from "@/lib/auth/admin";
 
 function isStaticAsset(pathname: string): boolean {
   return (
@@ -53,7 +54,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const role = getUserRole(data.user);
+  let role = getUserRole(data.user);
+  if (role === "admin" && !isAdminAllowedEmail(data.user.email)) {
+    role = null;
+  }
   if (!role) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
