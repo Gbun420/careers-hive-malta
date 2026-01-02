@@ -3,7 +3,7 @@ import type { Job } from "@/lib/jobs/schema";
 
 const meiliHost = process.env.MEILI_HOST;
 const meiliApiKey = process.env.MEILI_API_KEY;
-const meiliIndexJobs = process.env.MEILI_INDEX_JOBS || "jobs";
+const meiliIndexJobs = process.env.MEILI_INDEX_JOBS ?? "jobs";
 let jobsIndexConfigured = false;
 
 export type MeiliJobDocument = Job & {
@@ -30,7 +30,7 @@ export function getMissingMeiliEnv(): string[] {
 }
 
 export function isMeiliConfigured(): boolean {
-  return Boolean(meiliHost && meiliApiKey && meiliIndexJobs);
+  return Boolean(meiliHost && meiliApiKey && process.env.MEILI_INDEX_JOBS);
 }
 
 function createMeiliClient(): MeiliSearch | null {
