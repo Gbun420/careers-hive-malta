@@ -52,6 +52,7 @@ Never paste secrets into chat; set env locally.
   - `stripe trigger checkout.session.completed`
 - Option B (dev simulate):
   - `curl -i -X POST http://localhost:3005/api/dev/billing/simulate-webhook -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"session_id":"<session-id>"}'`
+  - Expected: `200` with `audit` metadata when audit log insert succeeds.
 - Confirm featured flag:
   - `curl -i http://localhost:3005/api/jobs/<job-id>`
   - Expected: `is_featured: true` and `featured_until` in the future.

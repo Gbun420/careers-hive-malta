@@ -148,7 +148,7 @@
   - Expected: webhook returns `200` and job featured status updates.
 - Option B (dev simulate):
   - `curl -i -X POST http://localhost:3005/api/dev/billing/simulate-webhook -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"session_id":"<session-id>"}'`
-  - Expected: `200` with `{ ok: true, fulfilled: true, job_id, featured_until }`.
+  - Expected: `200` with `{ ok: true, fulfilled: true, job_id, featured_until, audit }`.
 - Verify featured status:
   - `curl -i http://localhost:3005/api/jobs/<job-id>`
   - Expected: `is_featured: true` and `featured_until` in the future.

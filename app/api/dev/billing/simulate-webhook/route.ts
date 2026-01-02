@@ -8,6 +8,7 @@ import {
   mapStripeError,
 } from "@/lib/billing/stripe";
 import { fulfillFeaturedCheckoutSession } from "@/lib/billing/fulfillment";
+import { createServiceRoleClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -68,10 +69,25 @@ export async function POST(request: Request) {
     );
   }
 
+  const service = createServiceRoleClient();
+  let auditEntry: { id?: string; created_at?: string } | null = null;
+  if (service) {
+    const { data: audit } = await service
+      .from("audit_logs")
+      .select("id, created_at")
+      .eq("action", "featured_purchased")
+      .eq("entity_id", result.jobId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    auditEntry = audit ?? null;
+  }
+
   return NextResponse.json({
     ok: true,
     fulfilled: true,
     job_id: result.jobId,
     featured_until: result.featuredUntil,
+    audit: auditEntry,
   });
 }
