@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       return jsonError("DB_ERROR", error.message, 500);
     }
 
-    return NextResponse.json({ data });
+    return NextResponse.json({ data, source: "db" });
   }
 
   try {
@@ -61,7 +61,7 @@ export async function GET(request: Request) {
     if (meiliResult) {
       return NextResponse.json({
         data: meiliResult.hits,
-        meta: { search_backend: meiliResult.backend },
+        source: "meili",
       });
     }
   } catch (error) {
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  return NextResponse.json({ data, meta: { search_backend: "db" } });
+  return NextResponse.json({ data, source: "db" });
 }
 
 export async function POST(request: Request) {

@@ -41,6 +41,7 @@ export default function PublicJobsList() {
         });
         const payload = (await response.json().catch(() => ({}))) as ApiError & {
           data?: Job[];
+          source?: "meili" | "db";
           meta?: { search_backend?: "meili" | "db" };
         };
 
@@ -50,7 +51,9 @@ export default function PublicJobsList() {
         }
 
         setJobs(payload.data ?? []);
-        setSearchBackend(payload.meta?.search_backend ?? null);
+        setSearchBackend(
+          payload.source ?? payload.meta?.search_backend ?? null
+        );
       } catch (err) {
         setError({
           error: {
