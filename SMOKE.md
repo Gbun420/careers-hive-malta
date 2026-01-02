@@ -144,3 +144,11 @@
 - Manual: click Feature CTA on `/employer/jobs` or `/employer/jobs/<id>/edit`.
 - Expected: redirected to Stripe Checkout URL.
 - Manual: open DevTools Network, confirm `/api/billing/checkout-featured` returns `200` with `{ "url": "https://checkout.stripe.com/..." }`.
+
+## Stripe env-present proof (dev)
+- Not run.
+- Manual: set Stripe env vars (`STRIPE_SECRET_KEY`, `STRIPE_FEATURED_PRICE_ID`, `DEV_TOOLS_SECRET`) + apply `0004_billing.sql`.
+- Manual: `curl -s http://localhost:3005/api/dev/billing/status | jq .`
+- Expected: `billingConfigured: true`, `hasSecretKey: true`, `hasFeaturedPriceId: true`.
+- Manual: `curl -s -X POST http://localhost:3005/api/dev/billing/create-checkout -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}' | jq .`
+- Expected: `{ "url": "https://checkout.stripe.com/...", "session_id": "cs_test_..." }`.
