@@ -46,6 +46,19 @@ Never paste secrets into chat; set env locally.
 - `STRIPE_ERROR`: check `error.details.stripe_type` / `stripe_message`.
 - `DB_INSERT_FAILED`: apply `0004_billing.sql`, confirm purchases table exists.
 
+## Webhook fulfillment proof
+- Option A (Stripe CLI):
+  - `stripe listen --forward-to http://localhost:3005/api/billing/webhook`
+  - `stripe trigger checkout.session.completed`
+- Option B (dev simulate):
+  - `curl -i -X POST http://localhost:3005/api/dev/billing/simulate-webhook -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"session_id":"<session-id>"}'`
+- Confirm featured flag:
+  - `curl -i http://localhost:3005/api/jobs/<job-id>`
+  - Expected: `is_featured: true` and `featured_until` in the future.
+- Confirm audit log:
+  - `curl -i http://localhost:3005/api/admin/audit`
+  - Expected: entry with `action: "featured_purchased"`.
+
 ## Regression checklist
 - Login page loads (no prerender crash).
 - Signup page loads.
