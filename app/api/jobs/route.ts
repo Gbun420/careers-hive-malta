@@ -57,8 +57,9 @@ export async function GET(request: Request) {
 
     const withFeatured = await attachFeaturedStatus(data ?? []);
     const enriched = await attachEmployerVerified(withFeatured);
+    const sorted = sortFeaturedJobs(enriched);
     return NextResponse.json({
-      data: enriched,
+      data: sorted,
       source: "db",
       meta: { billing_enabled: isStripeConfigured() },
     });

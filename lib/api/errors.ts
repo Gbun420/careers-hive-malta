@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-type ErrorCode =
+export type ErrorCode =
   | "SUPABASE_NOT_CONFIGURED"
   | "MEILI_NOT_CONFIGURED"
   | "STRIPE_NOT_CONFIGURED"

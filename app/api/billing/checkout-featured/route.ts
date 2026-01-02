@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import {
-  createStripeClient,
-  getStripeFeaturedPriceId,
   isStripeConfigured,
 } from "@/lib/billing/stripe";
+import { createFeaturedCheckoutSession } from "@/lib/billing/checkout";
 
 export const runtime = "nodejs";
 
@@ -66,61 +65,19 @@ export async function POST(request: Request) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
 
-  const stripe = createStripeClient();
-  const priceId = getStripeFeaturedPriceId();
-  if (!stripe || !priceId) {
-    return jsonError(
-      "STRIPE_NOT_CONFIGURED",
-      "Stripe is not configured.",
-      503
-    );
-  }
-
-  const service = createServiceRoleClient();
-  if (!service) {
-    return jsonError(
-      "SUPABASE_NOT_CONFIGURED",
-      "Supabase is not configured.",
-      503
-    );
-  }
-
   const origin =
     request.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  let session;
-  try {
-    session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/employer/jobs?featured=success`,
-      cancel_url: `${origin}/employer/jobs?featured=cancel`,
-      metadata: {
-        employer_id: authData.user.id,
-        job_id: job.id,
-        type: "featured",
-      },
-      customer_email: authData.user.email ?? undefined,
-    });
-  } catch (stripeError) {
-    return jsonError("DB_ERROR", "Unable to create checkout session.", 500);
-  }
-
-  if (!session.url) {
-    return jsonError("DB_ERROR", "Unable to create checkout session.", 500);
-  }
-
-  const { error: insertError } = await service.from("purchases").insert({
-    employer_id: authData.user.id,
-    job_id: job.id,
-    type: "featured",
-    stripe_checkout_session_id: session.id,
-    status: "pending",
+  const result = await createFeaturedCheckoutSession({
+    employerId: authData.user.id,
+    jobId: job.id,
+    customerEmail: authData.user.email ?? null,
+    origin,
   });
 
-  if (insertError) {
-    return jsonError("DB_ERROR", insertError.message, 500);
+  if ("error" in result) {
+    return jsonError(result.error.code, result.error.message, result.error.status);
   }
 
-  return NextResponse.json({ url: session.url });
+  return NextResponse.json({ url: result.url });
 }

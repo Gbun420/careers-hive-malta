@@ -98,14 +98,19 @@
 - Expected: `503` with `error.code == "STRIPE_NOT_CONFIGURED"`.
 
 ### B) Stripe env-present
-- Manual: set `STRIPE_SECRET_KEY`, `STRIPE_FEATURED_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `FEATURED_DURATION_DAYS`, apply `0004_billing.sql`.
-- Manual (UI): `/employer/jobs` → Feature → expect JSON `{ "url": "https://checkout.stripe.com/..." }`.
-- Webhook:
+- Manual: set `STRIPE_SECRET_KEY`, `STRIPE_FEATURED_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `FEATURED_DURATION_DAYS`, `DEV_TOOLS_SECRET`, apply `0004_billing.sql`.
+- Create checkout session (no UI needed):
+  - `curl -s -X POST http://localhost:3005/api/dev/stripe/create-featured-session -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>","employer_id":"<employer-id>"}' | jq .`
+  - Expected: `{ "url": "...", "session_id": "cs_test_..." }`
+- Webhook (optional path if Stripe CLI installed):
   - `stripe listen --forward-to http://localhost:3005/api/billing/webhook`
   - `stripe trigger checkout.session.completed`
+- Force-feature fallback (if no Stripe CLI):
+  - `curl -s -X POST http://localhost:3005/api/dev/featured/force -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>","days":7}' | jq .`
+  - Expected: `{ "job_id": "<job-id>", "featured_until": "<timestamp>" }`
 - Verify featured order + source marker:
   - `curl -s "http://localhost:3005/api/jobs?q=<keyword>&location=<city>" | jq .`
-  - Expected: `source` is `"db"` or `"meili"` and the first job has `is_featured: true` (or `featured_until` in the future).
+  - Expected: `source` is `"db"` or `"meili"` and the first job has `is_featured: true` plus `featured_until`.
 
 ### C) Meili boost proof (optional)
 - Manual: ensure Meili is configured and reindex.
