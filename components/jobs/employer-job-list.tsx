@@ -18,12 +18,14 @@ type EmployerJobListProps = {
   billingEnabled: boolean;
   featuredDurationDays: number;
   featuredPriceLabel: string | null;
+  showPricePlaceholderWarning?: boolean;
 };
 
 export default function EmployerJobList({
   billingEnabled: billingEnabledDefault,
   featuredDurationDays,
   featuredPriceLabel,
+  showPricePlaceholderWarning = false,
 }: EmployerJobListProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -129,6 +131,11 @@ export default function EmployerJobList({
 
   return (
     <div className="space-y-4">
+      {showPricePlaceholderWarning ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Stripe price ID is a placeholder; checkout will fail in this environment.
+        </div>
+      ) : null}
       {showCreatedBanner ? (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
           <div className="flex flex-wrap items-center justify-between gap-3">

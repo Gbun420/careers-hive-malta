@@ -15,7 +15,14 @@ Never paste secrets into chat; set env locally.
   - `hasFeaturedPriceId` boolean
   - `featuredDurationDays` number
   - `priceLabel` string|null
+  - `featuredPriceId` string|null
+  - `featuredPriceValid` boolean|null
 - Expected (prod): `404` JSON `{ "error": { "code": "NOT_FOUND" } }`
+
+### Stripe price validity check
+- Command: `curl -i http://localhost:3005/api/dev/billing/validate-price -H "x-dev-secret: $DEV_TOOLS_SECRET"`
+- Expected (valid): `200` JSON with `priceId`, `currency`, `unit_amount`, `product`, `livemode`.
+- Expected (invalid): `400` `STRIPE_PRICE_INVALID` with Stripe details.
 
 ### Create checkout route
 - Wrong secret:

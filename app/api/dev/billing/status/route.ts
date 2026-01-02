@@ -3,6 +3,7 @@ import { jsonError } from "@/lib/api/errors";
 import {
   getFeaturedDurationDays,
   getFeaturedPriceLabel,
+  getStripeFeaturedPriceId,
   isStripeConfigured,
 } from "@/lib/billing/stripe";
 
@@ -19,5 +20,7 @@ export async function GET() {
     hasFeaturedPriceId: Boolean(process.env.STRIPE_FEATURED_PRICE_ID),
     featuredDurationDays: getFeaturedDurationDays(),
     priceLabel: getFeaturedPriceLabel(),
+    featuredPriceId: getStripeFeaturedPriceId(),
+    featuredPriceValid: null,
   });
 }

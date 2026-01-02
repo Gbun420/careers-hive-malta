@@ -6,6 +6,7 @@ import { isSupabaseConfigured } from "@/lib/auth/session";
 import {
   getFeaturedDurationDays,
   getFeaturedPriceLabel,
+  getStripeFeaturedPriceId,
   isStripeConfigured,
 } from "@/lib/billing/stripe";
 
@@ -13,6 +14,11 @@ export default function EmployerJobsPage() {
   const billingEnabled = isStripeConfigured();
   const featuredDurationDays = getFeaturedDurationDays();
   const featuredPriceLabel = getFeaturedPriceLabel();
+  const featuredPriceId = getStripeFeaturedPriceId();
+  const showPlaceholderWarning =
+    process.env.NODE_ENV !== "production" &&
+    typeof featuredPriceId === "string" &&
+    featuredPriceId.includes("placeholder");
 
   if (!isSupabaseConfigured()) {
     return (
@@ -54,6 +60,7 @@ export default function EmployerJobsPage() {
           billingEnabled={billingEnabled}
           featuredDurationDays={featuredDurationDays}
           featuredPriceLabel={featuredPriceLabel}
+          showPricePlaceholderWarning={showPlaceholderWarning}
         />
       </Suspense>
     </main>

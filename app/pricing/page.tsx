@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   getFeaturedDurationDays,
   getFeaturedPriceLabel,
+  getStripeFeaturedPriceId,
   isStripeConfigured,
 } from "@/lib/billing/stripe";
 
@@ -12,6 +13,11 @@ export default function PricingPage() {
   const featuredDurationDays = getFeaturedDurationDays();
   const featuredPriceLabel = getFeaturedPriceLabel();
   const showBillingStatus = process.env.NODE_ENV !== "production";
+  const featuredPriceId = getStripeFeaturedPriceId();
+  const showPlaceholderWarning =
+    showBillingStatus &&
+    typeof featuredPriceId === "string" &&
+    featuredPriceId.includes("placeholder");
 
   return (
     <div className="min-h-screen">
@@ -80,6 +86,12 @@ export default function PricingPage() {
                 </p>
               ) : null}
             </div>
+            {showPlaceholderWarning ? (
+              <p className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                Stripe price ID is a placeholder; checkout will fail in this
+                environment.
+              </p>
+            ) : null}
             <p className="mt-4 text-xs text-slate-600">
               Verified employers stand out with trust badges.
             </p>
