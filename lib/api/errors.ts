@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 type ErrorCode =
   | "SUPABASE_NOT_CONFIGURED"
+  | "MEILI_NOT_CONFIGURED"
   | "EMAIL_NOT_CONFIGURED"
   | "UNAUTHORIZED"
   | "FORBIDDEN"

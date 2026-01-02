@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import type { Job } from "@/lib/jobs/schema";
 
 type ApiError = {
@@ -18,15 +17,31 @@ export default function PublicJobsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
   const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+  const [searchBackend, setSearchBackend] = useState<"meili" | "db" | null>(
+    null
+  );
 
   useEffect(() => {
     const loadJobs = async () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/jobs", { cache: "no-store" });
+        const params = new URLSearchParams();
+        if (query.trim().length > 0) {
+          params.set("q", query.trim());
+        }
+        if (location.trim().length > 0) {
+          params.set("location", location.trim());
+        }
+        params.set("is_active", "true");
+
+        const response = await fetch(`/api/jobs?${params.toString()}`, {
+          cache: "no-store",
+        });
         const payload = (await response.json().catch(() => ({}))) as ApiError & {
           data?: Job[];
+          meta?: { search_backend?: "meili" | "db" };
         };
 
         if (!response.ok) {
@@ -35,6 +50,7 @@ export default function PublicJobsList() {
         }
 
         setJobs(payload.data ?? []);
+        setSearchBackend(payload.meta?.search_backend ?? null);
       } catch (err) {
         setError({
           error: {
@@ -46,12 +62,12 @@ export default function PublicJobsList() {
       }
     };
 
-    void loadJobs();
-  }, []);
+    const timer = setTimeout(() => {
+      void loadJobs();
+    }, 200);
 
-  const filteredJobs = jobs.filter((job) =>
-    job.title.toLowerCase().includes(query.toLowerCase())
-  );
+    return () => clearTimeout(timer);
+  }, [query, location]);
 
   if (loading) {
     return <p className="text-sm text-slate-600">Loading jobs...</p>;
@@ -74,7 +90,7 @@ export default function PublicJobsList() {
     );
   }
 
-  if (filteredJobs.length === 0) {
+  if (jobs.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center">
         <p className="text-sm text-slate-600">
@@ -92,12 +108,19 @@ export default function PublicJobsList() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
-        <Select disabled>
-          <option>Filters coming soon</option>
-        </Select>
+        <Input
+          placeholder="Filter by location"
+          value={location}
+          onChange={(event) => setLocation(event.target.value)}
+        />
       </div>
+      {searchBackend === "meili" ? (
+        <p className="text-xs text-slate-500">
+          Search powered by fast index.
+        </p>
+      ) : null}
       <div className="space-y-4">
-        {filteredJobs.map((job) => (
+        {jobs.map((job) => (
           <Link
             key={job.id}
             href={`/jobs/${job.id}`}

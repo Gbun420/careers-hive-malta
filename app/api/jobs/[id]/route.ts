@@ -3,6 +3,8 @@ import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { JobUpdateSchema, normalizeJobPayload } from "@/lib/jobs/schema";
+import { removeJobs, upsertJobs } from "@/lib/search/meili";
+import type { Job } from "@/lib/jobs/schema";
 
 type RouteParams = {
   params: { id: string };
@@ -51,6 +53,12 @@ export async function GET(_: Request, { params }: RouteParams) {
 
   if (error || !data) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
+  }
+
+  try {
+    await upsertJobs([data as Job]);
+  } catch (indexError) {
+    // Best-effort indexing only.
   }
 
   return NextResponse.json({ data });
@@ -128,6 +136,12 @@ export async function DELETE(_: Request, { params }: RouteParams) {
 
   if (error || !data) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
+  }
+
+  try {
+    await removeJobs([params.id]);
+  } catch (indexError) {
+    // Best-effort indexing only.
   }
 
   return NextResponse.json({ data });

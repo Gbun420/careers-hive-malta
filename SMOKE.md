@@ -34,6 +34,18 @@
 - Not run.
 - Manual: create, edit, delete a job under `/employer/jobs` and confirm it appears in `/jobs` when active.
 
+## Jobs search (Meilisearch missing)
+- Not run.
+- Manual: leave `MEILI_HOST`/`MEILI_API_KEY` unset, visit `/jobs`.
+- Expected: jobs list loads via DB fallback; no crash.
+
+## Jobs search (Meilisearch configured)
+- Not run.
+- Manual: start Meilisearch (`docker compose up -d`), set `MEILI_HOST`, `MEILI_API_KEY`, `MEILI_INDEX_JOBS=jobs`.
+- Manual: run `curl -i -X POST http://localhost:3005/api/search/reindex -H "x-search-reindex-secret: <secret>"`.
+- Manual: visit `/jobs`, run a keyword search and location filter.
+- Expected: results update; page shows “Search powered by fast index.”
+
 ## Alerts matching + dispatch (env missing)
 - Not run.
 - Manual: `curl -i -X POST http://localhost:3005/api/alerts/dispatch`.

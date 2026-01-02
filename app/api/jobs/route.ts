@@ -6,6 +6,7 @@ import { JobCreateSchema, normalizeJobPayload, type Job } from "@/lib/jobs/schem
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { matchJobToSearch } from "@/lib/alerts/match";
 import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
+import { searchJobs, upsertJobs } from "@/lib/search/meili";
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient();
@@ -19,6 +20,11 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const mine = url.searchParams.get("mine") === "true";
+  const query = url.searchParams.get("q")?.trim() || undefined;
+  const location = url.searchParams.get("location")?.trim() || undefined;
+  const isActiveParam = url.searchParams.get("is_active");
+  const isActive =
+    isActiveParam !== null ? isActiveParam === "true" : true;
 
   if (mine) {
     const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -45,19 +51,50 @@ export async function GET(request: Request) {
     return NextResponse.json({ data });
   }
 
-  const { data, error } = await supabase
+  try {
+    const meiliResult = await searchJobs({
+      query,
+      location,
+      isActive,
+    });
+
+    if (meiliResult) {
+      return NextResponse.json({
+        data: meiliResult.hits,
+        meta: { search_backend: meiliResult.backend },
+      });
+    }
+  } catch (error) {
+    // Best effort: fall back to DB search.
+  }
+
+  let dbQuery = supabase
     .from("jobs")
     .select(
       "id, employer_id, title, description, location, salary_range, created_at, is_active"
-    )
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    );
+
+  if (typeof isActive === "boolean") {
+    dbQuery = dbQuery.eq("is_active", isActive);
+  }
+  if (location) {
+    dbQuery = dbQuery.ilike("location", `%${location}%`);
+  }
+  if (query) {
+    dbQuery = dbQuery.or(
+      `title.ilike.%${query}%,description.ilike.%${query}%`
+    );
+  }
+
+  const { data, error } = await dbQuery.order("created_at", {
+    ascending: false,
+  });
 
   if (error) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  return NextResponse.json({ data });
+  return NextResponse.json({ data, meta: { search_backend: "db" } });
 }
 
 export async function POST(request: Request) {
@@ -110,6 +147,14 @@ export async function POST(request: Request) {
 
   if (error) {
     return jsonError("DB_ERROR", error.message, 500);
+  }
+
+  try {
+    if (data) {
+      await upsertJobs([data as Job]);
+    }
+  } catch (enqueueError) {
+    // Best-effort indexing only.
   }
 
   const serviceClient = createServiceRoleClient();

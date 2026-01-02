@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { getMissingSupabaseEnv } from "@/lib/auth/session";
+import { getMissingMeiliEnv, isMeiliConfigured } from "@/lib/search/meili";
 
 export default function SetupPage() {
   const missing = getMissingSupabaseEnv();
+  const missingMeili = getMissingMeiliEnv();
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-16">
@@ -34,6 +36,27 @@ export default function SetupPage() {
           </p>
         </div>
       )}
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white px-5 py-4">
+        <p className="font-semibold text-slate-900">Meilisearch (optional)</p>
+        {isMeiliConfigured() ? (
+          <p className="mt-2 text-sm text-slate-600">
+            Fast search is configured and ready for the jobs feed.
+          </p>
+        ) : (
+          <>
+            <p className="mt-2 text-sm text-slate-600">
+              Add Meilisearch env vars to enable fast job search.
+            </p>
+            {missingMeili.length > 0 ? (
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                {missingMeili.map((key) => (
+                  <li key={key}>{key}</li>
+                ))}
+              </ul>
+            ) : null}
+          </>
+        )}
+      </div>
       <p className="mt-8 text-sm text-slate-500">
         Need help? Check <code>docs/DB.md</code> for setup steps.
       </p>
