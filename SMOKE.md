@@ -14,3 +14,13 @@
 - Not run.
 - Manual: ensure `ALLOW_ADMIN_SIGNUP` is unset -> admin option not shown on `/signup`.
 - Manual: set `ALLOW_ADMIN_SIGNUP=true` and `ADMIN_ALLOWLIST=you@example.com` -> admin appears, only allowlisted email can sign up.
+
+## Saved searches (env missing)
+- Not run.
+- Manual: leave Supabase env unset, visit `/jobseeker/alerts`.
+- Expected: gating message with link to `/setup`, no crash.
+
+## Saved searches (env present + SQL applied)
+- Not run.
+- Manual: create, edit, and delete a saved search under `/jobseeker/alerts`.
+- Manual: sign in as a second user and verify they cannot access another user's saved search via direct URL.

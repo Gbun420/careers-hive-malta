@@ -1,4 +1,5 @@
 import "server-only";
+import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { NextRequest, NextResponse } from "next/server";
@@ -39,6 +40,28 @@ export function createServiceRoleClient(): SupabaseClient | null {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
+    },
+  });
+}
+
+export function createRouteHandlerClient(): SupabaseClient | null {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
+  const cookieStore = cookies();
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return cookieStore.get(name)?.value;
+      },
+      set(name: string, value: string, options: CookieOptions) {
+        cookieStore.set({ name, value, ...options });
+      },
+      remove(name: string, options: CookieOptions) {
+        cookieStore.set({ name, value: "", ...options, maxAge: 0 });
+      },
     },
   });
 }
