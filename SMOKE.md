@@ -77,3 +77,16 @@
 - Not run.
 - Manual: create a job matching an instant saved search; check job POST response includes `notifications_enqueued > 0`.
 - Manual: run `curl -i -X POST http://localhost:3005/api/alerts/dispatch -H \"x-alert-dispatch-secret: <secret>\"` and verify notifications are marked sent.
+
+## Stripe featured billing (env missing)
+- Not run.
+- Manual: unset Stripe env vars, reload `/employer/jobs`.
+- Expected: Feature button disabled with billing not configured messaging.
+- Manual: `curl -i -X POST http://localhost:3005/api/billing/checkout-featured -H \"Content-Type: application/json\" -d '{\"job_id\":\"<job-id>\"}'`.
+- Expected: `503` with `STRIPE_NOT_CONFIGURED`.
+
+## Stripe featured billing (env present + SQL applied)
+- Not run.
+- Manual: set Stripe env vars and apply `0004_billing.sql`.
+- Manual: click “Feature” in `/employer/jobs` and confirm checkout session URL returned.
+- Manual: send Stripe webhook for `checkout.session.completed`, then verify job shows Featured badge and `featured_until` updated.

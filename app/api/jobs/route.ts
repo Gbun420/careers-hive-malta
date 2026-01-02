@@ -8,6 +8,8 @@ import { matchJobToSearch } from "@/lib/alerts/match";
 import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 import { searchJobs, upsertJobs } from "@/lib/search/meili";
 import { attachEmployerVerified, isEmployerVerified } from "@/lib/trust/verification";
+import { attachFeaturedStatus, sortFeaturedJobs } from "@/lib/billing/featured";
+import { isStripeConfigured } from "@/lib/billing/stripe";
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient();
@@ -49,8 +51,13 @@ export async function GET(request: Request) {
       return jsonError("DB_ERROR", error.message, 500);
     }
 
-    const enriched = await attachEmployerVerified(data ?? []);
-    return NextResponse.json({ data: enriched, source: "db" });
+    const withFeatured = await attachFeaturedStatus(data ?? []);
+    const enriched = await attachEmployerVerified(withFeatured);
+    return NextResponse.json({
+      data: enriched,
+      source: "db",
+      meta: { billing_enabled: isStripeConfigured() },
+    });
   }
 
   try {
@@ -61,7 +68,8 @@ export async function GET(request: Request) {
     });
 
     if (meiliResult) {
-      const enriched = await attachEmployerVerified(meiliResult.hits);
+      const withFeatured = await attachFeaturedStatus(meiliResult.hits);
+      const enriched = await attachEmployerVerified(withFeatured);
       return NextResponse.json({
         data: enriched,
         source: "meili",
@@ -97,8 +105,10 @@ export async function GET(request: Request) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  const enriched = await attachEmployerVerified(data ?? []);
-  return NextResponse.json({ data: enriched, source: "db" });
+  const withFeatured = await attachFeaturedStatus(data ?? []);
+  const enriched = await attachEmployerVerified(withFeatured);
+  const sorted = sortFeaturedJobs(enriched);
+  return NextResponse.json({ data: sorted, source: "db" });
 }
 
 export async function POST(request: Request) {
@@ -157,10 +167,14 @@ export async function POST(request: Request) {
   const jobWithVerification = data
     ? ({ ...data, employer_verified: employerVerified } as Job)
     : null;
+  const [jobWithFeatured] = jobWithVerification
+    ? await attachFeaturedStatus([jobWithVerification])
+    : [null];
+  const jobWithEnrichment = jobWithFeatured ?? jobWithVerification;
 
   try {
-    if (jobWithVerification) {
-      await upsertJobs([jobWithVerification]);
+    if (jobWithEnrichment) {
+      await upsertJobs([jobWithEnrichment]);
     }
   } catch (enqueueError) {
     // Best-effort indexing only.
@@ -249,7 +263,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json(
     {
-      data: jobWithVerification ?? data,
+      data: jobWithEnrichment ?? data,
       notifications_enqueued: notificationsEnqueued,
       notifications_skipped_reason: notificationsSkippedReason,
     },

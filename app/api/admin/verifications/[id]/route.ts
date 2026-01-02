@@ -6,6 +6,7 @@ import { logAudit } from "@/lib/audit/log";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
+import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 type RouteParams = {
   params: { id: string };
@@ -68,7 +69,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     if (jobs && jobs.length > 0) {
       const verified = data.status === "approved";
-      const enriched = jobs.map((job) => ({
+      const withFeatured = await attachFeaturedStatus(jobs as Job[]);
+      const enriched = withFeatured.map((job) => ({
         ...job,
         employer_verified: verified,
       })) as Job[];

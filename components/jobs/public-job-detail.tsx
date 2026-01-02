@@ -88,11 +88,18 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
           <p className="mt-1 text-xs text-slate-600">
             {job.location || "Remote/On-site"} · {job.salary_range || "Salary TBD"}
           </p>
-          {job.employer_verified ? (
-            <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-              Verified employer
-            </span>
-          ) : null}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {job.is_featured ? (
+              <span className="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                Featured
+              </span>
+            ) : null}
+            {job.employer_verified ? (
+              <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Verified employer
+              </span>
+            ) : null}
+          </div>
         </div>
         <ReportJobDialog jobId={job.id} />
       </div>

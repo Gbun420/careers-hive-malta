@@ -3,6 +3,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { isMeiliConfigured, reindexJobs } from "@/lib/search/meili";
 import { attachEmployerVerified } from "@/lib/trust/verification";
+import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 const REINDEX_HEADER = "x-search-reindex-secret";
 
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const enriched = await attachEmployerVerified(data ?? []);
+    const withFeatured = await attachFeaturedStatus(data ?? []);
+    const enriched = await attachEmployerVerified(withFeatured);
     await reindexJobs(enriched);
   } catch (indexError) {
     return jsonError("DB_ERROR", "Failed to rebuild search index.", 500);

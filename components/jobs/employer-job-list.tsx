@@ -16,6 +16,9 @@ export default function EmployerJobList() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
+  const [billingEnabled, setBillingEnabled] = useState(false);
+  const [billingError, setBillingError] = useState<string | null>(null);
+  const [featureLoadingId, setFeatureLoadingId] = useState<string | null>(null);
 
   const loadJobs = async () => {
     setLoading(true);
@@ -26,6 +29,7 @@ export default function EmployerJobList() {
       });
       const payload = (await response.json().catch(() => ({}))) as ApiError & {
         data?: Job[];
+        meta?: { billing_enabled?: boolean };
       };
 
       if (!response.ok) {
@@ -34,6 +38,7 @@ export default function EmployerJobList() {
       }
 
       setJobs(payload.data ?? []);
+      setBillingEnabled(Boolean(payload.meta?.billing_enabled));
     } catch (err) {
       setError({
         error: {
@@ -63,6 +68,39 @@ export default function EmployerJobList() {
     }
 
     await loadJobs();
+  };
+
+  const handleFeature = async (id: string) => {
+    if (!billingEnabled) {
+      setBillingError("Billing is not configured.");
+      return;
+    }
+
+    setBillingError(null);
+    setFeatureLoadingId(id);
+    try {
+      const response = await fetch("/api/billing/checkout-featured", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job_id: id }),
+      });
+      const payload = (await response.json().catch(() => ({}))) as ApiError & {
+        url?: string;
+      };
+
+      if (!response.ok) {
+        setBillingError(
+          payload.error?.message ?? "Unable to start checkout."
+        );
+        return;
+      }
+
+      if (payload.url) {
+        window.location.href = payload.url;
+      }
+    } finally {
+      setFeatureLoadingId(null);
+    }
   };
 
   if (loading) {
@@ -98,6 +136,11 @@ export default function EmployerJobList() {
 
   return (
     <div className="space-y-4">
+      {billingError ? (
+        <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
+          {billingError}
+        </p>
+      ) : null}
       {jobs.map((job) => (
         <div
           key={job.id}
@@ -109,10 +152,30 @@ export default function EmployerJobList() {
               <p className="mt-1 text-xs text-slate-600">
                 {job.is_active ? "Active" : "Draft"} · {job.location || "No location"}
               </p>
+              {job.is_featured && job.featured_until ? (
+                <p className="mt-2 text-xs font-semibold text-emerald-700">
+                  Featured until{" "}
+                  {new Date(job.featured_until).toLocaleDateString()}
+                </p>
+              ) : null}
             </div>
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" asChild>
                 <Link href={`/employer/jobs/${job.id}/edit`}>Edit</Link>
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!billingEnabled || job.is_featured || featureLoadingId === job.id}
+                title={
+                  !billingEnabled
+                    ? "Billing not configured"
+                    : job.is_featured
+                    ? "Job is already featured"
+                    : undefined
+                }
+                onClick={() => handleFeature(job.id)}
+              >
+                {featureLoadingId === job.id ? "Redirecting..." : "Feature"}
               </Button>
               <Button variant="outline" onClick={() => handleDelete(job.id)}>
                 Delete

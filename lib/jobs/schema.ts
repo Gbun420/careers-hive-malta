@@ -10,6 +10,8 @@ export const JobSchema = z.object({
   created_at: z.string(),
   is_active: z.boolean(),
   employer_verified: z.boolean().optional(),
+  featured_until: z.string().nullable().optional(),
+  is_featured: z.boolean().optional(),
 });
 
 export const JobCreateSchema = z.object({

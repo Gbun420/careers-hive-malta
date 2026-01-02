@@ -6,6 +6,7 @@ import { JobUpdateSchema, normalizeJobPayload } from "@/lib/jobs/schema";
 import { removeJobs, upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
 import { attachEmployerVerified } from "@/lib/trust/verification";
+import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 type RouteParams = {
   params: { id: string };
@@ -39,8 +40,9 @@ export async function GET(_: Request, { params }: RouteParams) {
       .single();
 
     if (!error && data) {
-      const [enriched] = await attachEmployerVerified([data as Job]);
-      return NextResponse.json({ data: enriched ?? data });
+      const [withFeatured] = await attachFeaturedStatus([data as Job]);
+      const [enriched] = await attachEmployerVerified([withFeatured ?? data]);
+      return NextResponse.json({ data: enriched ?? withFeatured ?? data });
     }
   }
 
@@ -57,8 +59,9 @@ export async function GET(_: Request, { params }: RouteParams) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
 
-  const [enriched] = await attachEmployerVerified([data as Job]);
-  return NextResponse.json({ data: enriched ?? data });
+  const [withFeatured] = await attachFeaturedStatus([data as Job]);
+  const [enriched] = await attachEmployerVerified([withFeatured ?? data]);
+  return NextResponse.json({ data: enriched ?? withFeatured ?? data });
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
@@ -104,15 +107,16 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
 
-  const [enriched] = await attachEmployerVerified([data as Job]);
+  const [withFeatured] = await attachFeaturedStatus([data as Job]);
+  const [enriched] = await attachEmployerVerified([withFeatured ?? data]);
 
   try {
-    await upsertJobs([(enriched ?? data) as Job]);
+    await upsertJobs([(enriched ?? withFeatured ?? data) as Job]);
   } catch (indexError) {
     // Best-effort indexing only.
   }
 
-  return NextResponse.json({ data: enriched ?? data });
+  return NextResponse.json({ data: enriched ?? withFeatured ?? data });
 }
 
 export async function DELETE(_: Request, { params }: RouteParams) {

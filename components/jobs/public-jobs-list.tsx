@@ -131,6 +131,11 @@ export default function PublicJobsList() {
           >
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm font-semibold text-slate-900">{job.title}</p>
+              {job.is_featured ? (
+                <span className="rounded-full bg-amber-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+                  Featured
+                </span>
+              ) : null}
               {job.employer_verified ? (
                 <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
                   Verified

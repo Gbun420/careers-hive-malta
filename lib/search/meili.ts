@@ -15,6 +15,16 @@ export type JobsSearchResult = {
   backend: "meili" | "db";
 };
 
+function getFeaturedScore(job: Job): number {
+  if (typeof job.is_featured === "boolean") {
+    return job.is_featured ? 100 : 0;
+  }
+  if (!job.featured_until) {
+    return 0;
+  }
+  return new Date(job.featured_until).getTime() > Date.now() ? 100 : 0;
+}
+
 export function getMissingMeiliEnv(): string[] {
   const missing: string[] = [];
   if (!meiliHost) {
@@ -62,7 +72,7 @@ export async function ensureJobsIndex(index: Index<MeiliJobDocument>) {
 export function toMeiliJobDocument(job: Job): MeiliJobDocument {
   return {
     ...job,
-    featured_score: 0,
+    featured_score: getFeaturedScore(job),
   };
 }
 
