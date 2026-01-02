@@ -91,33 +91,6 @@
 - Manual: click “Feature” in `/employer/jobs` and confirm checkout session URL returned.
 - Manual: send Stripe webhook for `checkout.session.completed`, then verify job shows Featured badge and `featured_until` updated.
 
-## Stripe Featured Proof
-### A) Stripe env-missing
-- Run:
-  - `curl -i -X POST http://localhost:3005/api/billing/checkout-featured -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
-- Expected: `503` with `error.code == "STRIPE_NOT_CONFIGURED"`.
-
-### B) Stripe env-present
-- Manual: set `STRIPE_SECRET_KEY`, `STRIPE_FEATURED_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `FEATURED_DURATION_DAYS`, `DEV_TOOLS_SECRET`, apply `0004_billing.sql`.
-- Create checkout session (no UI needed):
-  - `curl -s -X POST http://localhost:3005/api/dev/stripe/create-featured-session -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>","employer_id":"<employer-id>"}' | jq .`
-  - Expected: `{ "url": "...", "session_id": "cs_test_..." }`
-- Webhook (optional path if Stripe CLI installed):
-  - `stripe listen --forward-to http://localhost:3005/api/billing/webhook`
-  - `stripe trigger checkout.session.completed`
-- Force-feature fallback (if no Stripe CLI):
-  - `curl -s -X POST http://localhost:3005/api/dev/featured/force -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>","days":7}' | jq .`
-  - Expected: `{ "job_id": "<job-id>", "featured_until": "<timestamp>" }`
-- Verify featured order + source marker:
-  - `curl -s "http://localhost:3005/api/jobs?q=<keyword>&location=<city>" | jq .`
-  - Expected: `source` is `"db"` or `"meili"` and the first job has `is_featured: true` plus `featured_until`.
-
-### C) Meili boost proof (optional)
-- Manual: ensure Meili is configured and reindex.
-  - `curl -i -X POST http://localhost:3005/api/search/reindex -H "x-search-reindex-secret: <secret>"`
-  - `curl -s "http://localhost:3005/api/jobs?q=<keyword>" | jq .`
-- Expected: `source: "meili"` and featured job appears first.
-
 ## Landing responsiveness
 - Not run.
 - Manual: open `/` at 375px, 768px, 1024px, 1440px widths.
@@ -145,10 +118,16 @@
 - Expected: redirected to Stripe Checkout URL.
 - Manual: open DevTools Network, confirm `/api/billing/checkout-featured` returns `200` with `{ "url": "https://checkout.stripe.com/..." }`.
 
-## Stripe env-present proof (dev)
+## Stripe Proof (Dev routes)
 - Not run.
-- Manual: set Stripe env vars (`STRIPE_SECRET_KEY`, `STRIPE_FEATURED_PRICE_ID`, `DEV_TOOLS_SECRET`) + apply `0004_billing.sql`.
-- Manual: `curl -s http://localhost:3005/api/dev/billing/status | jq .`
-- Expected: `billingConfigured: true`, `hasSecretKey: true`, `hasFeaturedPriceId: true`.
-- Manual: `curl -s -X POST http://localhost:3005/api/dev/billing/create-checkout -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}' | jq .`
-- Expected: `{ "url": "https://checkout.stripe.com/...", "session_id": "cs_test_..." }`.
+- Stripe-missing path:
+  - `curl -i http://localhost:3005/api/dev/billing/status`
+  - Expected: `200` JSON with `billingConfigured: false`.
+  - `curl -i -X POST http://localhost:3005/api/dev/billing/create-checkout -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
+  - Expected: `503` with `error.code == "STRIPE_NOT_CONFIGURED"` (requires correct dev secret).
+- Stripe-present path:
+  - Manual: set Stripe env vars locally (do not share secrets).
+  - `curl -i http://localhost:3005/api/dev/billing/status`
+  - Expected: `billingConfigured: true`, `hasSecretKey: true`, `hasFeaturedPriceId: true`.
+  - `curl -i -X POST http://localhost:3005/api/dev/billing/create-checkout -H "x-dev-secret: $DEV_TOOLS_SECRET" -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
+  - Expected: `200` JSON with `{ "url": "https://checkout.stripe.com/...", "session_id": "cs_test_..." }`.

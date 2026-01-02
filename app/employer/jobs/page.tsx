@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import EmployerJobList from "@/components/jobs/employer-job-list";
 import { Button } from "@/components/ui/button";
@@ -44,11 +45,17 @@ export default function EmployerJobsPage() {
           <Link href="/employer/jobs/new">Create job</Link>
         </Button>
       </header>
-      <EmployerJobList
-        billingEnabled={billingEnabled}
-        featuredDurationDays={featuredDurationDays}
-        featuredPriceLabel={featuredPriceLabel}
-      />
+      <Suspense
+        fallback={
+          <p className="text-sm text-slate-600">Loading jobs...</p>
+        }
+      >
+        <EmployerJobList
+          billingEnabled={billingEnabled}
+          featuredDurationDays={featuredDurationDays}
+          featuredPriceLabel={featuredPriceLabel}
+        />
+      </Suspense>
     </main>
   );
 }

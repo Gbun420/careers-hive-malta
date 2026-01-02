@@ -10,7 +10,7 @@ export const runtime = "nodejs";
 
 export async function GET() {
   if (process.env.NODE_ENV === "production") {
-    return jsonError("FORBIDDEN", "Not available.", 403);
+    return jsonError("NOT_FOUND", "Not found.", 404);
   }
 
   return NextResponse.json({
