@@ -24,3 +24,12 @@
 - Not run.
 - Manual: create, edit, and delete a saved search under `/jobseeker/alerts`.
 - Manual: sign in as a second user and verify they cannot access another user's saved search via direct URL.
+
+## Jobs (env missing)
+- Not run.
+- Manual: leave Supabase env unset, visit `/employer/jobs` and `/jobs`.
+- Expected: gating message with link to `/setup`, no crash.
+
+## Jobs (env present + SQL applied)
+- Not run.
+- Manual: create, edit, delete a job under `/employer/jobs` and confirm it appears in `/jobs` when active.

@@ -22,7 +22,12 @@ export async function middleware(request: NextRequest) {
 
   const missing = getMissingSupabaseEnv();
   if (missing.length > 0) {
-    if (pathname === "/setup" || pathname.startsWith("/jobseeker/alerts")) {
+    if (
+      pathname === "/setup" ||
+      pathname.startsWith("/jobseeker/alerts") ||
+      pathname.startsWith("/employer/jobs") ||
+      pathname.startsWith("/jobs")
+    ) {
       return NextResponse.next();
     }
 
