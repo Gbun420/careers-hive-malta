@@ -90,3 +90,8 @@
 - Manual: set Stripe env vars and apply `0004_billing.sql`.
 - Manual: click “Feature” in `/employer/jobs` and confirm checkout session URL returned.
 - Manual: send Stripe webhook for `checkout.session.completed`, then verify job shows Featured badge and `featured_until` updated.
+
+## Landing responsiveness
+- Not run.
+- Manual: open `/` at 375px, 768px, 1024px, 1440px widths.
+- Expected: hero headline wraps cleanly, navbar works with hamburger on mobile, and CTAs remain visible without awkward breaks.

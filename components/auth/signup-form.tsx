@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient } from "@/lib/supabase/browser";
-import { getDashboardPath, roles, type UserRole } from "@/lib/auth/roles";
+import {
+  getDashboardPath,
+  isUserRole,
+  roles,
+  type UserRole,
+} from "@/lib/auth/roles";
 
 type SignupFormProps = {
   allowAdminSignup: boolean;
@@ -18,18 +23,32 @@ export default function SignupForm({
 }: SignupFormProps) {
   const supabase = createBrowserClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("jobseeker");
+  const roleParam = searchParams.get("role");
+  const [role, setRole] = useState<UserRole>(
+    isUserRole(roleParam) ? roleParam : "jobseeker"
+  );
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const roleOptions = allowAdminSignup
-    ? roles
-    : roles.filter((option) => option !== "admin");
+  const roleOptions = useMemo<UserRole[]>(
+    () =>
+      allowAdminSignup
+        ? [...roles]
+        : roles.filter((option) => option !== "admin"),
+    [allowAdminSignup]
+  );
   const allowlist = new Set(adminAllowlist.map((value) => value.toLowerCase()));
+
+  useEffect(() => {
+    if (!roleOptions.includes(role)) {
+      setRole("jobseeker");
+    }
+  }, [roleOptions, role]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
