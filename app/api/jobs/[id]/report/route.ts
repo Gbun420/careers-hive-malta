@@ -90,7 +90,11 @@ export async function POST(request: Request, { params }: RouteParams) {
     .single();
 
   if (error) {
-    if (error.code === "23505") {
+    if (
+      error.code === "23505" ||
+      error.message?.includes("job_reports_unique_open_idx") ||
+      error.message?.includes("duplicate key value")
+    ) {
       return jsonError(
         "DUPLICATE_REPORT",
         "You already reported this job.",

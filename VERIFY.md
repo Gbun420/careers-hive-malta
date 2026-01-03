@@ -81,6 +81,7 @@ Never paste secrets into chat; set env locally.
 - Report enum + duplicates:
   - Invalid reason should return `400` `BAD_REQUEST`.
   - Duplicate report should return `409` `DUPLICATE_REPORT`.
+  - If you see a schema cache error for `details`, apply `0006_job_reports_details.sql` and reload the PostgREST schema cache in Supabase.
 - Job constraints:
   - Create job with short title/description should return `400`.
 - Cache headers:
