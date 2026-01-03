@@ -1,5 +1,38 @@
 # Verification Report
 
+## Fresh Supabase bootstrap proof
+### SQL PROOF A - Tables exist
+```
+audit_logs
+employer_verifications  
+job_featured
+job_reports
+jobs
+notifications
+profiles
+purchases
+saved_searches
+```
+
+### /api/health/db result
+```
+HTTP/1.1 200 OK
+{"status":"healthy","supabaseProjectRef":"127","requiredTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"presentTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"tables":[{"name":"profiles","ok":true,"column":"id"},{"name":"jobs","ok":true,"column":"id"},{"name":"saved_searches","ok":true,"column":"id"},{"name":"notifications","ok":true,"column":"id"},{"name":"job_reports","ok":true,"column":"id"},{"name":"employer_verifications","ok":true,"column":"id"},{"name":"audit_logs","ok":true,"column":"id"},{"name":"purchases","ok":true,"column":"id"},{"name":"job_featured","ok":true,"column":"job_id"}]}
+```
+
+### Profiles query (trigger proof)
+```
+id                                    | role     | created_at
+e169db7a-c6f5-4cb9-b432-395e95763781 | employer | 2026-01-03 11:13:17.508845+00
+c525bc91-a635-4f4f-90f7-f0f421aa212b | jobseeker| 2026-01-03 11:13:13.556394+00
+```
+
+### Jobs query (insert proof)
+```
+id                                    | employer_id                           | title                    | location | created_at
+ad30bc6a-1727-4b43-8064-67d99795a496 | e169db7a-c6f5-4cb9-b432-395e95763781 | Senior Software Engineer | Malta    | 2026-01-03 11:13:23.963044+00
+```
+
 ## Fresh Supabase Install Instructions
 - **NEW**: For clean installs, run `supabase/bootstrap.sql` in Supabase SQL editor
 - This creates all required tables, indexes, policies, and triggers idempotently
