@@ -84,7 +84,14 @@ export async function createFeaturedCheckoutSession(
     });
   } catch (stripeError) {
     const mapped = mapStripeError(stripeError);
-    console.error("stripe_checkout_error", mapped.details);
+    console.error(
+      JSON.stringify({
+        event: "stripe_checkout_error",
+        error_code: mapped.code,
+        message: mapped.message,
+        ...mapped.details,
+      })
+    );
     return {
       error: mapped,
     };

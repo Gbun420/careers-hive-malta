@@ -11,6 +11,7 @@ import { fulfillFeaturedCheckoutSession } from "@/lib/billing/fulfillment";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const requestId = crypto.randomUUID();
   if (!isStripeWebhookConfigured()) {
     return jsonError(
       "STRIPE_NOT_CONFIGURED",
@@ -49,6 +50,16 @@ export async function POST(request: Request) {
   const session = event.data.object as Stripe.Checkout.Session;
   const result = await fulfillFeaturedCheckoutSession(session);
   if (!result.ok) {
+    console.error(
+      JSON.stringify({
+        event: "webhook_fulfillment_failed",
+        route: "/api/billing/webhook",
+        request_id: requestId,
+        error_code: result.error.code,
+        message: result.error.message,
+        session_id: session.id,
+      })
+    );
     return jsonError(
       result.error.code,
       result.error.message,

@@ -74,3 +74,22 @@ Never paste secrets into chat; set env locally.
 
 ## Secret-handling hygiene
 - No docs instruct pasting secrets into chat.
+
+## Launch hardening verification
+- Rate limit:
+  - Rapidly POST to `/api/jobs/<job-id>/report` and confirm `429` with `RATE_LIMITED`.
+- Report enum + duplicates:
+  - Invalid reason should return `400` `BAD_REQUEST`.
+  - Duplicate report should return `409` `DUPLICATE_REPORT`.
+- Job constraints:
+  - Create job with short title/description should return `400`.
+- Cache headers:
+  - `curl -I http://localhost:3005/api/jobs`
+  - `curl -I http://localhost:3005/api/jobs/<job-id>`
+  - Expected: `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`.
+- JSON-LD:
+  - `curl -s http://localhost:3005/jobs/<job-id> | rg "JobPosting"`
+  - Expected: JobPosting JSON-LD script.
+- Health:
+  - `curl -s http://localhost:3005/api/health/app | jq .`
+  - Expected: `status: "ok"`, `version`/`commit` fields present.

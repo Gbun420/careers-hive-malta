@@ -26,6 +26,9 @@ export async function GET(_: Request, { params }: RouteParams) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
   }
 
+  const publicCacheHeaders = {
+    "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  };
   const { data: authData } = await auth.supabase.auth.getUser();
   const role = getUserRole(authData.user ?? null);
 
@@ -61,7 +64,10 @@ export async function GET(_: Request, { params }: RouteParams) {
 
   const [withFeatured] = await attachFeaturedStatus([data as Job]);
   const [enriched] = await attachEmployerVerified([withFeatured ?? data]);
-  return NextResponse.json({ data: enriched ?? withFeatured ?? data });
+  return NextResponse.json(
+    { data: enriched ?? withFeatured ?? data },
+    { headers: publicCacheHeaders }
+  );
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
@@ -84,12 +90,12 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     payload = await request.json();
   } catch (error) {
-    return jsonError("INVALID_INPUT", "Invalid JSON body.", 400);
+    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
   }
 
   const parsed = JobUpdateSchema.safeParse(payload);
   if (!parsed.success) {
-    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
+    return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
   const normalized = normalizeJobPayload(parsed.data);

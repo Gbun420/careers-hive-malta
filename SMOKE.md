@@ -155,3 +155,26 @@
 - Audit log:
   - `curl -i http://localhost:3005/api/admin/audit`
   - Expected: entry with `action: "featured_purchased"`.
+
+## Launch hardening checks
+- Rate limit (reports):
+  - Run 6 rapid report submissions; expect `429` with `RATE_LIMITED`.
+  - Example: `for i in {1..6}; do curl -s -o /dev/null -w "%{http_code}\n" -X POST http://localhost:3005/api/jobs/<job-id>/report -H "Content-Type: application/json" -d '{"reason":"spam"}'; done`
+- Report reason enum:
+  - `curl -i -X POST http://localhost:3005/api/jobs/<job-id>/report -H "Content-Type: application/json" -d '{"reason":"invalid"}'`
+  - Expected: `400` with `BAD_REQUEST`.
+- Duplicate report:
+  - Submit twice for the same job as the same user.
+  - Expected: `409` with `DUPLICATE_REPORT`.
+- Job constraints:
+  - Attempt to create a job with short title/description; expect `400`.
+- Cache headers:
+  - `curl -I http://localhost:3005/api/jobs`
+  - `curl -I http://localhost:3005/api/jobs/<job-id>`
+  - Expected: `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`.
+- JSON-LD presence:
+  - `curl -s http://localhost:3005/jobs/<job-id> | rg "JobPosting"`
+  - Expected: JobPosting JSON-LD script present.
+- Health endpoint:
+  - `curl -s http://localhost:3005/api/health/app | jq .`
+  - Expected: `{"status":"ok","version":...,"commit":...}`.

@@ -32,6 +32,9 @@ export async function GET(request: Request) {
   const isActiveParam = url.searchParams.get("is_active");
   const isActive =
     isActiveParam !== null ? isActiveParam === "true" : true;
+  const publicCacheHeaders = {
+    "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  };
 
   if (mine) {
     const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -86,10 +89,13 @@ export async function GET(request: Request) {
           return a.index - b.index;
         })
         .map(({ job }) => job);
-      return NextResponse.json({
-        data: ordered,
-        source: "meili",
-      });
+      return NextResponse.json(
+        {
+          data: ordered,
+          source: "meili",
+        },
+        { headers: publicCacheHeaders }
+      );
     }
   } catch (error) {
     // Best effort: fall back to DB search.
@@ -124,7 +130,10 @@ export async function GET(request: Request) {
   const withFeatured = await attachFeaturedStatus(data ?? []);
   const enriched = await attachEmployerVerified(withFeatured);
   const sorted = sortFeaturedJobs(enriched);
-  return NextResponse.json({ data: sorted, source: "db" });
+  return NextResponse.json(
+    { data: sorted, source: "db" },
+    { headers: publicCacheHeaders }
+  );
 }
 
 export async function POST(request: Request) {
@@ -151,12 +160,12 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch (error) {
-    return jsonError("INVALID_INPUT", "Invalid JSON body.", 400);
+    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
   }
 
   const parsed = JobCreateSchema.safeParse(payload);
   if (!parsed.success) {
-    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
+    return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
   const normalized = normalizeJobPayload(parsed.data);

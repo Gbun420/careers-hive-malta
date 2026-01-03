@@ -8,6 +8,7 @@ import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 import { upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
+import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -20,6 +21,17 @@ export async function POST(request: Request) {
   const dev = requireDevSecret(request);
   if (!dev.ok) {
     return dev.response;
+  }
+
+  const rateKey = buildRateLimitKey(request, "dev:featured-force");
+  const limit = await rateLimit(rateKey, { windowMs: 60_000, max: 30 });
+  if (!limit.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Too many requests. Try again later.",
+      429,
+      { resetAt: limit.resetAt }
+    );
   }
 
   const supabase = createServiceRoleClient();

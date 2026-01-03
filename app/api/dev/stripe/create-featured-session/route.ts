@@ -6,6 +6,7 @@ import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabas
 import { getUserRole } from "@/lib/auth/roles";
 import { createFeaturedCheckoutSession } from "@/lib/billing/checkout";
 import { isStripeConfigured } from "@/lib/billing/stripe";
+import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,17 @@ export async function POST(request: Request) {
   const dev = requireDevSecret(request);
   if (!dev.ok) {
     return dev.response;
+  }
+
+  const rateKey = buildRateLimitKey(request, "dev:stripe-session");
+  const limit = await rateLimit(rateKey, { windowMs: 60_000, max: 30 });
+  if (!limit.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Too many requests. Try again later.",
+      429,
+      { resetAt: limit.resetAt }
+    );
   }
 
   if (!isStripeConfigured()) {

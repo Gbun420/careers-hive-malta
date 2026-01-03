@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import SiteHeader from "@/components/nav/site-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,6 +8,21 @@ import {
   getStripeFeaturedPriceId,
   isStripeConfigured,
 } from "@/lib/billing/stripe";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+export const metadata: Metadata = {
+  title: "Pricing | Careers Hive Malta",
+  description:
+    "Flexible pricing for hiring in Malta. Post jobs for free or feature urgent roles.",
+  ...(siteUrl
+    ? {
+        alternates: {
+          canonical: `${siteUrl}/pricing`,
+        },
+      }
+    : {}),
+};
 
 export default function PricingPage() {
   const billingConfigured = isStripeConfigured();

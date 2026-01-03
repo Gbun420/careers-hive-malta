@@ -1,7 +1,23 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import PublicJobsList from "@/components/jobs/public-jobs-list";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+export const metadata: Metadata = {
+  title: "Latest jobs in Malta | Careers Hive Malta",
+  description:
+    "Discover new jobs in Malta with instant alerts and verified employers.",
+  ...(siteUrl
+    ? {
+        alternates: {
+          canonical: `${siteUrl}/jobs`,
+        },
+      }
+    : {}),
+};
 
 export default function JobsPage() {
   if (!isSupabaseConfigured()) {

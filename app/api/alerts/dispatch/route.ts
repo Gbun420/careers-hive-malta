@@ -2,13 +2,26 @@ import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { isEmailConfigured, sendJobAlertEmail } from "@/lib/email/sender";
+import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 const dispatchSecret = process.env.ALERT_DISPATCH_SECRET;
 
 export async function POST(request: Request) {
+  const requestId = crypto.randomUUID();
   const providedSecret = request.headers.get("x-alert-dispatch-secret");
   if (!dispatchSecret || providedSecret !== dispatchSecret) {
     return jsonError("FORBIDDEN", "Invalid dispatch secret.", 403);
+  }
+
+  const rateKey = buildRateLimitKey(request, "alerts-dispatch");
+  const limit = await rateLimit(rateKey, { windowMs: 60_000, max: 60 });
+  if (!limit.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Too many requests. Try again later.",
+      429,
+      { resetAt: limit.resetAt }
+    );
   }
 
   const supabase = createServiceRoleClient();
@@ -29,7 +42,7 @@ export async function POST(request: Request) {
   }
 
   const url = new URL(request.url);
-  const limit = Number(url.searchParams.get("limit") ?? "100");
+  const limitParam = Number(url.searchParams.get("limit") ?? "100");
 
   const { data: notifications, error } = await supabase
     .from("notifications")
@@ -37,9 +50,18 @@ export async function POST(request: Request) {
     .eq("status", "pending")
     .eq("channel", "email")
     .order("created_at", { ascending: true })
-    .limit(Number.isNaN(limit) ? 100 : limit);
+    .limit(Number.isNaN(limitParam) ? 100 : limitParam);
 
   if (error) {
+    console.error(
+      JSON.stringify({
+        event: "dispatch_failed",
+        route: "/api/alerts/dispatch",
+        request_id: requestId,
+        error_code: "DB_ERROR",
+        message: error.message,
+      })
+    );
     return jsonError("DB_ERROR", error.message, 500);
   }
 
@@ -55,6 +77,16 @@ export async function POST(request: Request) {
 
     if (userError || !userData.user?.email) {
       failed += 1;
+      console.error(
+        JSON.stringify({
+          event: "dispatch_failed",
+          route: "/api/alerts/dispatch",
+          request_id: requestId,
+          error_code: "USER_LOOKUP_FAILED",
+          message: userError?.message ?? "Missing user email.",
+          user_id: notification.user_id,
+        })
+      );
       await supabase
         .from("notifications")
         .update({
@@ -76,6 +108,16 @@ export async function POST(request: Request) {
 
     if (jobError || !jobData) {
       failed += 1;
+      console.error(
+        JSON.stringify({
+          event: "dispatch_failed",
+          route: "/api/alerts/dispatch",
+          request_id: requestId,
+          error_code: "JOB_LOOKUP_FAILED",
+          message: jobError?.message ?? "Job not found.",
+          job_id: notification.job_id,
+        })
+      );
       await supabase
         .from("notifications")
         .update({
@@ -94,6 +136,17 @@ export async function POST(request: Request) {
 
     if (!result.ok) {
       failed += 1;
+      console.error(
+        JSON.stringify({
+          event: "dispatch_failed",
+          route: "/api/alerts/dispatch",
+          request_id: requestId,
+          error_code: "EMAIL_SEND_FAILED",
+          message: result.message,
+          user_id: notification.user_id,
+          job_id: notification.job_id,
+        })
+      );
       await supabase
         .from("notifications")
         .update({

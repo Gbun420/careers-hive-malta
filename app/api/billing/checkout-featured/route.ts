@@ -7,6 +7,7 @@ import {
   isStripeConfigured,
 } from "@/lib/billing/stripe";
 import { createFeaturedCheckoutSession } from "@/lib/billing/checkout";
+import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,7 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const requestId = crypto.randomUUID();
   if (!isStripeConfigured()) {
     return jsonError(
       "STRIPE_NOT_CONFIGURED",
@@ -40,6 +42,21 @@ export async function POST(request: Request) {
   const role = getUserRole(authData.user);
   if (role !== "employer") {
     return jsonError("FORBIDDEN", "Employer access required.", 403);
+  }
+
+  const rateKey = buildRateLimitKey(
+    request,
+    "billing-checkout",
+    authData.user.id
+  );
+  const limit = await rateLimit(rateKey, { windowMs: 60 * 60_000, max: 10 });
+  if (!limit.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Too many requests. Try again later.",
+      429,
+      { resetAt: limit.resetAt }
+    );
   }
 
   let payload: unknown;
@@ -76,6 +93,16 @@ export async function POST(request: Request) {
   });
 
   if ("error" in result) {
+    console.error(
+      JSON.stringify({
+        event: "checkout_failed",
+        route: "/api/billing/checkout-featured",
+        request_id: requestId,
+        user_id: authData.user.id,
+        error_code: result.error.code,
+        message: result.error.message,
+      })
+    );
     return jsonError(
       result.error.code,
       result.error.message,

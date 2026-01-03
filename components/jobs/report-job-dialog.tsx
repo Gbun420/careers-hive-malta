@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { reportReasons } from "@/lib/trust/schema";
 
 type ApiError = {
   error?: {
@@ -19,7 +21,10 @@ type ReportJobDialogProps = {
 
 export default function ReportJobDialog({ jobId }: ReportJobDialogProps) {
   const [open, setOpen] = useState(false);
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState<(typeof reportReasons)[number]>(
+    reportReasons[0]
+  );
+  const [details, setDetails] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [success, setSuccess] = useState(false);
@@ -34,7 +39,7 @@ export default function ReportJobDialog({ jobId }: ReportJobDialogProps) {
       const response = await fetch(`/api/jobs/${jobId}/report`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason }),
+        body: JSON.stringify({ reason, details }),
       });
       const payload = (await response.json().catch(() => ({}))) as ApiError;
 
@@ -44,7 +49,7 @@ export default function ReportJobDialog({ jobId }: ReportJobDialogProps) {
       }
 
       setSuccess(true);
-      setReason("");
+      setDetails("");
     } catch (submitError) {
       setError({
         error: {
@@ -120,13 +125,29 @@ export default function ReportJobDialog({ jobId }: ReportJobDialogProps) {
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="reason">Reason</Label>
-                <Textarea
+                <Select
                   id="reason"
                   value={reason}
-                  onChange={(event) => setReason(event.target.value)}
-                  placeholder="Explain the issue with this listing."
-                  rows={4}
+                  onChange={(event) =>
+                    setReason(event.target.value as (typeof reportReasons)[number])
+                  }
                   required
+                >
+                  {reportReasons.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="details">Details (optional)</Label>
+                <Textarea
+                  id="details"
+                  value={details}
+                  onChange={(event) => setDetails(event.target.value)}
+                  placeholder="Add any extra context (max 500 characters)."
+                  rows={4}
                 />
               </div>
               <div className="flex flex-wrap gap-2">

@@ -120,6 +120,9 @@ export default function AdminReportsList() {
                 Status: {item.status} · Reported {new Date(item.created_at).toLocaleString()}
               </p>
               <p className="mt-2 text-sm text-slate-700">{item.reason}</p>
+              {item.details ? (
+                <p className="mt-1 text-xs text-slate-500">{item.details}</p>
+              ) : null}
             </div>
             <div className="flex flex-wrap gap-2">
               <Button

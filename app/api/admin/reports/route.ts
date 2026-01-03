@@ -12,7 +12,7 @@ export async function GET() {
   const { data, error } = await auth.supabase
     .from("job_reports")
     .select(
-      "id, job_id, reporter_id, status, reason, resolution_notes, created_at, reviewed_at, reviewer_id"
+      "id, job_id, reporter_id, status, reason, details, resolution_notes, created_at, reviewed_at, reviewer_id"
     )
     .order("created_at", { ascending: false });
 

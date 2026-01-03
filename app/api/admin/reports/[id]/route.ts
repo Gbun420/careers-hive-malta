@@ -18,12 +18,12 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     payload = await request.json();
   } catch (error) {
-    return jsonError("INVALID_INPUT", "Invalid JSON body.", 400);
+    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
   }
 
   const parsed = ReportUpdateSchema.safeParse(payload);
   if (!parsed.success) {
-    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
+    return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
   const { data, error } = await auth.supabase
@@ -36,7 +36,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     })
     .eq("id", params.id)
     .select(
-      "id, job_id, reporter_id, status, reason, resolution_notes, created_at, reviewed_at, reviewer_id"
+      "id, job_id, reporter_id, status, reason, details, resolution_notes, created_at, reviewed_at, reviewer_id"
     )
     .single();
 

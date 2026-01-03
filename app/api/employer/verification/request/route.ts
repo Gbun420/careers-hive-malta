@@ -3,6 +3,7 @@ import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { VerificationRequestSchema } from "@/lib/trust/schema";
+import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 async function getEmployerAuth() {
   const supabase = createRouteHandlerClient();
@@ -50,16 +51,31 @@ export async function POST(request: Request) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
   }
 
+  const rateKey = buildRateLimitKey(
+    request,
+    "employer-verification",
+    auth.userId
+  );
+  const limit = await rateLimit(rateKey, { windowMs: 60 * 60_000, max: 2 });
+  if (!limit.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Too many requests. Try again later.",
+      429,
+      { resetAt: limit.resetAt }
+    );
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();
   } catch (error) {
-    return jsonError("INVALID_INPUT", "Invalid JSON body.", 400);
+    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
   }
 
   const parsed = VerificationRequestSchema.safeParse(payload);
   if (!parsed.success) {
-    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
+    return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
   const { data: existing } = await auth.supabase

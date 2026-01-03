@@ -13,6 +13,15 @@ export const reportStatuses = [
   "dismissed",
 ] as const;
 
+export const reportReasons = [
+  "scam",
+  "spam",
+  "misleading",
+  "duplicate",
+  "illegal",
+  "other",
+] as const;
+
 export const VerificationRequestSchema = z.object({
   notes: z.string().trim().optional(),
 });
@@ -23,7 +32,12 @@ export const VerificationUpdateSchema = z.object({
 });
 
 export const ReportCreateSchema = z.object({
-  reason: z.string().trim().min(5, "Provide a brief reason."),
+  reason: z.enum(reportReasons),
+  details: z
+    .string()
+    .trim()
+    .max(500, "Details must be 500 characters or fewer.")
+    .optional(),
 });
 
 export const ReportUpdateSchema = z.object({
@@ -33,6 +47,7 @@ export const ReportUpdateSchema = z.object({
 
 export type VerificationStatus = (typeof verificationStatuses)[number];
 export type ReportStatus = (typeof reportStatuses)[number];
+export type ReportReason = (typeof reportReasons)[number];
 
 export type EmployerVerification = {
   id: string;
@@ -50,6 +65,7 @@ export type JobReport = {
   reporter_id: string;
   status: ReportStatus;
   reason: string;
+  details?: string | null;
   resolution_notes: string | null;
   created_at: string;
   reviewed_at: string | null;

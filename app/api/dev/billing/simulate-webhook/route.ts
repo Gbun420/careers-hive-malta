@@ -9,6 +9,7 @@ import {
 } from "@/lib/billing/stripe";
 import { fulfillFeaturedCheckoutSession } from "@/lib/billing/fulfillment";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -20,6 +21,17 @@ export async function POST(request: Request) {
   const dev = requireDevSecret(request);
   if (!dev.ok) {
     return dev.response;
+  }
+
+  const rateKey = buildRateLimitKey(request, "dev:simulate-webhook");
+  const limit = await rateLimit(rateKey, { windowMs: 60_000, max: 30 });
+  if (!limit.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Too many requests. Try again later.",
+      429,
+      { resetAt: limit.resetAt }
+    );
   }
 
   if (!isStripeConfigured()) {

@@ -1,13 +1,70 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import PublicJobDetail from "@/components/jobs/public-job-detail";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
+import { createServiceRoleClient } from "@/lib/supabase/server";
+import type { Job } from "@/lib/jobs/schema";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+const buildDescription = (text?: string | null) => {
+  if (!text) {
+    return "View verified job listings across Malta.";
+  }
+  const trimmed = text.trim();
+  return trimmed.length > 160 ? `${trimmed.slice(0, 157)}...` : trimmed;
+};
+
+async function getJobForSeo(id: string): Promise<Job | null> {
+  const supabase = createServiceRoleClient();
+  if (!supabase) {
+    return null;
+  }
+
+  const { data } = await supabase
+    .from("jobs")
+    .select(
+      "id, employer_id, title, description, location, salary_range, created_at, is_active"
+    )
+    .eq("id", id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!data) {
+    return null;
+  }
+
+  return data as Job;
+}
+
+export async function generateMetadata({
+  params,
+}: JobDetailPageProps): Promise<Metadata> {
+  const job = await getJobForSeo(params.id);
+  const title = job?.title
+    ? `${job.title} | Careers Hive Malta`
+    : "Job in Malta | Careers Hive Malta";
+  const description = buildDescription(job?.description);
+
+  return {
+    title,
+    description,
+    ...(siteUrl
+      ? {
+          alternates: {
+            canonical: `${siteUrl}/jobs/${params.id}`,
+          },
+        }
+      : {}),
+  };
+}
 
 type JobDetailPageProps = {
   params: { id: string };
 };
 
-export default function JobDetailPage({ params }: JobDetailPageProps) {
+export default async function JobDetailPage({ params }: JobDetailPageProps) {
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
@@ -24,14 +81,43 @@ export default function JobDetailPage({ params }: JobDetailPageProps) {
     );
   }
 
+  const job = await getJobForSeo(params.id);
+  const jobPostingJsonLd = job
+    ? {
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        title: job.title,
+        description: job.description,
+        datePosted: job.created_at,
+        jobLocation: {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: job.location || "Malta",
+            addressCountry: "MT",
+          },
+        },
+      }
+    : null;
+
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-16">
-      <header>
-        <Button variant="outline" asChild>
-          <Link href="/jobs">Back to jobs</Link>
-        </Button>
-      </header>
-      <PublicJobDetail id={params.id} />
-    </main>
+    <>
+      {jobPostingJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jobPostingJsonLd),
+          }}
+        />
+      ) : null}
+      <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-16">
+        <header>
+          <Button variant="outline" asChild>
+            <Link href="/jobs">Back to jobs</Link>
+          </Button>
+        </header>
+        <PublicJobDetail id={params.id} />
+      </main>
+    </>
   );
 }
