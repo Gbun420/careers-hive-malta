@@ -71,6 +71,28 @@ Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPAB
   - Visit `/api/health/db` and confirm required tables exist.
   - If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: run bootstrap.sql and reload PostgREST schema cache.
 
+## Dev auth helper for curl proofs
+POST /api/dev/auth/login (dev-only):
+- Requires x-dev-secret == DEV_TOOLS_SECRET
+- Body: { email, password }
+- Returns: { access_token, token_type:"bearer", user_id }
+
+### Usage example:
+```bash
+# Get token
+TOKEN=$(curl -s -X POST "http://localhost:3005/api/dev/auth/login" \
+  -H "content-type: application/json" \
+  -H "x-dev-secret: local-dev-secret" \
+  -d '{"email":"testuser@local.dev","password":"test123"}' \
+  | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+
+# Use token for API calls
+curl -X POST "http://localhost:3005/api/jobs/<job-id>/report" \
+  -H "content-type: application/json" \
+  -H "authorization: Bearer $TOKEN" \
+  -d '{"reason":"spam","details":"test"}'
+```
+
 ## Production auth proofs (local env)
 - Unauthed billing checkout:
   - `curl -i -X POST http://localhost:3005/api/billing/checkout-featured -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`

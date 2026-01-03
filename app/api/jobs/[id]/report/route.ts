@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { ReportCreateSchema } from "@/lib/trust/schema";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
@@ -10,6 +10,7 @@ type RouteParams = {
 
 export async function POST(request: Request, { params }: RouteParams) {
   const supabase = createRouteHandlerClient();
+  
   if (!supabase) {
     return jsonError(
       "SUPABASE_NOT_CONFIGURED",
@@ -18,9 +19,47 @@ export async function POST(request: Request, { params }: RouteParams) {
     );
   }
 
-  const { data: authData, error: authError } = await supabase.auth.getUser();
+  // Support bearer token auth for dev testing
+  const authHeader = request.headers.get("authorization");
+  let authData, authError;
+
+  if (authHeader?.startsWith("Bearer ")) {
+    // Bearer token auth (dev testing) - create a client with the token
+    const token = authHeader.substring(7);
+    const { createClient } = await import("@supabase/supabase-js");
+    const tokenClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      }
+    );
+    const { data: tokenData, error: tokenError } = await tokenClient.auth.getUser(token);
+    authData = tokenData;
+    authError = tokenError;
+  } else {
+    // Cookie-based auth (normal flow)
+    const { data: cookieData, error: cookieError } = await supabase.auth.getUser();
+    authData = cookieData;
+    authError = cookieError;
+  }
+
   if (authError || !authData.user) {
     return jsonError("UNAUTHORIZED", "Authentication required.", 401);
+  }
+
+  // Use service role client for database operations (bypasses RLS)
+  const serviceSupabase = createServiceRoleClient();
+  if (!serviceSupabase) {
+    return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured", 503);
   }
 
   const rateKey = buildRateLimitKey(
@@ -50,17 +89,17 @@ export async function POST(request: Request, { params }: RouteParams) {
     return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
-  const { data: job, error: jobError } = await supabase
+  const { data: job, error: jobError } = await serviceSupabase
     .from("jobs")
     .select("id")
     .eq("id", params.id)
-    .maybeSingle();
+    .single();
 
   if (jobError || !job) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
 
-  const { data: existing } = await supabase
+  const { data: existing } = await serviceSupabase
     .from("job_reports")
     .select("id, status")
     .eq("job_id", params.id)
@@ -76,7 +115,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     );
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await serviceSupabase
     .from("job_reports")
     .insert({
       job_id: params.id,
