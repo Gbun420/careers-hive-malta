@@ -33,7 +33,7 @@ Outdated packages: 12
 ### 4. Known Issues & Mitigations
 | Issue | Severity | Mitigation | Status |
 |-------|----------|------------|--------|
-| Git validation failed while working tree dirty | Low | Rerun after commit for clean-state validation | Open |
+| Git validation passed after clean commit | Low | Verified with audit/scripts/git-validation.js | Resolved |
 
 ## Sign-off
 - Auditor: System Automated Audit
