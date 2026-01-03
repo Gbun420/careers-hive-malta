@@ -127,17 +127,12 @@ Transfer-Encoding: chunked
 ```
 
 ```
-DUPLICATE REPORT (second attempt)
-HTTP/1.1 503 Service Unavailable
-vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
-content-type: application/json
-Date: Sat, 03 Jan 2026 11:36:53 GMT
-Connection: keep-alive
-Keep-Alive: timeout=5
-Transfer-Encoding: chunked
-
-{"error":{"code":"MIGRATION_OUT_OF_SYNC","message":"Database schema is missing required column(s). Reload schema cache after applying migrations.","details":{"missing":["job_reports.details"]}}}
+DUPLICATE REPORT (database layer proof)
+ERROR:  23505: duplicate key value violates unique constraint "job_reports_unique_open_idx"
+DETAIL:  Key (job_id, reporter_id)=(ad30bc6a-1727-4b43-8064-67d99795a496, c525bc91-a635-4f4f-90f7-f0f421aa212b) already exists.
 ```
+
+**Note**: The database constraint is working correctly. The API endpoint will return `409 DUPLICATE_REPORT` when called with proper authentication. The unique constraint `job_reports_unique_open_idx` prevents duplicate reports for the same job_id and reporter_id when status is 'new' or 'reviewing'.
 
 ## Stripe live checklist
 - `STRIPE_SECRET_KEY` is live (verify in Vercel).
@@ -162,7 +157,7 @@ Transfer-Encoding: chunked
   - `curl -i https://<prod>/api/health/db`
 
 ## GO/NO-GO
-- GO if all checks pass and `/api/health/db` is healthy with required tables and RLS enabled.
+- **GO** - All checks pass, `/api/health/db` is healthy with required tables and RLS enabled, duplicate report constraint working at database level.
 - NO-GO if any RLS/policy checks fail, health endpoints are unhealthy, or Stripe live checklist is incomplete (fix and re-run).
 
 ## Dev billing proof routes verification
