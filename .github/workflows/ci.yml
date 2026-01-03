@@ -24,4 +24,13 @@ jobs:
         run: npm ci
         
       - name: Run review
-        run: npm run review
+        run: |
+          set -o pipefail
+          npm run review 2>&1 | tee review.log
+
+      - name: Upload review log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-log
+          path: review.log
