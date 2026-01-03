@@ -4,6 +4,8 @@ import { jsonError } from "@/lib/api/errors";
 import { ReportCreateSchema } from "@/lib/trust/schema";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
+export const runtime = "nodejs";
+
 type RouteParams = {
   params: { id: string };
 };

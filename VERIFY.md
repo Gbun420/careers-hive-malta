@@ -51,6 +51,12 @@ Run these in the Supabase SQL editor:
 - Policies:
   - `SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check FROM pg_policies WHERE schemaname='public' ORDER BY tablename, policyname;`
 
+## PostgREST schema reload (dev)
+- Reload schema cache (deterministic):
+  - `curl -i -X POST http://localhost:3005/api/dev/db/reload-schema -H "x-dev-secret: $DEV_TOOLS_SECRET"`
+- Verify details column visible:
+  - `curl -i http://localhost:3005/api/dev/db/verify-job-reports-details -H "x-dev-secret: $DEV_TOOLS_SECRET"`
+
 ## Verify correct Supabase project
 Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPABASE_URL`.
 
@@ -70,6 +76,7 @@ Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPAB
   - Restart the dev server.
   - Visit `/api/health/db` and confirm required tables exist.
   - If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: run bootstrap.sql and reload PostgREST schema cache.
+  - Optional: run `0006_job_reports_details.sql` and `0008_pgrst_reload.sql` if needed.
 
 ## Dev auth helper for curl proofs
 POST /api/dev/auth/login (dev-only):
