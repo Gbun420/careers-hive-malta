@@ -188,6 +188,7 @@
   - Submit twice for the same job as the same user.
   - Expected: `409` with `DUPLICATE_REPORT`.
   - If you see `DB_ERROR` about missing `details` column: apply `0006_job_reports_details.sql` and reload the PostgREST schema cache in Supabase.
+  - If you see `MIGRATION_OUT_OF_SYNC`: apply `0006_job_reports_details.sql`, reload schema cache, restart dev server, and retry.
 - Job constraints:
   - Attempt to create a job with short title/description; expect `400`.
 - Cache headers:

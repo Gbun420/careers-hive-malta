@@ -91,6 +91,17 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   if (error) {
     if (
+      error.message?.includes("details") &&
+      error.message?.includes("schema cache")
+    ) {
+      return jsonError(
+        "MIGRATION_OUT_OF_SYNC",
+        "Database schema is missing required column(s). Reload schema cache after applying migrations.",
+        503,
+        { missing: ["job_reports.details"] }
+      );
+    }
+    if (
       error.code === "23505" ||
       error.message?.includes("job_reports_unique_open_idx") ||
       error.message?.includes("duplicate key value")

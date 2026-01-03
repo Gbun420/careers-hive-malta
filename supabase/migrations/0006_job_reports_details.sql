@@ -8,6 +8,15 @@ end $$;
 alter table public.job_reports
   add column if not exists details text;
 
-create unique index if not exists job_reports_unique_open_idx
-  on public.job_reports (job_id, reporter_id)
-  where status in ('new', 'reviewing');
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'job_reports'
+      and column_name = 'reason_details'
+  ) then
+    execute 'update public.job_reports set details = reason_details where details is null';
+  end if;
+end $$;

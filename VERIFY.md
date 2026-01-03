@@ -128,15 +128,15 @@ Transfer-Encoding: chunked
 
 ```
 DUPLICATE REPORT (second attempt)
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 503 Service Unavailable
 vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
 content-type: application/json
-Date: Sat, 03 Jan 2026 11:23:51 GMT
+Date: Sat, 03 Jan 2026 11:36:53 GMT
 Connection: keep-alive
 Keep-Alive: timeout=5
 Transfer-Encoding: chunked
 
-{"error":{"code":"DB_ERROR","message":"Could not find the 'details' column of 'job_reports' in the schema cache"}}
+{"error":{"code":"MIGRATION_OUT_OF_SYNC","message":"Database schema is missing required column(s). Reload schema cache after applying migrations.","details":{"missing":["job_reports.details"]}}}
 ```
 
 ## Stripe live checklist
@@ -241,8 +241,8 @@ Never paste secrets into chat; set env locally.
   - Rapidly POST to `/api/jobs/<job-id>/report` and confirm `429` with `RATE_LIMITED`.
 - Report enum + duplicates:
   - Invalid reason should return `400` `BAD_REQUEST`.
-  - Duplicate report should return `409` `DUPLICATE_REPORT`.
-  - If you see a schema cache error for `details`, apply `0006_job_reports_details.sql` and reload the PostgREST schema cache in Supabase.
+- Duplicate report should return `409` `DUPLICATE_REPORT`.
+  - If you see `MIGRATION_OUT_OF_SYNC`, apply `0006_job_reports_details.sql`, reload the PostgREST schema cache, and retry.
 - Job constraints:
   - Create job with short title/description should return `400`.
 - Cache headers:

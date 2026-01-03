@@ -132,6 +132,7 @@ create table if not exists public.job_reports (
   reporter_id uuid references public.profiles(id) on delete cascade,
   status text check (status in ('new', 'reviewing', 'resolved', 'dismissed')) default 'new',
   reason text not null,
+  details text,
   resolution_notes text,
   created_at timestamptz default now(),
   reviewed_at timestamptz,
@@ -281,14 +282,17 @@ create policy "Employers can read own purchases" on public.purchases
   for select using (auth.uid() = employer_id);
 
 -- ============================================================================
--- 0005_abuse.sql & 0006_job_reports_details.sql (combined)
+-- 0005_abuse.sql
 -- ============================================================================
-alter table public.job_reports
-  add column if not exists details text;
-
 create unique index if not exists job_reports_unique_open_idx
   on public.job_reports (job_id, reporter_id)
   where status in ('new', 'reviewing');
+
+-- ============================================================================
+-- 0006_job_reports_details.sql
+-- ============================================================================
+alter table public.job_reports
+  add column if not exists details text;
 
 -- ============================================================================
 -- 0007_billing_fix.sql
