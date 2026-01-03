@@ -1,5 +1,11 @@
 # Verification Report
 
+## Fresh Supabase Install Instructions
+- **NEW**: For clean installs, run `supabase/bootstrap.sql` in Supabase SQL editor
+- This creates all required tables, indexes, policies, and triggers idempotently
+- **IMPORTANT**: `auth.users` is Supabase-managed; `public.profiles` is created by bootstrap
+- After bootstrap: reload PostgREST schema cache, restart dev server, verify `curl -i http://localhost:3005/api/health/db`
+
 ## Repo build verification
 - Command: `npm run review`
 - Expected: PASS (lint, typecheck, build)
@@ -10,7 +16,7 @@ Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPAB
 - SQL A (list all tables):
   - `SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') ORDER BY table_schema, table_name;`
 - SQL B (required tables):
-  - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','job_reports','employer_verifications','audit_logs','job_featured','purchases') ORDER BY t.table_name;`
+  - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','notifications','employer_verifications','job_reports','audit_logs','purchases','job_featured') ORDER BY t.table_name;`
 - SQL C (sanity):
   - `SELECT now();`
 - Job featured diagnostics:
@@ -19,10 +25,10 @@ Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPAB
   - Migrations table: `SELECT table_schema, table_name FROM information_schema.tables WHERE table_name LIKE '%migrations%' ORDER BY table_schema, table_name;`
 - Steps:
   - Ensure `NEXT_PUBLIC_SUPABASE_URL` and keys are from the same Supabase project.
+  - For fresh installs: run `supabase/bootstrap.sql` in SQL editor first.
   - Restart the dev server.
   - Visit `/api/health/db` and confirm required tables exist.
-  - Apply migrations in order: `0001`, `0002`, `0003`, `0004`, `0005`, `0006`, `0007` (if present).
-  - If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: apply missing migrations and reload the PostgREST schema cache.
+  - If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: run bootstrap.sql and reload PostgREST schema cache.
 
 ## Dev billing proof routes verification
 Never paste secrets into chat; set env locally.

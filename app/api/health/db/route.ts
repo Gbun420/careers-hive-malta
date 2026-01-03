@@ -13,11 +13,12 @@ export async function GET() {
     { name: "profiles", column: "id" },
     { name: "jobs", column: "id" },
     { name: "saved_searches", column: "id" },
+    { name: "notifications", column: "id" },
     { name: "job_reports", column: "id" },
     { name: "employer_verifications", column: "id" },
     { name: "audit_logs", column: "id" },
-    { name: "job_featured", column: "job_id" },
     { name: "purchases", column: "id" },
+    { name: "job_featured", column: "job_id" },
   ];
   const supabase = createServiceRoleClient();
 

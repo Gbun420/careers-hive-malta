@@ -1,3 +1,10 @@
+do $$
+begin
+  if to_regclass('public.job_reports') is null then
+    raise exception 'Missing job_reports table: run 0003_trust.sql first';
+  end if;
+end $$;
+
 alter table public.job_reports
   add column if not exists details text;
 

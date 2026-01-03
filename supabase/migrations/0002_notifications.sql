@@ -1,3 +1,16 @@
+do $$
+begin
+  if to_regclass('public.profiles') is null then
+    raise exception 'Missing base schema: run 0001_init.sql first';
+  end if;
+  if to_regclass('public.jobs') is null then
+    raise exception 'Missing base schema: run 0001_init.sql first';
+  end if;
+  if to_regclass('public.saved_searches') is null then
+    raise exception 'Missing base schema: run 0001_init.sql first';
+  end if;
+end $$;
+
 create table if not exists public.notifications (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references auth.users(id) on delete cascade,

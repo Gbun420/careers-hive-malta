@@ -1,5 +1,11 @@
 # Smoke Checks
 
+## Fresh Supabase Install
+- **NEW**: Run `supabase/bootstrap.sql` in Supabase SQL editor first
+- Expected: All required tables created with proper indexes, policies, and triggers
+- Verify: `curl -i http://localhost:3005/api/health/db` returns healthy
+- **IMPORTANT**: `auth.users` is Supabase-managed; `public.profiles` is created by bootstrap
+
 ## Env missing path (no Supabase keys)
 - Not run.
 - Manual: `npm run dev`, visit `/setup`, then attempt `/jobseeker/dashboard`.
@@ -8,14 +14,14 @@
 ## Env present path (Supabase keys set)
 - Not run (waiting on Supabase SQL to be applied).
 - Manual: `npm run dev`, then `curl http://localhost:3000/api/health/db`.
-- Expected: `{\"status\":\"healthy\",\"tables\":[{\"name\":\"profiles\",\"ok\":true},{\"name\":\"jobs\",\"ok\":true},{\"name\":\"saved_searches\",\"ok\":true}]}`.
+- Expected: `{"status":"healthy","tables":[{"name":"profiles","ok":true},{"name":"jobs","ok":true},{"name":"saved_searches","ok":true},{"name":"notifications","ok":true},{"name":"employer_verifications","ok":true},{"name":"job_reports","ok":true},{"name":"audit_logs","ok":true},{"name":"purchases","ok":true},{"name":"job_featured","ok":true}]}`.
 
 ## Verify correct Supabase project
 - Manual: confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPABASE_URL`.
 - SQL A (list all tables):
   - `SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') ORDER BY table_schema, table_name;`
 - SQL B (required tables):
-  - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','job_reports','employer_verifications','audit_logs','job_featured','purchases') ORDER BY t.table_name;`
+  - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','notifications','employer_verifications','job_reports','audit_logs','purchases','job_featured') ORDER BY t.table_name;`
 - SQL C (sanity):
   - `SELECT now();`
 - Job featured diagnostics:
@@ -23,7 +29,7 @@
   - Constraints: `SELECT conname, pg_get_constraintdef(c.oid) FROM pg_constraint c JOIN pg_class t ON c.conrelid = t.oid JOIN pg_namespace n ON t.relnamespace = n.oid WHERE n.nspname='public' AND t.relname='job_featured';`
   - Migrations table: `SELECT table_schema, table_name FROM information_schema.tables WHERE table_name LIKE '%migrations%' ORDER BY table_schema, table_name;`
 - Expected: required tables present in SQL B; `/api/health/db` returns healthy.
-- If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: apply the missing migrations (including `0004_billing.sql` and `0007_billing_fix.sql`) and reload the PostgREST schema cache.
+- If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: run `supabase/bootstrap.sql` in SQL editor, then reload PostgREST schema cache.
 
 ## Admin signup gating
 - Not run.

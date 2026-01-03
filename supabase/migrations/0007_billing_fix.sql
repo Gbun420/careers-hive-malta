@@ -1,3 +1,10 @@
+do $$
+begin
+  if to_regclass('public.jobs') is null then
+    raise exception 'Missing base schema: run 0001_init.sql first';
+  end if;
+end $$;
+
 create table if not exists public.job_featured (
   job_id uuid primary key references public.jobs(id) on delete cascade,
   featured_until timestamptz not null,
