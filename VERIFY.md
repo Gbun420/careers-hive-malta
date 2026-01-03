@@ -13,11 +13,16 @@ Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPAB
   - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','job_reports','employer_verifications','audit_logs','job_featured','purchases') ORDER BY t.table_name;`
 - SQL C (sanity):
   - `SELECT now();`
+- Job featured diagnostics:
+  - Columns: `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema='public' AND table_name='job_featured' ORDER BY ordinal_position;`
+  - Constraints: `SELECT conname, pg_get_constraintdef(c.oid) FROM pg_constraint c JOIN pg_class t ON c.conrelid = t.oid JOIN pg_namespace n ON t.relnamespace = n.oid WHERE n.nspname='public' AND t.relname='job_featured';`
+  - Migrations table: `SELECT table_schema, table_name FROM information_schema.tables WHERE table_name LIKE '%migrations%' ORDER BY table_schema, table_name;`
 - Steps:
   - Ensure `NEXT_PUBLIC_SUPABASE_URL` and keys are from the same Supabase project.
   - Restart the dev server.
   - Visit `/api/health/db` and confirm required tables exist.
-  - Apply migrations in order: `0001`, `0002`, `0003`, `0004`, `0005`, `0006` (if present).
+  - Apply migrations in order: `0001`, `0002`, `0003`, `0004`, `0005`, `0006`, `0007` (if present).
+  - If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: apply missing migrations and reload the PostgREST schema cache.
 
 ## Dev billing proof routes verification
 Never paste secrets into chat; set env locally.

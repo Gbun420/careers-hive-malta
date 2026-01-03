@@ -3,17 +3,22 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 
+type TableCheck = {
+  name: string;
+  column: string;
+};
+
 export async function GET() {
-  const requiredTables = [
-    "profiles",
-    "jobs",
-    "saved_searches",
-    "job_reports",
-    "employer_verifications",
-    "audit_logs",
-    "job_featured",
-    "purchases",
-  ] as const;
+  const requiredTables: TableCheck[] = [
+    { name: "profiles", column: "id" },
+    { name: "jobs", column: "id" },
+    { name: "saved_searches", column: "id" },
+    { name: "job_reports", column: "id" },
+    { name: "employer_verifications", column: "id" },
+    { name: "audit_logs", column: "id" },
+    { name: "job_featured", column: "job_id" },
+    { name: "purchases", column: "id" },
+  ];
   const supabase = createServiceRoleClient();
 
   if (!supabase) {
@@ -26,38 +31,69 @@ export async function GET() {
 
   const supabaseProjectRef = getSupabaseProjectRef();
   const presentTables = await fetchPresentTables(supabase);
+  const presentTableSet = new Set(presentTables ?? []);
 
   const results = await Promise.all(
     requiredTables.map(async (table) => {
-      const { error } = await supabase.from(table).select("id").limit(1);
+      const { error } = await supabase
+        .from(table.name)
+        .select(table.column)
+        .limit(1);
       return {
-        name: table,
+        name: table.name,
         ok: !error,
+        column: table.column,
         error: error?.message,
       };
     })
   );
 
-  const missingTables = results.filter((result) => !result.ok).map((result) => result.name);
-  const ok = missingTables.length === 0;
+  const requiredTableNames = requiredTables.map((table) => table.name);
+  const missingTables = presentTables
+    ? requiredTableNames.filter((table) => !presentTableSet.has(table))
+    : results.filter((result) => !result.ok).map((result) => result.name);
+  const schemaErrors = results.reduce<Record<string, string>>((acc, result) => {
+    if (result.error) {
+      acc[result.name] = result.error;
+    }
+    return acc;
+  }, {});
+  if (presentTables) {
+    for (const table of missingTables) {
+      delete schemaErrors[table];
+    }
+  }
+  const presentRequiredCount = presentTables
+    ? requiredTableNames.filter((table) => presentTableSet.has(table)).length
+    : requiredTableNames.length - missingTables.length;
+  const ok = missingTables.length === 0 && Object.keys(schemaErrors).length === 0;
   const presentTablesSample =
     presentTables?.slice(0, 20) ??
     results.filter((result) => result.ok).map((result) => result.name);
+  const migrationThreshold = Math.ceil(requiredTables.length * 0.6);
+  const isMigrationOutOfSync =
+    presentRequiredCount >= migrationThreshold ||
+    (presentRequiredCount > 0 && Object.keys(schemaErrors).length > 0);
 
   if (!ok) {
     return NextResponse.json(
       {
         status: "unhealthy",
         error: {
-          code: "WRONG_DATABASE",
-          message: "Connected database is missing required tables.",
+          code: isMigrationOutOfSync
+            ? "MIGRATION_OUT_OF_SYNC"
+            : "WRONG_DATABASE",
+          message: isMigrationOutOfSync
+            ? "Connected database is missing required tables or columns."
+            : "Connected database is missing required tables.",
           details: {
             supabaseProjectRef,
             missingTables,
+            schemaErrors: Object.keys(schemaErrors).length > 0 ? schemaErrors : undefined,
             presentTablesSample,
           },
         },
-        requiredTables,
+        requiredTables: requiredTableNames,
         presentTables: presentTables ?? presentTablesSample,
         tables: results,
       },
@@ -68,7 +104,7 @@ export async function GET() {
   return NextResponse.json({
     status: "healthy",
     supabaseProjectRef,
-    requiredTables,
+    requiredTables: requiredTableNames,
     presentTables: presentTables ?? presentTablesSample,
     tables: results,
   });
