@@ -4,6 +4,21 @@
 - Command: `npm run review`
 - Expected: PASS (lint, typecheck, build)
 
+## Verify correct Supabase project
+Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPABASE_URL`.
+
+- SQL A (list all tables):
+  - `SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') ORDER BY table_schema, table_name;`
+- SQL B (required tables):
+  - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','job_reports','employer_verifications','audit_logs','job_featured','purchases') ORDER BY t.table_name;`
+- SQL C (sanity):
+  - `SELECT now();`
+- Steps:
+  - Ensure `NEXT_PUBLIC_SUPABASE_URL` and keys are from the same Supabase project.
+  - Restart the dev server.
+  - Visit `/api/health/db` and confirm required tables exist.
+  - Apply migrations in order: `0001`, `0002`, `0003`, `0004`, `0005`, `0006` (if present).
+
 ## Dev billing proof routes verification
 Never paste secrets into chat; set env locally.
 

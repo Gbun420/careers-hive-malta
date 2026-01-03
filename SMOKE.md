@@ -10,6 +10,16 @@
 - Manual: `npm run dev`, then `curl http://localhost:3000/api/health/db`.
 - Expected: `{\"status\":\"healthy\",\"tables\":[{\"name\":\"profiles\",\"ok\":true},{\"name\":\"jobs\",\"ok\":true},{\"name\":\"saved_searches\",\"ok\":true}]}`.
 
+## Verify correct Supabase project
+- Manual: confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPABASE_URL`.
+- SQL A (list all tables):
+  - `SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') ORDER BY table_schema, table_name;`
+- SQL B (required tables):
+  - `SELECT t.table_name FROM information_schema.tables t WHERE t.table_schema='public' AND t.table_name IN ('profiles','jobs','saved_searches','job_reports','employer_verifications','audit_logs','job_featured','purchases') ORDER BY t.table_name;`
+- SQL C (sanity):
+  - `SELECT now();`
+- Expected: required tables present in SQL B; `/api/health/db` returns healthy.
+
 ## Admin signup gating
 - Not run.
 - Manual: ensure `ALLOW_ADMIN_SIGNUP` is unset -> admin option not shown on `/signup`.
