@@ -43,6 +43,14 @@ ad30bc6a-1727-4b43-8064-67d99795a496 | e169db7a-c6f5-4cb9-b432-395e95763781 | Se
 - Command: `npm run review`
 - Expected: PASS (lint, typecheck, build)
 
+## Supabase RLS verification
+Run these in the Supabase SQL editor:
+
+- RLS enabled:
+  - `SELECT c.relname, c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON c.relnamespace = n.oid WHERE n.nspname='public' AND c.relname IN ('profiles','jobs','saved_searches','notifications','job_reports','employer_verifications','audit_logs','purchases','job_featured') ORDER BY c.relname;`
+- Policies:
+  - `SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check FROM pg_policies WHERE schemaname='public' ORDER BY tablename, policyname;`
+
 ## Verify correct Supabase project
 Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPABASE_URL`.
 
@@ -62,6 +70,100 @@ Confirm the Supabase project ref in the dashboard URL matches `NEXT_PUBLIC_SUPAB
   - Restart the dev server.
   - Visit `/api/health/db` and confirm required tables exist.
   - If `/api/health/db` returns `MIGRATION_OUT_OF_SYNC`: run bootstrap.sql and reload PostgREST schema cache.
+
+## Production auth proofs (local env)
+- Unauthed billing checkout:
+  - `curl -i -X POST http://localhost:3005/api/billing/checkout-featured -H "Content-Type: application/json" -d '{"job_id":"<job-id>"}'`
+  - Expected: `401` `UNAUTHORIZED`
+- Jobseeker cannot patch employer job:
+  - `curl -i -X PATCH http://localhost:3005/api/jobs/<job-id> -H "Content-Type: application/json" -H "Cookie: <jobseeker-cookie>" -d '{"title":"Test"}'`
+  - Expected: `403` `FORBIDDEN`
+- Jobseeker cannot read others’ saved search:
+  - `curl -i http://localhost:3005/api/saved-searches/<saved-search-id> -H "Cookie: <jobseeker-cookie>"`
+  - Expected: `404` `NOT_FOUND`
+- Duplicate report:
+  - `curl -i -X POST http://localhost:3005/api/jobs/<job-id>/report -H "Content-Type: application/json" -H "Cookie: <jobseeker-cookie>" -d '{"reason":"spam","details":"test"}'`
+  - Repeat immediately.
+  - Expected: `409` `DUPLICATE_REPORT`
+
+### Captured outputs (local)
+```
+UNAUTHED /api/billing/checkout-featured
+HTTP/1.1 401 Unauthorized
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+content-type: application/json
+Date: Sat, 03 Jan 2026 11:23:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"error":{"code":"UNAUTHORIZED","message":"Authentication required."}}
+```
+
+```
+JOBSEEKER PATCH /api/jobs/<job-id>
+HTTP/1.1 403 Forbidden
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+content-type: application/json
+Date: Sat, 03 Jan 2026 11:23:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"error":{"code":"FORBIDDEN","message":"Employer access required."}}
+```
+
+```
+JOBSEEKER GET /api/saved-searches/<id>
+HTTP/1.1 404 Not Found
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+content-type: application/json
+Date: Sat, 03 Jan 2026 11:23:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"error":{"code":"NOT_FOUND","message":"Saved search not found."}}
+```
+
+```
+DUPLICATE REPORT (second attempt)
+HTTP/1.1 500 Internal Server Error
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+content-type: application/json
+Date: Sat, 03 Jan 2026 11:23:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"error":{"code":"DB_ERROR","message":"Could not find the 'details' column of 'job_reports' in the schema cache"}}
+```
+
+## Stripe live checklist
+- `STRIPE_SECRET_KEY` is live (verify in Vercel).
+- `STRIPE_FEATURED_PRICE_ID` is live (validate-price should return `livemode: true`).
+- `STRIPE_WEBHOOK_SECRET` set in Vercel.
+- Webhook endpoint reachable on prod URL.
+- Simulate a live checkout and verify `featured_until` updates.
+
+## Vercel deploy checklist
+- Env vars set in Vercel (names only):
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+  - `RESEND_API_KEY`
+  - `STRIPE_SECRET_KEY`
+  - `STRIPE_FEATURED_PRICE_ID`
+  - `STRIPE_WEBHOOK_SECRET`
+  - `ALERT_DISPATCH_SECRET`
+  - `NEXT_PUBLIC_SITE_URL`
+- Prod health checks:
+  - `curl -i https://<prod>/api/health/app`
+  - `curl -i https://<prod>/api/health/db`
+
+## GO/NO-GO
+- GO if all checks pass and `/api/health/db` is healthy with required tables and RLS enabled.
+- NO-GO if any RLS/policy checks fail, health endpoints are unhealthy, or Stripe live checklist is incomplete (fix and re-run).
 
 ## Dev billing proof routes verification
 Never paste secrets into chat; set env locally.
