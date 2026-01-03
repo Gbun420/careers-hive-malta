@@ -4,6 +4,7 @@ import { jsonError } from "@/lib/api/errors";
 import { requireDevSecret } from "@/lib/dev/guard";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   const dev = requireDevSecret(request);

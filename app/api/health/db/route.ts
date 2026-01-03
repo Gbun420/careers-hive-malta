@@ -3,6 +3,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 type TableCheck = {
   name: string;
   column: string;
@@ -14,7 +17,7 @@ export async function GET() {
     { name: "jobs", column: "id" },
     { name: "saved_searches", column: "id" },
     { name: "notifications", column: "id" },
-    { name: "job_reports", column: "id" },
+    { name: "job_reports", column: "details" },
     { name: "employer_verifications", column: "id" },
     { name: "audit_logs", column: "id" },
     { name: "purchases", column: "id" },
