@@ -131,10 +131,13 @@ export async function POST(request: Request, { params }: RouteParams) {
     .single();
 
   if (error) {
-    if (
-      error.message?.includes("details") &&
-      error.message?.includes("schema cache")
-    ) {
+    const message = error.message ?? "";
+    const missingDetails =
+      message.includes("details") &&
+      (message.includes("schema cache") ||
+        message.includes("job_reports.details") ||
+        (message.includes("job_reports") && message.includes("does not exist")));
+    if (missingDetails) {
       return jsonError(
         "MIGRATION_OUT_OF_SYNC",
         "Database schema is missing required column(s). Reload schema cache after applying migrations.",
