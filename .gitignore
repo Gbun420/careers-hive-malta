@@ -45,3 +45,4 @@ tsconfig.tsbuildinfo
 # Audit artifacts
 audit/logs/
 !audit/reports/
+.vercel
