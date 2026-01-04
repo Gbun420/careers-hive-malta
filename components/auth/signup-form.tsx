@@ -72,31 +72,27 @@ export default function SignupForm({
     }
 
     setLoading(true);
-    const { data, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          role,
-        },
-        emailRedirectTo: process.env.NEXT_PUBLIC_SITE_URL 
-          ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-          : undefined,
-      },
-    });
-    setLoading(false);
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role }),
+      });
 
-    if (authError) {
-      setError(authError.message);
-      return;
-    }
+      const data = await response.json();
 
-    if (!data.session) {
+      if (!response.ok) {
+        setError(data.error || "Signup failed.");
+        return;
+      }
+
       setMessage("Check your email to confirm your account.");
-      return;
+    } catch (err) {
+      console.error("Signup form error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    router.replace(getDashboardPath(role));
   };
 
   if (!supabase) {

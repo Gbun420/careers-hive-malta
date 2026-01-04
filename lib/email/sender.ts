@@ -61,6 +61,29 @@ async function sendEmail(to: string, subject: string, html: string): Promise<Ema
   return { ok: true };
 }
 
+export async function sendConfirmationEmail(payload: { to: string; confirmationUrl: string }): Promise<EmailSendResult> {
+  const subject = "Confirm your account - Careers Hive Malta";
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1 style="color: #0d748c;">Welcome to Careers Hive Malta!</h1>
+      <p>Please confirm your account to start managing your job alerts and postings.</p>
+      <div style="margin: 32px 0;">
+        <a href="${payload.confirmationUrl}" style="background-color: #0d748c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 999px; font-weight: bold;">
+          Confirm Email Address
+        </a>
+      </div>
+      <p style="color: #64748b; font-size: 14px;">
+        If you didn't create an account, you can safely ignore this email.
+      </p>
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
+      <p style="color: #94a3b8; font-size: 12px;">
+        Careers Hive Malta
+      </p>
+    </div>
+  `;
+  return sendEmail(payload.to, subject, html);
+}
+
 export async function sendJobAlertEmail(payload: JobAlertPayload): Promise<EmailSendResult> {
   const { subject, html } = renderJobAlertEmail({
     job: payload.job,
