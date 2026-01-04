@@ -8,6 +8,8 @@ import {
   isStripeConfigured,
 } from "@/lib/billing/stripe";
 
+export const runtime = "edge";
+
 type EditPageProps = {
   params: Promise<{ id: string }>;
 };

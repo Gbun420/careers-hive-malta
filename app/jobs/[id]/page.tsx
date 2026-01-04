@@ -6,6 +6,8 @@ import { isSupabaseConfigured } from "@/lib/auth/session";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import type { Job } from "@/lib/jobs/schema";
 
+export const runtime = "edge";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const buildDescription = (text?: string | null) => {

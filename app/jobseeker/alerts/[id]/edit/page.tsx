@@ -3,6 +3,8 @@ import SavedSearchEdit from "@/components/alerts/saved-search-edit";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 
+export const runtime = "edge";
+
 type EditPageProps = {
   params: Promise<{ id: string }>;
 };
