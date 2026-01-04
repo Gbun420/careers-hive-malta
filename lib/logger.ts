@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { randomUUID } from "crypto";
 
 export interface AuditLog {
   requestId: string;
@@ -14,7 +13,7 @@ export interface AuditLog {
 
 class AuditLogger {
   private generateRequestId(): string {
-    return randomUUID();
+    return crypto.randomUUID();
   }
 
   logRequest(

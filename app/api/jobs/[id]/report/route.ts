@@ -5,7 +5,7 @@ import { ReportCreateSchema } from "@/lib/trust/schema";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 import { auditLogger } from "@/lib/logger";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 type RouteParams = {

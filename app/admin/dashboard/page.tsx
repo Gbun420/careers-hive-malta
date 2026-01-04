@@ -13,21 +13,21 @@ export default function AdminDashboard() {
       </header>
       <section className="grid gap-4 sm:grid-cols-2">
         <Link
-          href="/admin/jobs"
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          href="/admin/reports"
+          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-500/30 hover:shadow-md"
         >
-          <p className="font-semibold text-slate-900">Review job posts</p>
+          <p className="font-semibold text-slate-900">Job reports</p>
           <p className="mt-2 text-sm text-slate-600">
-            Approve or reject pending listings.
+            Review and resolve moderation actions.
           </p>
         </Link>
         <Link
-          href="/admin/users"
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          href="/admin/verifications"
+          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-500/30 hover:shadow-md"
         >
-          <p className="font-semibold text-slate-900">Manage users</p>
+          <p className="font-semibold text-slate-900">Employer verifications</p>
           <p className="mt-2 text-sm text-slate-600">
-            Audit roles and deactivate accounts.
+            Manage platform trust signals and badges.
           </p>
         </Link>
       </section>

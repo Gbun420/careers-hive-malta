@@ -1,5 +1,12 @@
 # Smoke Checks
 
+## Deployment attempt (2026-01-04)
+- Branch: feat/production-launch-system
+- Commit: ad0a193
+- Prechecks: `npm run lint`, `npm run typecheck`, `npm run review` (pass)
+- Deploy: `npx vercel --prod --yes` failed with `api-deployments-free-per-day` quota
+- Health checks: not run (deploy blocked)
+
 ## Fresh Supabase Install
 - **NEW**: Run `supabase/bootstrap.sql` in Supabase SQL editor first
 - Expected: All required tables created with proper indexes, policies, and triggers
