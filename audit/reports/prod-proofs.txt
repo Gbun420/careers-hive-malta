@@ -1,4 +1,4 @@
-Running proofs against https://careers-hive-malta-prod.vercel.app...
+Running final proofs against https://careers-hive-malta-prod.vercel.app...
 --- APP HEALTH ---
 HTTP/2 200 
 accept-ranges: bytes
@@ -7,14 +7,14 @@ age: 0
 cache-control: public, max-age=0, must-revalidate
 content-disposition: inline
 content-type: application/json
-date: Sun, 04 Jan 2026 09:43:47 GMT
-etag: "5b2c3b3cc05d59125f2937b1c7fab9f1"
+date: Sun, 04 Jan 2026 10:04:03 GMT
+etag: "dc15898b43d6df7e0b178359dc27d312"
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
 x-matched-path: /api/health/app
 x-vercel-cache: PRERENDER
-x-vercel-id: fra1::ghdcm-1767519826846-4b7e73381c65
+x-vercel-id: fra1::742gj-1767521043646-e1bb4c3ed578
 content-length: 44
 
 {"status":"ok","version":null,"commit":null}
@@ -24,28 +24,28 @@ HTTP/2 503
 age: 0
 cache-control: public, max-age=0, must-revalidate
 content-type: application/json
-date: Sun, 04 Jan 2026 09:43:48 GMT
+date: Sun, 04 Jan 2026 10:04:05 GMT
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
 x-matched-path: /api/health/db
 x-vercel-cache: MISS
-x-vercel-id: fra1::iad1::rfhcp-1767519827616-73d1d5f1e5d8
+x-vercel-id: fra1::iad1::4shsr-1767521044350-eed3fe9996ae
 
-{"status":"unhealthy","error":{"code":"WRONG_DATABASE","message":"Connected database is missing required tables.","details":{"supabaseProjectRef":"your-project","missingTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"schemaErrors":{"profiles":"TypeError: fetch failed","jobs":"TypeError: fetch failed","saved_searches":"TypeError: fetch failed","notifications":"TypeError: fetch failed","job_reports":"TypeError: fetch failed","employer_verifications":"TypeError: fetch failed","audit_logs":"TypeError: fetch failed","purchases":"TypeError: fetch failed","job_featured":"TypeError: fetch failed"},"presentTablesSample":[]}},"requiredTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"presentTables":[],"tables":[{"name":"profiles","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"jobs","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"saved_searches","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"notifications","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"job_reports","ok":false,"column":"details","error":"TypeError: fetch failed"},{"name":"employer_verifications","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"audit_logs","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"purchases","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"job_featured","ok":false,"column":"job_id","error":"TypeError: fetch failed"}]}
+{"status":"unhealthy","error":{"code":"WRONG_DATABASE","message":"Connected database is missing required tables.","details":{"supabaseProjectRef":"careers-hive-malta","missingTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"schemaErrors":{"profiles":"TypeError: fetch failed","jobs":"TypeError: fetch failed","saved_searches":"TypeError: fetch failed","notifications":"TypeError: fetch failed","job_reports":"TypeError: fetch failed","employer_verifications":"TypeError: fetch failed","audit_logs":"TypeError: fetch failed","purchases":"TypeError: fetch failed","job_featured":"TypeError: fetch failed"},"presentTablesSample":[]}},"requiredTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"presentTables":[],"tables":[{"name":"profiles","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"jobs","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"saved_searches","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"notifications","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"job_reports","ok":false,"column":"details","error":"TypeError: fetch failed"},{"name":"employer_verifications","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"audit_logs","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"purchases","ok":false,"column":"id","error":"TypeError: fetch failed"},{"name":"job_featured","ok":false,"column":"job_id","error":"TypeError: fetch failed"}]}
 
 --- JOBS API HEADERS ---
 HTTP/2 500 
 age: 0
 cache-control: public, max-age=0, must-revalidate
 content-type: application/json
-date: Sun, 04 Jan 2026 09:43:49 GMT
+date: Sun, 04 Jan 2026 10:04:05 GMT
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
 x-matched-path: /api/jobs
 x-vercel-cache: MISS
-x-vercel-id: fra1::iad1::b6brq-1767519828639-8c4118b54a73
+x-vercel-id: fra1::iad1::56g5f-1767521045667-f657e5af9f3a
 
 
 
@@ -53,12 +53,12 @@ x-vercel-id: fra1::iad1::b6brq-1767519828639-8c4118b54a73
 HTTP/2 405 
 age: 0
 cache-control: public, max-age=0, must-revalidate
-date: Sun, 04 Jan 2026 09:43:49 GMT
+date: Sun, 04 Jan 2026 10:04:06 GMT
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
 x-matched-path: /api/dev/db/reload-schema
 x-vercel-cache: MISS
-x-vercel-id: fra1::iad1::268c9-1767519829352-1819cef1b250
+x-vercel-id: fra1::iad1::z49d6-1767521046279-67c83e9e5230
 content-length: 0
 
