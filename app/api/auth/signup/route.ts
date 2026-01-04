@@ -16,11 +16,17 @@ export async function POST(request: Request) {
     }
 
     // Check if user already exists
-    const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+    const { data: listData, error: listError } = await supabase.auth.admin.listUsers();
+    
+    if (listError) {
+      console.error("Supabase listUsers error:", listError);
+      return NextResponse.json({ error: "Failed to verify user status" }, { status: 500 });
+    }
+
+    const users = listData?.users ?? [];
     const existingUser = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
     if (existingUser) {
-      // If user exists and is confirmed, tell them to log in
       if (existingUser.email_confirmed_at) {
         return NextResponse.json({ 
           error: "User already registered and confirmed. Please sign in instead.",
@@ -28,11 +34,17 @@ export async function POST(request: Request) {
         }, { status: 400 });
       }
       
-      // If user exists but is NOT confirmed, we can proceed to re-generate the link
+      // If user exists but is NOT confirmed, delete them so we can re-generate a fresh signup link
+      console.log(`Deleting unconfirmed existing user: ${email}`);
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(existingUser.id);
+      if (deleteError) {
+        console.error("Failed to delete existing unconfirmed user:", deleteError);
+        return NextResponse.json({ error: "Failed to reset unconfirmed account" }, { status: 500 });
+      }
     }
 
     // Generate the signup link using Admin SDK
-    // This creates the user in auth.users without sending the default Supabase email
+    console.log(`Generating signup link for: ${email}`);
     const { data, error } = await supabase.auth.admin.generateLink({
       type: "signup",
       email,
@@ -44,6 +56,7 @@ export async function POST(request: Request) {
     });
 
     if (error) {
+      console.error("Supabase generateLink error:", error);
       return NextResponse.json({ error: error.message }, { status: error.status || 400 });
     }
 

@@ -9,7 +9,10 @@ export async function GET(request: Request) {
     const supabase = createRouteHandlerClient();
     if (supabase) {
       const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-      if (!error && data.user) {
+      if (error) {
+        return NextResponse.redirect(`${requestUrl.origin}/login?error=${encodeURIComponent(error.message)}`);
+      }
+      if (data.user) {
         // --- Role-based redirection logic ---
         const role = data.user.user_metadata?.role;
         const email = data.user.email;

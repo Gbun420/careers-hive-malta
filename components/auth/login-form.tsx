@@ -31,7 +31,7 @@ export default function LoginForm({
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(searchParams.get("error"));
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -184,7 +184,10 @@ export default function LoginForm({
 
       <p className="mt-6 text-sm text-slate-600">
         New here?{" "}
-        <Link href="/signup" className="font-medium text-teal-700 underline">
+        <Link
+          href={`/signup${redirectedFrom ? `?redirectedFrom=${encodeURIComponent(redirectedFrom)}` : ""}`}
+          className="font-medium text-teal-700 underline"
+        >
           Create an account
         </Link>
       </p>
