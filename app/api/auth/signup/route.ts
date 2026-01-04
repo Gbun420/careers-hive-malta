@@ -15,6 +15,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Supabase not configured" }, { status: 503 });
     }
 
+    // Check if user already exists
+    const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+    const existingUser = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+
+    if (existingUser) {
+      // If user exists and is confirmed, tell them to log in
+      if (existingUser.email_confirmed_at) {
+        return NextResponse.json({ 
+          error: "User already registered and confirmed. Please sign in instead.",
+          code: "USER_ALREADY_EXISTS" 
+        }, { status: 400 });
+      }
+      
+      // If user exists but is NOT confirmed, we can proceed to re-generate the link
+    }
+
     // Generate the signup link using Admin SDK
     // This creates the user in auth.users without sending the default Supabase email
     const { data, error } = await supabase.auth.admin.generateLink({
