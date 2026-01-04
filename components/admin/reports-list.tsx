@@ -36,7 +36,13 @@ export default function AdminReportsList() {
         return;
       }
 
-      setItems(payload.data ?? []);
+      const rawData = payload.data;
+      if (!Array.isArray(rawData)) {
+        setItems([]);
+        return;
+      }
+
+      setItems(rawData);
     } catch (err) {
       setError({
         error: {
@@ -117,7 +123,7 @@ export default function AdminReportsList() {
                 {item.job_title ? item.job_title : `Job ID: ${item.job_id}`}
               </p>
               <p className="mt-1 text-xs text-slate-600">
-                Status: {item.status} · Reported {new Date(item.created_at).toLocaleString()}
+                Status: {item.status} · Reported {item.created_at ? new Date(item.created_at).toLocaleString() : "Unknown date"}
               </p>
               <p className="mt-2 text-sm text-slate-700">{item.reason}</p>
               {item.details ? (

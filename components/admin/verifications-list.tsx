@@ -36,7 +36,13 @@ export default function AdminVerificationsList() {
         return;
       }
 
-      setItems(payload.data ?? []);
+      const rawData = payload.data;
+      if (!Array.isArray(rawData)) {
+        setItems([]);
+        return;
+      }
+
+      setItems(rawData);
     } catch (err) {
       setError({
         error: {
@@ -120,7 +126,7 @@ export default function AdminVerificationsList() {
                 Employer ID: {item.employer_id}
               </p>
               <p className="mt-1 text-xs text-slate-600">
-                Status: {item.status} · Submitted {new Date(item.submitted_at).toLocaleString()}
+                Status: {item.status} · Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleString() : "Unknown date"}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
