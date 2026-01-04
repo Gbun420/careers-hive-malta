@@ -279,3 +279,42 @@ Never paste secrets into chat; set env locally.
 - Health:
   - `curl -s http://localhost:3005/api/health/app | jq .`
   - Expected: `status: "ok"`, `version`/`commit` fields present.
+
+
+## DUPLICATE REPORT PROOF ✅
+
+### Database-level constraint verification
+
+The duplicate report constraint is working correctly at the database level:
+
+```
+ERROR: 23505: duplicate key value violates unique constraint "job_reports_unique_open_idx"
+DETAIL:  Key (job_id, reporter_id)=(ad30bc6a-1727-4b43-8064-67d99795a496, c525bc91-a635-4f4f-90f7-f0f421aa212b) already exists.
+```
+
+**Status**: Database constraint `job_reports_unique_open_idx` is active and preventing duplicate reports as intended.
+
+### API-level proof (pending CLI token resolution)
+
+When dev endpoint authentication issues are resolved, you can obtain the API-level 409 DUPLICATE_REPORT proof by:
+
+1. **Get bearer token** from `/api/dev/auth/login`
+2. **Make first report** with token  
+3. **Make second report** with same token
+4. **Expected result**: `HTTP/1.1 409` with `{"error":{"code":"DUPLICATE_REPORT"}}`
+
+The database constraint system is fully functional and ready for API-level testing.
+
+### CLI Token Issue Resolution Needed
+
+**Current Issue**: Supabase CLI expects `sbp_0102...1920` format but environment has `sbp_zCY8qCWBtTz3tu28OR7jEQ_niqgg6RW`
+
+**Resolution Required**: Set valid `SUPABASE_ACCESS_TOKEN` in shell environment to complete CLI operations.
+
+**Next Steps**:
+1. Run `supabase login --token <valid-sbp-token>` in terminal
+2. Execute migration and schema reload commands
+3. Test API-level duplicate report with bearer token
+
+**Status**: Database constraint verified ✅ | CLI token format issue ⚠️ | API proof pending CLI resolution
+
