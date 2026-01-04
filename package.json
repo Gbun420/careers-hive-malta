@@ -11,14 +11,13 @@
     "review": "npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
-    "@next/swc-darwin-arm64": "^14.0.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.38.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "lucide-react": "^0.562.0",
     "meilisearch": "^0.54.0",
-    "next": "^14.2.35",
+    "next": "14.2.33",
     "react": "^18",
     "react-dom": "^18",
     "stripe": "^20.1.0",

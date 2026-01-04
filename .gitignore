@@ -41,3 +41,9 @@ coverage/
 
 # TypeScript
 tsconfig.tsbuildinfo
+
+# Audit artifacts
+audit/logs/
+!audit/reports/
+.vercel
+.env*.local

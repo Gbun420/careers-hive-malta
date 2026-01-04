@@ -1,0 +1,79 @@
+{
+  "@supabase/ssr": {
+    "current": "0.6.1",
+    "wanted": "0.6.1",
+    "latest": "0.8.0",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/@supabase/ssr"
+  },
+  "@types/node": {
+    "current": "20.19.27",
+    "wanted": "20.19.27",
+    "latest": "25.0.3",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/@types/node"
+  },
+  "@types/react": {
+    "current": "18.3.27",
+    "wanted": "18.3.27",
+    "latest": "19.2.7",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/@types/react"
+  },
+  "@types/react-dom": {
+    "current": "18.3.7",
+    "wanted": "18.3.7",
+    "latest": "19.2.3",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/@types/react-dom"
+  },
+  "eslint": {
+    "current": "8.57.1",
+    "wanted": "8.57.1",
+    "latest": "9.39.2",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/eslint"
+  },
+  "eslint-config-next": {
+    "current": "14.2.35",
+    "wanted": "14.2.35",
+    "latest": "16.1.1",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/eslint-config-next"
+  },
+  "next": {
+    "current": "14.2.33",
+    "wanted": "14.2.33",
+    "latest": "16.1.1",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/next"
+  },
+  "react": {
+    "current": "18.3.1",
+    "wanted": "18.3.1",
+    "latest": "19.2.3",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/react"
+  },
+  "react-dom": {
+    "current": "18.3.1",
+    "wanted": "18.3.1",
+    "latest": "19.2.3",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/react-dom"
+  },
+  "tailwindcss": {
+    "current": "3.4.19",
+    "wanted": "3.4.19",
+    "latest": "4.1.18",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/tailwindcss"
+  },
+  "zod": {
+    "current": "3.25.76",
+    "wanted": "3.25.76",
+    "latest": "4.3.5",
+    "dependent": "careers-hive-malta",
+    "location": "/Users/glennbundy/Desktop/careers-hive-malta/node_modules/zod"
+  }
+}

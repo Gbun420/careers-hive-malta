@@ -1,17 +1,15 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
+import { requireDevSecret } from "@/lib/dev/guard";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  // Dev-only endpoint
-  if (process.env.NODE_ENV === "production") {
-    return jsonError("NOT_FOUND", "Endpoint not available in production", 404);
-  }
-
-  // Verify dev secret
-  const devSecret = request.headers.get("x-dev-secret");
-  if (devSecret !== process.env.DEV_TOOLS_SECRET) {
-    return jsonError("UNAUTHORIZED", "Invalid dev secret", 401);
+  const dev = requireDevSecret(request);
+  if (!dev.ok) {
+    return dev.response;
   }
 
   let payload: unknown;

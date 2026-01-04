@@ -1,0 +1,25 @@
+=== API ROUTE RUNTIME VALIDATION ===
+
+app/api/jobs/[id]/report/route.ts:
+  runtime: ✅
+  dynamic: ✅
+
+app/api/dev/auth/login/route.ts:
+  runtime: ✅
+  dynamic: ✅
+
+app/api/dev/db/reload-schema/route.ts:
+  runtime: ✅
+  dynamic: ✅
+
+app/api/dev/db/verify-job-reports-details/route.ts:
+  runtime: ✅
+  dynamic: ✅
+
+app/api/health/db/route.ts:
+  runtime: ✅
+  dynamic: ✅
+
+✅ All routes validated
+
+exit_code:0

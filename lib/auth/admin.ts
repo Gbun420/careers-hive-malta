@@ -1,5 +1,3 @@
-import "server-only";
-
 const allowAdminSignup = process.env.ALLOW_ADMIN_SIGNUP === "true";
 const rawAllowlist = process.env.ADMIN_ALLOWLIST ?? "";
 
