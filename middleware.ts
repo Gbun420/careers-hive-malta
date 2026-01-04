@@ -1,10 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { type SupabaseClient } from "@supabase/supabase-js";
+// import { createServerClient, type CookieOptions } from "@supabase/ssr";
+// import { type SupabaseClient } from "@supabase/supabase-js";
 
 // --- Inlined Helper Logic ---
 
 // From lib/supabase/middleware.ts
+/*
 function createMiddlewareClient(
   request: NextRequest,
   response: NextResponse
@@ -45,6 +46,7 @@ function createMiddlewareClient(
     return null;
   }
 }
+*/
 
 // From lib/auth/session.ts
 const requiredEnv = [
@@ -123,6 +125,7 @@ export async function middleware(request: NextRequest) {
 
   const missing = getMissingSupabaseEnv();
   if (missing.length > 0) {
+    // ... same logic
     if (
       pathname === "/setup" ||
       pathname.startsWith("/jobseeker/alerts") ||
@@ -148,8 +151,9 @@ export async function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  const supabase = createMiddlewareClient(request, response);
+  // const supabase = createMiddlewareClient(request, response);
 
+  /*
   if (!supabase) {
     const url = request.nextUrl.clone();
     url.pathname = "/setup";
@@ -187,6 +191,7 @@ export async function middleware(request: NextRequest) {
     url.pathname = getDashboardPath(role);
     return NextResponse.redirect(url);
   }
+  */
 
   return response;
 }
