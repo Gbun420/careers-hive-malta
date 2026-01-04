@@ -6,6 +6,30 @@
 - Verify: `curl -i http://localhost:3005/api/health/db` returns healthy
 - **IMPORTANT**: `auth.users` is Supabase-managed; `public.profiles` is created by bootstrap
 
+## Production Deploy Verification
+
+### Pre-deployment checks
+- npm run review PASS 
+- Branch: feat/production-launch-system (clean working tree)
+- Vercel CLI: authenticated as gbun420
+
+### Deployment steps
+1. Deploy to production: `npx vercel --prod --yes`
+2. Verify production health endpoints
+3. Update SMOKE.md with production smoke results
+
+### Production health checks
+- `curl -i https://<prod-url>/api/health/app`
+- `curl -i https://<prod-url>/api/health/db`
+
+Expected results:
+- HTTP 200 with `{"status":"ok","version":"<commit>"}`
+- All required tables present and RLS enabled
+
+### GO/NO-GO Status
+- **GO**: All production health checks pass and app is fully functional
+- **NO-GO**: Any health check fails or required tables missing
+
 ## Env missing path (no Supabase keys)
 - Not run.
 - Manual: `npm run dev`, visit `/setup`, then attempt `/jobseeker/dashboard`.
