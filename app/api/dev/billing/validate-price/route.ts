@@ -8,7 +8,7 @@ import {
   mapStripeError,
 } from "@/lib/billing/stripe";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export async function GET(request: Request) {
   const dev = requireDevSecret(request);

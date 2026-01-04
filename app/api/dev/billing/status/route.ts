@@ -7,7 +7,7 @@ import {
   isStripeConfigured,
 } from "@/lib/billing/stripe";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export async function GET() {
   if (process.env.NODE_ENV === "production") {

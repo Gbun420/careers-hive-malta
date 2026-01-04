@@ -5,6 +5,9 @@ import { isMeiliConfigured, reindexJobs } from "@/lib/search/meili";
 import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 const REINDEX_HEADER = "x-search-reindex-secret";
 
 export async function POST(request: Request) {

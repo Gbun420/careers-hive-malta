@@ -3,6 +3,9 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 
 export async function GET(request: Request) {
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
   // Dev-only endpoint
   if (process.env.NODE_ENV === "production") {
     return jsonError("NOT_FOUND", "Endpoint not available in production", 404);

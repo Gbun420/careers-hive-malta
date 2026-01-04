@@ -4,6 +4,9 @@ import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { SavedSearchUpdateSchema } from "@/lib/alerts/criteria";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 type RouteParams = {
   params: Promise<{ id: string }>;
 };

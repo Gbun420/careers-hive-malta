@@ -3,6 +3,9 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { sendConfirmationEmail } from "@/lib/email/sender";
 
 export async function POST(request: Request) {
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
   try {
     const { email, password, role } = await request.json();
 

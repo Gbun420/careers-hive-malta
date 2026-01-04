@@ -8,6 +8,9 @@ import { upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 type RouteParams = {
   params: Promise<{ id: string }>;
 };

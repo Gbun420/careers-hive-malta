@@ -5,6 +5,9 @@ import { getUserRole } from "@/lib/auth/roles";
 import { SavedSearchCreateSchema } from "@/lib/alerts/criteria";
 
 export async function GET() {
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
   const supabase = createRouteHandlerClient();
   if (!supabase) {
     return jsonError(

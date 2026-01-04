@@ -5,6 +5,9 @@ import { isEmailConfigured, sendDigestEmail } from "@/lib/email/sender";
 import { matchJobToSearch } from "@/lib/alerts/match";
 import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 const dispatchSecret = process.env.ALERT_DISPATCH_SECRET;
 
 export async function POST(request: Request) {

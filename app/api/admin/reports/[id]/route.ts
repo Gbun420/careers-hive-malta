@@ -4,6 +4,9 @@ import { jsonError } from "@/lib/api/errors";
 import { ReportUpdateSchema } from "@/lib/trust/schema";
 import { logAudit } from "@/lib/audit/log";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 type RouteParams = {
   params: Promise<{ id: string }>;
 };

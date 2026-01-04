@@ -9,6 +9,9 @@ import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 import { searchJobs, upsertJobs } from "@/lib/search/meili";
 import { attachEmployerVerified, isEmployerVerified } from "@/lib/trust/verification";
 import {
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
   attachFeaturedStatus,
   isJobFeatured,
   sortFeaturedJobs,
