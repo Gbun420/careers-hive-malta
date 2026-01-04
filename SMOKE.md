@@ -26,14 +26,21 @@
 3. Update SMOKE.md with production smoke results ✅
 
 ### Production health checks
-- `curl -i https://careers-hive-malta-prod.vercel.app/api/health/app` ✅
-  - HTTP 200 with `{"status":"ok","version":null,"commit":null}`
-- `curl -i https://careers-hive-malta-prod.vercel.app/api/health/db` ✅
-  - HTTP 200 with all required tables present and RLS enabled
-  - All tables: profiles, jobs, saved_searches, notifications, job_reports, employer_verifications, audit_logs, purchases, job_featured
+- `curl -i https://careers-hive-malta-prod.vercel.app/api/health/app`
+- `curl -i https://careers-hive-malta-prod.vercel.app/api/health/db`
+
+Expected results:
+- HTTP 200 with `{"status":"ok","version":null,"commit":null}`
+- HTTP 200 with `{"status":"healthy",...}`
+
+### Latest Smoke Results (2026-01-04)
+- **App Health**: ✅ 200 OK
+- **DB Health**: ✅ Healthy (All 9 tables verified)
+- **Favicon**: ✅ 200 OK
+- **Admin Setup**: ✅ bundyglenn@gmail.com allowlisted
 
 ### GO/NO-GO Status
-- **GO** ✅: All production health checks pass and app is fully functional
+- **GO**: All production health checks pass and app is fully functional.
 
 ### Final Production Details
 - **Production URL**: https://careers-hive-malta-prod.vercel.app
