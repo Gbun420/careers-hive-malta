@@ -3,11 +3,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   try {
-    const { email, secret } = await request.json();
-
-    if (secret !== process.env.DEV_TOOLS_SECRET) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { email } = await request.json();
 
     const supabase = createServiceRoleClient();
     if (!supabase) {
