@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/admin-guard";
 import { jsonError } from "@/lib/api/errors";
 
-export async function GET() {
-
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
+export async function GET() {
+
   const auth = await requireAdmin();
   if (!auth.supabase || !auth.user) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);

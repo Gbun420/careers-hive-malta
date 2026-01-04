@@ -8,6 +8,7 @@ import type { Job } from "@/lib/jobs/schema";
 import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 
+
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 

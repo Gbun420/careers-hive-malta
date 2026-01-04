@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { createServiceRoleClient } from "@/lib/supabase/server";
-import { jsonError } from "@/lib/api/errors";
+import { createEdgeServiceClient } from "@/lib/supabase-edge";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -23,13 +21,13 @@ export async function GET() {
     { name: "purchases", column: "id" },
     { name: "job_featured", column: "job_id" },
   ];
-  const supabase = createServiceRoleClient();
+  
+  const supabase = createEdgeServiceClient();
 
   if (!supabase) {
-    return jsonError(
-      "SUPABASE_NOT_CONFIGURED",
-      "Supabase is not configured.",
-      503
+    return NextResponse.json(
+      { error: "Supabase not configured" },
+      { status: 503 }
     );
   }
 

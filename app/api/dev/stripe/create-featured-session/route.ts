@@ -8,12 +8,14 @@ import { createFeaturedCheckoutSession } from "@/lib/billing/checkout";
 import { isStripeConfigured } from "@/lib/billing/stripe";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
-export const runtime = "edge";
 
 const BodySchema = z.object({
   job_id: z.string().min(1, "Job is required."),
   employer_id: z.string().optional(),
 });
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   const dev = requireDevSecret(request);

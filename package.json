@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "review": "npm run lint && npm run typecheck && npm run build"
+    "review": "npm run lint && npm run typecheck && npm run build",
+    "build:cf": "npm run build && npx @cloudflare/next-on-pages",
+    "preview": "npx @cloudflare/next-on-pages --watch",
+    "deploy": "npm run build:cf && wrangler pages deploy"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

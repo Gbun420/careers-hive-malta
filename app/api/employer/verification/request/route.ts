@@ -5,8 +5,6 @@ import { getUserRole } from "@/lib/auth/roles";
 import { VerificationRequestSchema } from "@/lib/trust/schema";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
-export const runtime = "edge";
-export const dynamic = "force-dynamic";
 
 async function getEmployerAuth() {
   const supabase = createRouteHandlerClient();
@@ -26,6 +24,9 @@ async function getEmployerAuth() {
 
   return { supabase, userId: authData.user.id };
 }
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const auth = await getEmployerAuth();

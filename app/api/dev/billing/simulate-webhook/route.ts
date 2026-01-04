@@ -11,11 +11,13 @@ import { fulfillFeaturedCheckoutSession } from "@/lib/billing/fulfillment";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
-export const runtime = "edge";
 
 const BodySchema = z.object({
   session_id: z.string().min(1, "Session ID is required."),
 });
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   const dev = requireDevSecret(request);

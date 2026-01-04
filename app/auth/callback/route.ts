@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
-export async function GET(request: Request) {
-
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
+export async function GET(request: Request) {
+
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
 

@@ -4,10 +4,11 @@ import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { SavedSearchCreateSchema } from "@/lib/alerts/criteria";
 
-export async function GET() {
-
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
+export async function GET() {
+
   const supabase = createRouteHandlerClient();
   if (!supabase) {
     return jsonError(

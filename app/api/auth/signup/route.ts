@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { sendConfirmationEmail } from "@/lib/email/sender";
 
-export async function POST(request: Request) {
-
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
+export async function POST(request: Request) {
+
   try {
     const { email, password, role } = await request.json();
 

@@ -10,12 +10,14 @@ import { upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
-export const runtime = "edge";
 
 const BodySchema = z.object({
   job_id: z.string().min(1, "Job is required."),
   days: z.number().int().positive().optional(),
 });
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   const dev = requireDevSecret(request);
