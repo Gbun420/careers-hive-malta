@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 
 type EditPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default function SavedSearchEditPage({ params }: EditPageProps) {
+export default async function SavedSearchEditPage({ params }: EditPageProps) {
+  const { id } = await params;
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
@@ -37,7 +38,7 @@ export default function SavedSearchEditPage({ params }: EditPageProps) {
           Adjust your criteria to fine-tune alert accuracy.
         </p>
       </header>
-      <SavedSearchEdit id={params.id} />
+      <SavedSearchEdit id={id} />
     </main>
   );
 }

@@ -26,15 +26,15 @@ export function createRouteHandlerClient(): SupabaseClient | null {
     return null;
   }
 
-  const cookieStore = cookies();
-
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      getAll() {
+      async getAll() {
+        const cookieStore = await cookies();
         return cookieStore.getAll();
       },
-      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+      async setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
         try {
+          const cookieStore = await cookies();
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set({ name, value, ...options })
           );

@@ -9,10 +9,11 @@ import {
 } from "@/lib/billing/stripe";
 
 type EditPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default function EmployerJobEditPage({ params }: EditPageProps) {
+export default async function EmployerJobEditPage({ params }: EditPageProps) {
+  const { id } = await params;
   const billingEnabled = isStripeConfigured();
   const featuredDurationDays = getFeaturedDurationDays();
   const featuredPriceLabel = getFeaturedPriceLabel();
@@ -47,7 +48,7 @@ export default function EmployerJobEditPage({ params }: EditPageProps) {
         </p>
       </header>
       <JobEdit
-        id={params.id}
+        id={id}
         billingEnabled={billingEnabled}
         featuredDurationDays={featuredDurationDays}
         featuredPriceLabel={featuredPriceLabel}

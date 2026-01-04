@@ -38,10 +38,15 @@ async function getJobForSeo(id: string): Promise<Job | null> {
   return data as Job;
 }
 
+type JobDetailPageProps = {
+  params: Promise<{ id: string }>;
+};
+
 export async function generateMetadata({
   params,
 }: JobDetailPageProps): Promise<Metadata> {
-  const job = await getJobForSeo(params.id);
+  const { id } = await params;
+  const job = await getJobForSeo(id);
   const title = job?.title
     ? `${job.title} | Careers Hive Malta`
     : "Job in Malta | Careers Hive Malta";
@@ -53,18 +58,15 @@ export async function generateMetadata({
     ...(siteUrl
       ? {
           alternates: {
-            canonical: `${siteUrl}/jobs/${params.id}`,
+            canonical: `${siteUrl}/jobs/${id}`,
           },
         }
       : {}),
   };
 }
 
-type JobDetailPageProps = {
-  params: { id: string };
-};
-
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
+  const { id } = await params;
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
@@ -81,7 +83,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
     );
   }
 
-  const job = await getJobForSeo(params.id);
+  const job = await getJobForSeo(id);
   const jobPostingJsonLd = job
     ? {
         "@context": "https://schema.org",
@@ -116,7 +118,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             <Link href="/jobs">Back to jobs</Link>
           </Button>
         </header>
-        <PublicJobDetail id={params.id} />
+        <PublicJobDetail id={id} />
       </main>
     </>
   );
