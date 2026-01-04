@@ -79,6 +79,9 @@ export default function SignupForm({
         data: {
           role,
         },
+        emailRedirectTo: process.env.NEXT_PUBLIC_SITE_URL 
+          ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+          : undefined,
       },
     });
     setLoading(false);
