@@ -16,29 +16,34 @@ function createMiddlewareClient(
     return null;
   }
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
+  try {
+    return createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set({
+              name,
+              value,
+              ...options,
+            });
           });
-        });
-        cookiesToSet.forEach(({ name, value, options }) => {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set({
+              name,
+              value,
+              ...options,
+            });
           });
-        });
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Failed to create Supabase middleware client:", error);
+    return null;
+  }
 }
 
 // From lib/auth/session.ts
@@ -151,17 +156,24 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const { data } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (error) {
+    console.error("Supabase getUser failed:", error);
+    // Treat as unauthenticated
+  }
 
-  if (!data.user) {
+  if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirectedFrom", pathname);
     return NextResponse.redirect(url);
   }
 
-  let role = getUserRole(data.user);
-  if (role === "admin" && !isAdminAllowedEmail(data.user.email)) {
+  let role = getUserRole(user);
+  if (role === "admin" && !isAdminAllowedEmail(user.email)) {
     role = null;
   }
   if (!role) {
