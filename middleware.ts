@@ -1,8 +1,66 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
-import { getMissingSupabaseEnv } from "@/lib/auth/session";
-import { getDashboardPath, getRoleFromPath, getUserRole } from "@/lib/auth/roles";
-import { isAdminAllowedEmail } from "@/lib/auth/admin";
+
+// --- Inlined Helper Logic ---
+
+// From lib/auth/session.ts
+const requiredEnv = [
+  "NEXT_PUBLIC_SUPABASE_URL",
+  "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+] as const;
+
+function getMissingSupabaseEnv(): string[] {
+  return requiredEnv.filter((key) => !process.env[key]);
+}
+
+// From lib/auth/roles.ts
+const roles = ["jobseeker", "employer", "admin"] as const;
+type UserRole = (typeof roles)[number];
+
+function getDashboardPath(role: UserRole): string {
+  return `/${role}/dashboard`;
+}
+
+function getRoleFromPath(pathname: string): UserRole | null {
+  if (pathname.startsWith("/jobseeker")) {
+    return "jobseeker";
+  }
+  if (pathname.startsWith("/employer")) {
+    return "employer";
+  }
+  if (pathname.startsWith("/admin")) {
+    return "admin";
+  }
+  return null;
+}
+
+function getUserRole(user: { user_metadata?: Record<string, unknown> | null } | null): UserRole | null {
+  if (!user?.user_metadata) {
+    return null;
+  }
+  const role = user.user_metadata.role;
+  return (typeof role === "string" && roles.includes(role as UserRole)) ? (role as UserRole) : null;
+}
+
+// From lib/auth/admin.ts
+const allowAdminSignup = process.env.ALLOW_ADMIN_SIGNUP === "true";
+const rawAllowlist = process.env.ADMIN_ALLOWLIST ?? "";
+const adminAllowlist = rawAllowlist
+  .split(",")
+  .map((value) => value.trim().toLowerCase())
+  .filter(Boolean);
+
+function isAdminAllowedEmail(email?: string | null): boolean {
+  if (!allowAdminSignup) {
+    return false;
+  }
+  if (!email) {
+    return false;
+  }
+  return adminAllowlist.includes(email.toLowerCase());
+}
+
+// --- End Inlined Logic ---
 
 function isStaticAsset(pathname: string): boolean {
   return (
