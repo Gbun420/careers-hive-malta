@@ -5,10 +5,11 @@ import { ReportUpdateSchema } from "@/lib/trust/schema";
 import { logAudit } from "@/lib/audit/log";
 
 type RouteParams = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function PATCH(request: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await requireAdmin();
   if (!auth.supabase || !auth.user) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
@@ -34,7 +35,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       reviewed_at: new Date().toISOString(),
       reviewer_id: auth.user.id,
     })
-    .eq("id", params.id)
+    .eq("id", id)
     .select(
       "id, job_id, reporter_id, status, reason, details, resolution_notes, created_at, reviewed_at, reviewer_id"
     )

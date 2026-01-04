@@ -9,10 +9,11 @@ import type { Job } from "@/lib/jobs/schema";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 type RouteParams = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function PATCH(request: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await requireAdmin();
   if (!auth.supabase || !auth.user) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
@@ -38,7 +39,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       reviewed_at: new Date().toISOString(),
       reviewer_id: auth.user.id,
     })
-    .eq("id", params.id)
+    .eq("id", id)
     .select("id, employer_id, status, notes, submitted_at, reviewed_at, reviewer_id")
     .single();
 

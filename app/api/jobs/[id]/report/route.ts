@@ -9,10 +9,11 @@ export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 type RouteParams = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
   const startTime = Date.now();
   const supabase = createRouteHandlerClient();
 
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   const { data: job, error: jobError } = await serviceSupabase
     .from("jobs")
     .select("id")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (jobError || !job) {
@@ -122,7 +123,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   const { data: existing } = await serviceSupabase
     .from("job_reports")
     .select("id, status")
-    .eq("job_id", params.id)
+    .eq("job_id", id)
     .eq("reporter_id", userId)
     .in("status", ["new", "reviewing"])
     .limit(1);
@@ -140,7 +141,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   const { data, error } = await serviceSupabase
     .from("job_reports")
     .insert({
-      job_id: params.id,
+      job_id: id,
       reporter_id: userId,
       reason: parsed.data.reason,
       details: parsed.data.details ?? null,

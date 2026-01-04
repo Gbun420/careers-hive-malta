@@ -5,7 +5,7 @@ import { getUserRole } from "@/lib/auth/roles";
 import { SavedSearchUpdateSchema } from "@/lib/alerts/criteria";
 
 type RouteParams = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 async function getAuthedJobseeker() {
@@ -28,6 +28,7 @@ async function getAuthedJobseeker() {
 }
 
 export async function GET(_: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await getAuthedJobseeker();
   if (!auth.supabase || !auth.userId) {
     return auth.error ?? jsonError("UNAUTHORIZED", "Authentication required.", 401);
@@ -36,7 +37,7 @@ export async function GET(_: Request, { params }: RouteParams) {
   const { data, error } = await auth.supabase
     .from("saved_searches")
     .select("id, created_at, frequency, search_criteria")
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("jobseeker_id", auth.userId)
     .single();
 
@@ -48,6 +49,7 @@ export async function GET(_: Request, { params }: RouteParams) {
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await getAuthedJobseeker();
   if (!auth.supabase || !auth.userId) {
     return auth.error ?? jsonError("UNAUTHORIZED", "Authentication required.", 401);
@@ -68,7 +70,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   const { data, error } = await auth.supabase
     .from("saved_searches")
     .update(parsed.data)
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("jobseeker_id", auth.userId)
     .select("id, created_at, frequency, search_criteria")
     .single();
@@ -81,6 +83,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 }
 
 export async function DELETE(_: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await getAuthedJobseeker();
   if (!auth.supabase || !auth.userId) {
     return auth.error ?? jsonError("UNAUTHORIZED", "Authentication required.", 401);
@@ -89,7 +92,7 @@ export async function DELETE(_: Request, { params }: RouteParams) {
   const { data, error } = await auth.supabase
     .from("saved_searches")
     .delete()
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("jobseeker_id", auth.userId)
     .select("id")
     .single();

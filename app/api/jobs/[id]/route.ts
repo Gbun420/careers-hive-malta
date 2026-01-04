@@ -9,7 +9,7 @@ import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 type RouteParams = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 async function getSupabase() {
@@ -21,6 +21,7 @@ async function getSupabase() {
 }
 
 export async function GET(_: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await getSupabase();
   if (!auth.supabase) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
@@ -38,7 +39,7 @@ export async function GET(_: Request, { params }: RouteParams) {
       .select(
         "id, employer_id, title, description, location, salary_range, created_at, is_active"
       )
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("employer_id", authData.user.id)
       .single();
 
@@ -54,7 +55,7 @@ export async function GET(_: Request, { params }: RouteParams) {
     .select(
       "id, employer_id, title, description, location, salary_range, created_at, is_active"
     )
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("is_active", true)
     .single();
 
@@ -71,6 +72,7 @@ export async function GET(_: Request, { params }: RouteParams) {
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await getSupabase();
   if (!auth.supabase) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
@@ -102,7 +104,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   const { data, error } = await auth.supabase
     .from("jobs")
     .update(normalized)
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("employer_id", authData.user.id)
     .select(
       "id, employer_id, title, description, location, salary_range, created_at, is_active"
@@ -126,6 +128,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 }
 
 export async function DELETE(_: Request, { params }: RouteParams) {
+  const { id } = await params;
   const auth = await getSupabase();
   if (!auth.supabase) {
     return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
@@ -144,7 +147,7 @@ export async function DELETE(_: Request, { params }: RouteParams) {
   const { data, error } = await auth.supabase
     .from("jobs")
     .delete()
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("employer_id", authData.user.id)
     .select("id")
     .single();
@@ -154,7 +157,7 @@ export async function DELETE(_: Request, { params }: RouteParams) {
   }
 
   try {
-    await removeJobs([params.id]);
+    await removeJobs([id]);
   } catch (indexError) {
     // Best-effort indexing only.
   }
