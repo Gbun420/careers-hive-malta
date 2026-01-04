@@ -1,7 +1,54 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createMiddlewareClient } from "@/lib/supabase/middleware";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { type SupabaseClient } from "@supabase/supabase-js";
 
 // --- Inlined Helper Logic ---
+
+// From lib/supabase/middleware.ts
+function createMiddlewareClient(
+  request: NextRequest,
+  response: NextResponse
+): SupabaseClient | null {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options: CookieOptions) {
+        request.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+        response.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+      },
+      remove(name: string, options: CookieOptions) {
+        request.cookies.set({
+          name,
+          value: "",
+          ...options,
+        });
+        response.cookies.set({
+          name,
+          value: "",
+          ...options,
+          maxAge: 0,
+        });
+      },
+    },
+  });
+}
 
 // From lib/auth/session.ts
 const requiredEnv = [
