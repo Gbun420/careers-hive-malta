@@ -46,3 +46,4 @@ tsconfig.tsbuildinfo
 audit/logs/
 !audit/reports/
 .vercel
+.env*.local

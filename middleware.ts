@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createMiddlewareClient } from "@/lib/supabase/server";
+import { createMiddlewareClient } from "@/lib/supabase/middleware";
 import { getMissingSupabaseEnv } from "@/lib/auth/session";
 import { getDashboardPath, getRoleFromPath, getUserRole } from "@/lib/auth/roles";
 import { isAdminAllowedEmail } from "@/lib/auth/admin";
