@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { type SupabaseClient } from "@supabase/supabase-js";
 import { createEdgeServiceClient } from "@/lib/supabase-edge";
 
 export const runtime = "edge";

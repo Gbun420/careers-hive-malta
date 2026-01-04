@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable Edge Runtime for Cloudflare
-  experimental: {
-    runtime: 'edge',
-    serverComponentsExternalPackages: ['@supabase/supabase-js'],
-  },
+  // Ensure proper handling of Supabase
+  serverExternalPackages: ['@supabase/supabase-js'],
   // Cloudflare Pages specific settings
   output: 'standalone',
   images: {
@@ -14,4 +11,4 @@ const nextConfig = {
   trailingSlash: true,
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;
