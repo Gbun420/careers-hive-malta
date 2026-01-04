@@ -1,6 +1,6 @@
 # Careers Hive Malta - Production Audit Report
-**Audit Date**: $(date +%Y-%m-%d)
-**Git Commit**: $(git rev-parse --short HEAD)
+**Audit Date**: 2026-01-04
+**Git Commit**: 389b851
 **Audit Type**: Pre-Deployment Heavy Audit
 
 ## Executive Summary
@@ -8,14 +8,14 @@
 - [x] Dependency Audit: PASS
 - [x] Code Quality: PASS
 - [x] Runtime Validation: PASS
-- [ ] Dev/Prod Parity: PENDING
+- [ ] Dev/Prod Parity: FAIL (missing required env vars)
 
 ## Detailed Findings
 
 ### 1. Security Scan Results
 ```bash
 # Matches found for env var references in code/docs; no secret-like tokens in tracked files.
-# See audit/logs/security-scan.log and audit/logs/env-files.log for full output.
+# Local-only logs are in audit/logs/ (ignored by default).
 ```
 
 ### 2. Dependency Analysis
@@ -33,9 +33,10 @@ Outdated packages: 12
 ### 4. Known Issues & Mitigations
 | Issue | Severity | Mitigation | Status |
 |-------|----------|------------|--------|
-| Git validation passed after clean commit | Low | Verified with audit/scripts/git-validation.js | Resolved |
+| Missing required env vars (validate-env-vars) | Medium | Set in Vercel and local env before deploy | Open |
+| Git validation fails until audit artifacts are committed | Low | Commit audit outputs | Open |
 
 ## Sign-off
 - Auditor: System Automated Audit
-- Date: $(date +%Y-%m-%d)
-- Result: NO-GO (pending final proofs)
+- Date: 2026-01-04
+- Result: NO-GO (missing required env vars and uncommitted audit artifacts)

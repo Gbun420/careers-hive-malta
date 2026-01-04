@@ -92,7 +92,7 @@ class DuplicateReportTest {
       test: 'Authentication',
       status: result.status,
       expected: 200,
-      passed: result.status === 200 && result.body.access_token,
+      passed: result.status === 200 && !!result.body.access_token,
       response: { has_token: !!result.body.access_token },
     });
 
@@ -127,7 +127,7 @@ class DuplicateReportTest {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ reason: 'test duplication', details: 'test duplication' }),
+      body: JSON.stringify({ reason: 'spam', details: 'test duplication' }),
     });
 
     const secondReport = await this.makeRequest(`${this.baseUrl}/api/jobs/${jobId}/report`, {
@@ -135,7 +135,7 @@ class DuplicateReportTest {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ reason: 'test duplication', details: 'test duplication' }),
+      body: JSON.stringify({ reason: 'spam', details: 'test duplication' }),
     });
 
     this.testResults.push({
@@ -164,7 +164,7 @@ class DuplicateReportTest {
       results: this.testResults,
     };
 
-    fs.writeFileSync('audit/proofs/duplicate-report-validation.json', JSON.stringify(report, null, 2));
+    fs.writeFileSync('audit/reports/duplicate-report-validation.json', JSON.stringify(report, null, 2));
 
     console.log('\n=== TEST RESULTS ===');
     this.testResults.forEach((result, index) => {

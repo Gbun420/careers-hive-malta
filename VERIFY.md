@@ -17,7 +17,7 @@ saved_searches
 ### /api/health/db result
 ```
 HTTP/1.1 200 OK
-{"status":"healthy","supabaseProjectRef":"127","requiredTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"presentTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"tables":[{"name":"profiles","ok":true,"column":"id"},{"name":"jobs","ok":true,"column":"id"},{"name":"saved_searches","ok":true,"column":"id"},{"name":"notifications","ok":true,"column":"id"},{"name":"job_reports","ok":true,"column":"id"},{"name":"employer_verifications","ok":true,"column":"id"},{"name":"audit_logs","ok":true,"column":"id"},{"name":"purchases","ok":true,"column":"id"},{"name":"job_featured","ok":true,"column":"job_id"}]}
+{"status":"healthy","supabaseProjectRef":"127","requiredTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"presentTables":["profiles","jobs","saved_searches","notifications","job_reports","employer_verifications","audit_logs","purchases","job_featured"],"tables":[{"name":"profiles","ok":true,"column":"id"},{"name":"jobs","ok":true,"column":"id"},{"name":"saved_searches","ok":true,"column":"id"},{"name":"notifications","ok":true,"column":"id"},{"name":"job_reports","ok":true,"column":"details"},{"name":"employer_verifications","ok":true,"column":"id"},{"name":"audit_logs","ok":true,"column":"id"},{"name":"purchases","ok":true,"column":"id"},{"name":"job_featured","ok":true,"column":"job_id"}]}
 ```
 
 ### Profiles query (trigger proof)
@@ -156,12 +156,17 @@ Transfer-Encoding: chunked
 ```
 
 ```
-DUPLICATE REPORT (database layer proof)
-ERROR:  23505: duplicate key value violates unique constraint "job_reports_unique_open_idx"
-DETAIL:  Key (job_id, reporter_id)=(ad30bc6a-1727-4b43-8064-67d99795a496, c525bc91-a635-4f4f-90f7-f0f421aa212b) already exists.
-```
+DUPLICATE REPORT (API proof)
+HTTP/1.1 409 Conflict
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+content-type: application/json
+Date: Sun, 04 Jan 2026 08:21:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
 
-**Note**: The database constraint is working correctly. The API endpoint will return `409 DUPLICATE_REPORT` when called with proper authentication. The unique constraint `job_reports_unique_open_idx` prevents duplicate reports for the same job_id and reporter_id when status is 'new' or 'reviewing'.
+{"error":{"code":"DUPLICATE_REPORT","message":"You already reported this job."}}
+```
 
 ## Stripe live checklist
 - `STRIPE_SECRET_KEY` is live (verify in Vercel).
@@ -186,8 +191,8 @@ DETAIL:  Key (job_id, reporter_id)=(ad30bc6a-1727-4b43-8064-67d99795a496, c525bc
   - `curl -i https://<prod>/api/health/db`
 
 ## GO/NO-GO
-- **GO** - All checks pass, `/api/health/db` is healthy with required tables and RLS enabled, duplicate report constraint working at database level.
-- NO-GO if any RLS/policy checks fail, health endpoints are unhealthy, or Stripe live checklist is incomplete (fix and re-run).
+- **NO-GO** - Missing required production env vars (see `audit/reports/validate-env-vars.txt`) and prod proofs not run.
+- GO when env vars are set in Vercel, prod health checks pass, and Stripe live checklist is complete.
 
 ## Dev billing proof routes verification
 Never paste secrets into chat; set env locally.
