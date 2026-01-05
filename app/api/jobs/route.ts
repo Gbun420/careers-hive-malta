@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createEdgeClient, createEdgeServiceClient } from "@/lib/supabase-edge";
+import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { JobCreateSchema, normalizeJobPayload } from "@/lib/jobs/schema";
@@ -7,12 +7,17 @@ import { upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
 import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus, sortFeaturedJobs, type JobWithFeatured } from "@/lib/billing/featured";
+import { matchJobToSearch } from "@/lib/alerts/match";
+import type { SavedSearchCriteria } from "@/lib/alerts/criteria";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  const supabase = createEdgeClient();
+  const supabase = createRouteHandlerClient();
+  if (!supabase) {
+    return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
+  }
 
   const { searchParams } = new URL(request.url);
   const mine = searchParams.get("mine") === "true";
@@ -70,7 +75,8 @@ export async function GET(request: NextRequest) {
          return jsonError("DB_ERROR", error.message, 500);
     }
 
-  const withFeatured = await attachFeaturedStatus(data as Job[]);
+  const jobs = data || [];
+  const withFeatured = await attachFeaturedStatus(jobs as Job[]);
   const enriched = await attachEmployerVerified(withFeatured);
   const sorted = sortFeaturedJobs(enriched);
 
@@ -85,7 +91,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = createEdgeClient();
+  const supabase = createRouteHandlerClient();
+  if (!supabase) {
+    return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
+  }
 
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData.user) {
@@ -123,13 +132,47 @@ export async function POST(request: NextRequest) {
     return jsonError("DB_INSERT_FAILED", error?.message || "Unable to create job.", 500);
   }
 
+  const job = data as Job;
+
+  // Match with saved searches and enqueue notifications
+  const serviceSupabase = createServiceRoleClient();
+  if (serviceSupabase) {
+    try {
+      // 1. Fetch all saved searches
+      const { data: searches } = await serviceSupabase
+        .from("saved_searches")
+        .select("id, jobseeker_id, frequency, search_criteria");
+
+      if (searches && searches.length > 0) {
+        const notificationsToInsert = searches
+          .filter((search) => {
+            const { match } = matchJobToSearch(job, search.search_criteria as SavedSearchCriteria);
+            return match;
+          })
+          .map((search) => ({
+            user_id: search.jobseeker_id,
+            job_id: job.id,
+            saved_search_id: search.id,
+            channel: "email",
+            status: search.frequency === "instant" ? "pending" : "queued",
+          }));
+
+        if (notificationsToInsert.length > 0) {
+          await serviceSupabase.from("notifications").insert(notificationsToInsert);
+        }
+      }
+    } catch (matchError) {
+      console.error("Alert matching failed:", matchError);
+    }
+  }
+
   try {
-    const [withFeatured] = await attachFeaturedStatus([data as Job]);
+    const [withFeatured] = await attachFeaturedStatus([job]);
     const [enriched] = await attachEmployerVerified([withFeatured]);
     await upsertJobs([enriched as Job]);
   } catch (indexError) {
     // Best-effort indexing
   }
 
-  return NextResponse.json({ data }, { status: 201 });
+  return NextResponse.json({ data: job }, { status: 201 });
 }

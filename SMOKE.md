@@ -18,6 +18,30 @@
   - Verify "Past Verifications" section is visible.
   - (Optional) Approve a request and see it move to "Past".
 
+## Email Notifications (2026-01-05)
+- **Signup Confirmation**:
+  - Sign up with a new email.
+  - Verify if using override: check `bundyglenn@gmail.com` for the email.
+  - Verify if no override: check the provided email.
+- **Job Alerts**:
+  - As a jobseeker, create a saved search for "Engineer" in "Valletta" with "Instant" frequency.
+  - As an employer, post a job with title "Senior Engineer" and location "Valletta".
+  - Admin: Check `notifications` table in Supabase or `/jobseeker/notifications` page.
+  - Verify a new "pending" email notification exists.
+  - (Internal) Run `/api/alerts/dispatch` with secret to send.
+
+## Job Reporting (2026-01-05)
+- **Report a Job**:
+  - As any user (or admin in preview), go to a job detail page.
+  - Click "Report job".
+  - Select a reason and add details.
+  - Submit.
+  - Verify success message.
+- **Admin Review**:
+  - Log in as admin.
+  - Navigate to `/admin/reports`.
+  - Verify the report appears in the list.
+
 ## SEO Enhancements (2026-01-05)
 - **Meta Tags**:
   - Inspect root page source.
