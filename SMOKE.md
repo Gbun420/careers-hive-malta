@@ -7,6 +7,7 @@
 - Production URL: https://careers-hive-malta-prod.vercel.app
 - Health app: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/app` -> 200 `{"status":"ok","version":null,"commit":null}`
 - Health db: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/db` -> 200 `{"status":"healthy",...}`
+- Routes (followed redirects): `/`, `/pricing`, `/jobs`, `/signup` -> 200 OK
 
 ## Vercel build fix (2026-01-05)
 - Issue: Vercel build failed on commit `ebc0c94` due to `@cloudflare/next-on-pages` peer range vs Next 15.5.9.
