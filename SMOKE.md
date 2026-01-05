@@ -16,7 +16,18 @@
   - Navigate to `/admin/verifications`.
   - Verify "Pending Requests" section is visible.
   - Verify "Past Verifications" section is visible.
-  - (Optional) Approve a request and see it move to "Past".
+- **Audit Logs**:
+  - Navigate to `/admin/audit`.
+  - Verify recent system logs appear with action type and timestamp.
+
+## User Profile & Settings (2026-01-05)
+- **Update Profile**:
+  - Navigate to `/settings` (via any dashboard).
+  - Verify your email is displayed (read-only).
+  - Enter a new "Full name".
+  - Click "Save changes".
+  - Verify success message.
+  - Refresh page and verify name is persisted.
 
 ## Email Notifications (2026-01-05)
 - **Signup Confirmation**:

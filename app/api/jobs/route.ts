@@ -102,8 +102,8 @@ export async function POST(request: NextRequest) {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "employer") {
-    return jsonError("FORBIDDEN", "Employer access required.", 403);
+  if (role !== "employer" && role !== "admin") {
+    return jsonError("FORBIDDEN", "Employer or Admin access required.", 403);
   }
 
   let payload: unknown;

@@ -30,6 +30,15 @@ export default function JobseekerDashboard() {
             Explore the latest verified roles.
           </p>
         </Link>
+        <Link
+          href="/settings"
+          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-500/30"
+        >
+          <p className="font-semibold text-slate-900">Account settings</p>
+          <p className="mt-2 text-sm text-slate-600">
+            Update your profile and preferences.
+          </p>
+        </Link>
       </section>
     </main>
   );

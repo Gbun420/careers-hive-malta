@@ -42,6 +42,24 @@ export default function AdminDashboard() {
               Manage platform trust signals and badges.
             </p>
           </Link>
+          <Link
+            href="/admin/audit"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-500/30 hover:shadow-md"
+          >
+            <p className="font-semibold text-slate-900">Audit logs</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Track system changes and administrative actions.
+            </p>
+          </Link>
+          <Link
+            href="/settings"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-500/30 hover:shadow-md"
+          >
+            <p className="font-semibold text-slate-900">Account settings</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Update your administrative profile.
+            </p>
+          </Link>
         </div>
       </section>
 

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Work_Sans } from "next/font/google";
 import LocalBusinessSchema from "@/components/seo/local-business-schema";
 import { siteConfig } from "@/lib/site-config";
+import { Analytics } from "@vercel/analytics/next";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -63,6 +64,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
         <LocalBusinessSchema />
         {children}
+        <Analytics />
       </body>
     </html>
   );
