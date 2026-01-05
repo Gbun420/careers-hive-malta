@@ -10,6 +10,8 @@ import {
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import { getDashboardPath, getUserRole } from "@/lib/auth/roles";
 
@@ -120,77 +122,71 @@ export default function LoginForm({
 
   if (!supabase) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-16">
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Supabase setup required
-        </h1>
-        <p className="mt-3 text-slate-600">
-          Configure your environment variables before signing in.
+      <div className="space-y-4">
+        <p className="text-sm font-medium text-slate-600">
+          Supabase configuration required. Please visit setup to link your database.
         </p>
-        <Link
-          href="/setup"
-          className="mt-6 inline-flex w-fit rounded-full border border-slate-300 px-5 py-2 text-sm font-medium text-slate-700"
-        >
-          Go to setup
-        </Link>
-      </main>
+        <Button asChild variant="outline" className="w-full rounded-xl">
+          <Link href="/setup">Go to setup</Link>
+        </Button>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-16">
-      <h1 className="font-display text-3xl font-semibold text-slate-900">
-        Welcome back
-      </h1>
-      <p className="mt-3 text-slate-600">
-        Sign in to manage job alerts and postings.
-      </p>
-
-      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-        <label className="block text-sm font-medium text-slate-700">
-          Email
-          <input
+    <div className="flex flex-col">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="email">Work Email</Label>
+          <Input
+            id="email"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none"
+            placeholder="name@company.com"
           />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          Password
-          <input
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Security Password</Label>
+          <Input
+            id="password"
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none"
+            placeholder="••••••••"
           />
-        </label>
+        </div>
+        
         {error ? (
-          <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700">
             {error}
           </p>
         ) : null}
+        
         {message ? (
-          <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700">
+          <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">
             {message}
           </p>
         ) : null}
-        <Button type="submit" size="lg" disabled={loading}>
+        
+        <Button type="submit" size="lg" disabled={loading} className="w-full rounded-xl bg-brand-primary hover:bg-brand-primaryDark shadow-lg shadow-brand-primary/20">
           {loading ? "Signing in..." : "Sign In"}
         </Button>
       </form>
 
-      <p className="mt-6 text-sm text-slate-600">
-        New here?{" "}
-        <Link
-          href={`/signup${redirectedFrom ? `?redirectedFrom=${encodeURIComponent(redirectedFrom)}` : ""}`}
-          className="font-medium text-teal-700 underline"
-        >
-          Create an account
-        </Link>
-      </p>
-    </main>
+      <footer className="mt-8 pt-6 border-t border-slate-50 text-center">
+        <p className="text-sm text-slate-500 font-medium">
+          New to Careers.mt?{" "}
+          <Link
+            href={`/signup${redirectedFrom ? `?redirectedFrom=${encodeURIComponent(redirectedFrom)}` : ""}`}
+            className="font-black text-brand-primary hover:text-brand-primaryDark transition-colors underline decoration-2 underline-offset-4"
+          >
+            Create an account
+          </Link>
+        </p>
+      </footer>
+    </div>
   );
 }

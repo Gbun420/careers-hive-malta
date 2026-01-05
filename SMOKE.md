@@ -123,13 +123,21 @@
   - Verify Hero copy includes real numbers for seekers/jobs (or fallback text if DB is empty).
   - Visit `/pricing`.
   - Verify "Featured upgrade" card includes `${avg_applications_per_job}` if available.
-- **Event Tracking**:
-  - Open Browser DevTools -> Console.
-  - Sign up as a new user.
-  - Verify `[Analytics] signup_initiated` log appears.
-  - Create a saved search/alert.
-  - Verify `[Analytics] alert_signup_complete` log appears.
-  - Check `localStorage.getItem('ch_event_history')` for persisted events.
+
+## Smart Onboarding & Matching (2026-01-05)
+- **Resume Parsing**:
+  - Log in as jobseeker.
+  - Navigate to `/profile`.
+  - Paste text into "Smart Resume Sync" (e.g., "Senior React Developer with 5 years experience").
+  - Click "Extract Skills".
+  - Verify "Detected Profile" appears with skills (React, JavaScript, etc.).
+  - Click "Apply to Profile".
+  - Verify skills and headline are updated in the form below.
+- **Job Matching**:
+  - Navigate to `/jobseeker/dashboard`.
+  - Verify "Recommended for You" section is visible.
+  - Verify roles appear with "% Match" badges based on your profile skills.
+  - Click a recommended role and verify it leads to the correct job detail page.
 
 ## Setup redirect loop fix (2026-01-05)
 - Issue: `/setup/` redirected to itself when Supabase env was missing (trailing slash + middleware allowlist).

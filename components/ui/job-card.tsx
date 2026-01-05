@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "./badge";
-import { Briefcase, MapPin, Calendar, ExternalLink } from "lucide-react";
+import { MapPin, Calendar, ExternalLink, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type JobCardProps = {
@@ -12,6 +12,7 @@ type JobCardProps = {
   createdAt: string;
   isFeatured?: boolean;
   isVerified?: boolean;
+  matchScore?: number;
 };
 
 export function JobCard({
@@ -22,55 +23,64 @@ export function JobCard({
   salaryRange,
   createdAt,
   isFeatured,
-  isVerified
+  isVerified,
+  matchScore
 }: JobCardProps) {
   return (
     <Link 
       href={`/jobs/${id}`}
       className={cn(
-        "group relative flex flex-col gap-4 rounded-2xl border bg-white p-6 transition-all",
+        "group relative flex flex-col gap-4 rounded-xl border bg-white p-6 transition-all duration-300 card-interactive",
         isFeatured 
-          ? "border-gold-200 bg-gold-50/30 shadow-gold-glow hover:shadow-premium" 
-          : "border-slate-200 hover:border-navy-200 hover:shadow-premium"
+          ? "border-brand-primary/30 card-glass shadow-sun-glow hover:-translate-y-1" 
+          : "border-neutral-300 hover:border-brand-secondary hover:shadow-premium hover:-translate-y-1"
       )}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex flex-wrap gap-2">
-            {isFeatured && <Badge variant="featured">Featured</Badge>}
-            {isVerified && <Badge variant="verified">Verified Employer</Badge>}
+          <div className="flex flex-wrap gap-2 mb-2">
+            {isFeatured && (
+              <Badge variant="featured" className="bg-gradient-primary text-white border-none shadow-sm">
+                Featured
+              </Badge>
+            )}
+            {isVerified && (
+              <Badge variant="verified" className="bg-brand-secondary text-white border-none">
+                ✓ Verified
+              </Badge>
+            )}
+            {matchScore && matchScore >= 50 && (
+              <div className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-success-light/10 text-success-primary">
+                <Zap className="h-3 w-3 mr-1 fill-success-primary" />
+                {matchScore}% Match
+              </div>
+            )}
           </div>
-          <h3 className="mt-2 text-xl font-bold text-navy-950 group-hover:text-navy-600 transition-colors">
+          <h3 className="text-lg font-bold text-neutral-900 group-hover:text-brand-secondary transition-colors leading-tight">
             {title}
           </h3>
-          <p className="font-semibold text-slate-600">{employerName}</p>
+          <p className="text-sm font-medium text-neutral-500">{employerName}</p>
         </div>
-        <div className="rounded-xl bg-slate-50 p-2 text-slate-400 group-hover:bg-navy-50 group-hover:text-navy-500 transition-colors">
+        <div className="rounded-full bg-neutral-100 p-2 text-neutral-500 group-hover:bg-brand-secondary/10 group-hover:text-brand-secondary transition-all">
           <ExternalLink className="h-5 w-5" />
         </div>
       </div>
 
-      <div className="mt-auto flex flex-wrap gap-4 text-sm font-medium text-slate-500">
+      <div className="mt-4 flex flex-wrap gap-4 text-xs font-medium text-neutral-500 uppercase tracking-wide">
         <div className="flex items-center gap-1.5">
-          <MapPin className="h-4 w-4" />
+          <MapPin className="h-3.5 w-3.5 text-brand-secondary" />
           {location}
         </div>
         <div className="flex items-center gap-1.5">
-          <Calendar className="h-4 w-4" />
+          <Calendar className="h-3.5 w-3.5 text-brand-secondary" />
           {new Date(createdAt).toLocaleDateString()}
         </div>
         {salaryRange && (
-          <div className="flex items-center gap-1.5 font-bold text-navy-900">
+          <div className="flex items-center gap-1.5 font-bold text-neutral-900 bg-brand-primary/10 px-2 py-1 rounded">
             {salaryRange}
           </div>
         )}
       </div>
-
-      {isFeatured && (
-        <div className="absolute top-0 right-0 h-16 w-16 overflow-hidden rounded-tr-2xl">
-          <div className="absolute top-0 right-0 h-[2px] w-[140%] translate-x-[30%] translate-y-[10px] rotate-45 bg-gold-400" />
-        </div>
-      )}
     </Link>
   );
 }

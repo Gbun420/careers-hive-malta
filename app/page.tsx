@@ -1,6 +1,6 @@
 import SiteHeader from "@/components/nav/site-header";
-import HeroTwoColumn from "@/components/landing/hero-two-column";
-import FeatureGrid from "@/components/landing/feature-grid";
+import Hero from "@/components/landing/hero";
+import TrustStrip from "@/components/landing/trust-strip";
 import CategoryGrid from "@/components/landing/category-grid";
 import EmployerPricingPath from "@/components/landing/employer-pricing-path";
 import FeaturedCarousel from "@/components/jobs/featured-carousel";
@@ -22,28 +22,24 @@ export default async function Home() {
       'alert_delivery_time',
       'verified_postings_pct',
       'featured_adoption_rate',
-      'avg_applications_per_job'
+      'avg_applications_per_job',
+      'placements_30day',
+      'retention_7day_pct'
     ],
     fallbacks: true
   });
 
   return (
-    <div className="min-h-screen selection:bg-coral-100 selection:text-coral-900">
-      <SiteHeader />
+    <div className="bg-white">
       <main>
-        {/* NEW Hero with dynamic stats */}
-        <HeroTwoColumn metrics={metrics} />
+        <Hero employerSignupHref={employerSignupHref} />
         
-        {/* Featured carousel (hand-picked from DB) */}
+        <TrustStrip showSearch={meiliEnabled} metrics={metrics} />
+        
         <FeaturedCarousel />
         
-        {/* NEW Feature Grid for Trust & Speed */}
-        <FeatureGrid metrics={metrics} showSearch={meiliEnabled} />
-        
-        {/* NEW Industry Explorer */}
         <CategoryGrid />
         
-        {/* NEW Employer Strip & Pricing Preview */}
         <EmployerPricingPath 
           metrics={metrics} 
           employerSignupHref={employerSignupHref} 

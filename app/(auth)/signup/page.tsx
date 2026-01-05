@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import SignupForm from "@/components/auth/signup-form";
+import OnboardingWizard from "@/components/auth/onboarding-wizard";
 import { getAdminAllowlist, isAdminSignupEnabled } from "@/lib/auth/admin";
 
 export default function SignupPage() {
@@ -10,11 +10,11 @@ export default function SignupPage() {
     <Suspense
       fallback={
         <div className="mx-auto flex min-h-screen max-w-xl items-center justify-center px-6 py-16 text-sm text-slate-600">
-          Loading sign-up...
+          Initializing secure onboarding...
         </div>
       }
     >
-      <SignupForm
+      <OnboardingWizard
         allowAdminSignup={allowAdminSignup}
         adminAllowlist={adminAllowlist}
       />

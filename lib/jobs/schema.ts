@@ -19,6 +19,20 @@ export const JobSchema = z.object({
   employer_verified: z.boolean().optional(),
   featured_until: z.string().nullable().optional(),
   is_featured: z.boolean().optional(),
+  application_count: z.number().optional(),
+  status: z.enum(["active", "closed", "filled"]).optional(),
+});
+
+export const JobseekerProfileSchema = z.object({
+  id: z.string(),
+  role: z.literal("jobseeker"),
+  full_name: z.string().nullable().optional(),
+  headline: z.string().nullable().optional(),
+  bio: z.string().nullable().optional(),
+  experience: z.array(z.any()).optional(),
+  education: z.array(z.any()).optional(),
+  skills: z.array(z.string()).optional(),
+  created_at: z.string(),
 });
 
 export const JobCreateSchema = z.object({
@@ -99,6 +113,7 @@ export const JobUpdateSchema = z.object({
 export type Job = z.infer<typeof JobSchema>;
 export type JobCreate = z.infer<typeof JobCreateSchema>;
 export type JobUpdate = z.infer<typeof JobUpdateSchema>;
+export type JobseekerProfile = z.infer<typeof JobseekerProfileSchema>;
 
 const normalizeText = (value?: string | null): string | undefined => {
   if (!value) {

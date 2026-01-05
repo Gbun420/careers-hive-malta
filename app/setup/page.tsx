@@ -1,65 +1,84 @@
 import Link from "next/link";
 import { getMissingSupabaseEnv } from "@/lib/auth/session";
 import { getMissingMeiliEnv, isMeiliConfigured } from "@/lib/search/meili";
+import { PageShell } from "@/components/ui/page-shell";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { Badge } from "@/components/ui/badge";
 
 export default function SetupPage() {
   const missing = getMissingSupabaseEnv();
   const missingMeili = getMissingMeiliEnv();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-16">
-      <h1 className="font-display text-3xl font-semibold text-slate-900">
-        Supabase setup required
-      </h1>
-      <p className="mt-3 text-slate-600">
-        Add the missing environment variables to <code>.env.local</code> and
-        restart the dev server.
-      </p>
-      {missing.length > 0 ? (
-        <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-amber-900">
-          <p className="font-semibold">Missing keys</p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-            {missing.map((key) => (
-              <li key={key}>{key}</li>
-            ))}
-          </ul>
+    <PageShell>
+      <div className="max-w-3xl mx-auto">
+        <header className="mb-12">
+          <SectionHeading 
+            title="System Configuration" 
+            subtitle="Link your database and search engine to initialize the Malta job board."
+          />
+        </header>
+
+        <div className="space-y-8">
+          {/* Supabase Section */}
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-black text-slate-950 tracking-tight">Supabase Core</h3>
+              {missing.length === 0 ? (
+                <Badge variant="success">Sync Active</Badge>
+              ) : (
+                <Badge variant="error">Pending Link</Badge>
+              )}
+            </div>
+            
+            {missing.length > 0 ? (
+              <div className="space-y-4">
+                <p className="text-sm text-slate-600 font-medium">Add these missing environment variables to your <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs">.env.local</code> file:</p>
+                <div className="rounded-xl border border-rose-100 bg-rose-50 p-4">
+                  <ul className="list-disc space-y-1 pl-5 text-sm font-bold text-rose-700">
+                    {missing.map((key) => (
+                      <li key={key}>{key}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-brand-success font-bold">
+                Database synchronization is active. You can now <Link href="/login" className="underline decoration-2 underline-offset-4">Sign in to your account</Link>.
+              </p>
+            )}
+          </div>
+
+          {/* Meilisearch Section */}
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-black text-slate-950 tracking-tight">Meilisearch (Optional)</h3>
+              {isMeiliConfigured() ? (
+                <Badge variant="success">Fast Search Ready</Badge>
+              ) : (
+                <Badge>Standard Mode</Badge>
+              )}
+            </div>
+            
+            {!isMeiliConfigured() && (
+              <div className="space-y-4">
+                <p className="text-sm text-slate-600 font-medium">Add Meilisearch credentials to enable lightning-fast filtering and real-time indexing.</p>
+                {missingMeili.length > 0 && (
+                  <ul className="list-disc space-y-1 pl-5 text-sm font-bold text-slate-400">
+                    {missingMeili.map((key) => (
+                      <li key={key}>{key}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      ) : (
-        <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-emerald-900">
-          <p className="font-semibold">Supabase is configured.</p>
-          <p className="mt-2 text-sm">
-            You can continue to {" "}
-            <Link href="/login" className="underline">
-              login
-            </Link>
-            .
-          </p>
-        </div>
-      )}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white px-5 py-4">
-        <p className="font-semibold text-slate-900">Meilisearch (optional)</p>
-        {isMeiliConfigured() ? (
-          <p className="mt-2 text-sm text-slate-600">
-            Fast search is configured and ready for the jobs feed.
-          </p>
-        ) : (
-          <>
-            <p className="mt-2 text-sm text-slate-600">
-              Add Meilisearch env vars to enable fast job search.
-            </p>
-            {missingMeili.length > 0 ? (
-              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
-                {missingMeili.map((key) => (
-                  <li key={key}>{key}</li>
-                ))}
-              </ul>
-            ) : null}
-          </>
-        )}
+
+        <p className="mt-12 text-center text-xs font-bold uppercase tracking-widest text-slate-400">
+          Need help? Consult <code className="text-brand-primary">docs/DB.md</code> for platform architectural details.
+        </p>
       </div>
-      <p className="mt-8 text-sm text-slate-500">
-        Need help? Check <code>docs/DB.md</code> for setup steps.
-      </p>
-    </main>
+    </PageShell>
   );
 }

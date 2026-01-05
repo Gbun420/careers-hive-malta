@@ -7,5 +7,14 @@ export const siteConfig = {
   social: {
     twitter: "@careersmt",
     linkedin: "company/careers-mt"
-  }
+  },
+  locations: [
+    "Valletta", "Sliema", "St. Julians", "Birkirkara", "Mosta", 
+    "Qormi", "Zabbar", "Naxxar", "San Gwann", "Gzira", 
+    "Msida", "Swieqi", "Mellieha", "St. Pauls Bay", "Gozo", "Remote"
+  ],
+  industries: [
+    "IT & Tech", "iGaming", "Finance", "Marketing", "Hospitality", 
+    "Healthcare", "Legal", "Construction", "Education", "Retail"
+  ]
 };

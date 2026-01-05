@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/jobs/schema";
 import FeatureCTA from "@/components/billing/feature-cta";
+import { X, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 type ApiError = {
   error?: {
@@ -153,31 +155,37 @@ export default function EmployerJobList({
         </div>
       ) : null}
       {showCreatedBanner ? (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-semibold">Job posted successfully.</p>
-            <button
-              type="button"
-              onClick={handleDismissBanner}
-              className="text-xs font-semibold uppercase tracking-wide text-emerald-800 underline"
-            >
-              Dismiss
+        <div className="rounded-[2rem] border border-gold-200 bg-gold-50 p-8 shadow-premium mb-8 animate-fade-in relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4">
+            <button onClick={handleDismissBanner} className="text-gold-400 hover:text-gold-600 transition-colors">
+              <X className="h-5 w-5" />
             </button>
           </div>
-          <p className="mt-2 text-emerald-800">
-            Boost this role with a featured upgrade for {featuredDurationDays}{" "}
-            days and appear first in search.
-          </p>
-          {createdJob && !createdJob.is_featured ? (
-            <FeatureCTA
-              jobId={createdJob.id}
-              billingEnabled={billingEnabled}
-              label="Boost this job"
-              size="lg"
-              className="mt-3"
-              redirectPath="/employer/jobs"
-            />
-          ) : null}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-8">
+            <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-white text-gold-600 shadow-sm flex-shrink-0">
+              <Sparkles className="h-8 w-8 fill-gold-500" />
+            </div>
+            <div className="flex-grow">
+              <Badge variant="featured" className="mb-2">Priority Post Successfully Live</Badge>
+              <h3 className="text-2xl font-black text-navy-950">Reach 3x more candidates.</h3>
+              <p className="mt-2 text-sm font-medium text-gold-800 leading-relaxed max-w-xl">
+                Featured listings stay at the top of the feed and search results for {featuredDurationDays} days. 
+                Average roles get 18+ matching applicants within 48 hours.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              {createdJob && !createdJob.is_featured ? (
+                <FeatureCTA
+                  jobId={createdJob.id}
+                  billingEnabled={billingEnabled}
+                  label={featuredPriceLabel ? `Boost Now (${featuredPriceLabel})` : "Boost Now"}
+                  size="lg"
+                  className="w-full sm:w-auto"
+                  redirectPath="/employer/jobs"
+                />
+              ) : null}
+            </div>
+          </div>
         </div>
       ) : null}
       {jobs.map((job) => (

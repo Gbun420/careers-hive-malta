@@ -1,8 +1,5 @@
 import * as React from "react";
-
-function cx(...classes: Array<string | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
+import { cn } from "@/lib/utils";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -13,8 +10,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         type={type}
-        className={cx(
-          "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10",
+        className={cn(
+          "w-full rounded-lg border-2 border-slate-200 bg-white px-4 py-3 text-sm text-charcoal shadow-sm transition-all placeholder:text-slate-400 focus:border-brand-primary focus:outline-none focus:ring-4 focus:ring-brand-primary/10 disabled:opacity-50",
           className
         )}
         {...props}

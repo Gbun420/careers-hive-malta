@@ -38,41 +38,44 @@ const blogPosts = [
   }
 ];
 
+import { PageShell } from "@/components/ui/page-shell";
+import { SectionHeading } from "@/components/ui/section-heading";
+
 export default function BlogPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-16 px-6 py-20">
-      <header className="max-w-3xl">
-        <h1 className="font-sans text-6xl font-extrabold text-slate-950 tracking-tightest leading-tight">
-          Career Insights for the <span className="text-brand-600">Maltese Market.</span>
-        </h1>
-        <p className="mt-6 text-xl text-slate-500 leading-relaxed">
-          Expert advice on finding your next role in Malta, from relocation guides to industry benchmarks.
-        </p>
+    <PageShell>
+      <header className="mb-16">
+        <SectionHeading 
+          title="Career Insights for the Maltese Market" 
+          subtitle="Expert advice on finding your next role in Malta, from relocation guides to industry benchmarks."
+        />
       </header>
 
-      <section className="grid gap-8 sm:grid-cols-2">
+      <section className="grid gap-10 sm:grid-cols-2">
         {blogPosts.map((post) => (
-          <article key={post.slug} className="premium-card group block p-8 rounded-[2rem]">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          <article key={post.slug} className="group relative flex flex-col p-10 rounded-[3rem] border border-slate-200 bg-white transition-all duration-300 hover:border-brand-primary hover:shadow-premium hover:-translate-y-1">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="bg-brand-primary/10 text-brand-primaryDark text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
                 {post.category}
               </span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{post.date}</span>
             </div>
-            <h2 className="text-2xl font-bold text-slate-950 group-hover:text-brand-600 transition-colors tracking-tight">
+            <h2 className="text-3xl font-black text-slate-950 group-hover:text-brand-primary transition-colors tracking-tightest leading-tight">
               <Link href={`/blog/${post.slug}`}>{post.title}</Link>
             </h2>
-            <p className="mt-4 text-slate-500 leading-relaxed">{post.excerpt}</p>
-            <Link 
-              href={`/blog/${post.slug}`}
-              className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-slate-950 hover:text-brand-600 transition-colors"
-            >
-              Read full guide
-              <span className="text-xl">→</span>
-            </Link>
+            <p className="mt-6 text-lg text-slate-500 font-medium leading-relaxed flex-1">{post.excerpt}</p>
+            <div className="mt-10 pt-8 border-t border-slate-50">
+              <Link 
+                href={`/blog/${post.slug}`}
+                className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-950 hover:text-brand-primary transition-all group/link"
+              >
+                Read full guide
+                <span className="text-xl transition-transform group-hover/link:translate-x-1">→</span>
+              </Link>
+            </div>
           </article>
         ))}
       </section>
-    </main>
+    </PageShell>
   );
 }

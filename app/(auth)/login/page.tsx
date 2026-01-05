@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import LoginForm from "@/components/auth/login-form";
+import { AuthShell } from "@/components/auth/auth-shell";
 import { getAdminAllowlist, isAdminSignupEnabled } from "@/lib/auth/admin";
 
 export default function LoginPage() {
@@ -14,10 +15,15 @@ export default function LoginPage() {
         </div>
       }
     >
-      <LoginForm
-        allowAdminSignup={allowAdminSignup}
-        adminAllowlist={adminAllowlist}
-      />
+      <AuthShell 
+        title="Welcome back" 
+        subtitle="Sign in to manage your alerts and applications."
+      >
+        <LoginForm
+          allowAdminSignup={allowAdminSignup}
+          adminAllowlist={adminAllowlist}
+        />
+      </AuthShell>
     </Suspense>
   );
 }

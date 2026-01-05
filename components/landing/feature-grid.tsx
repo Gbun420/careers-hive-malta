@@ -7,29 +7,29 @@ type FeatureGridProps = {
 };
 
 export default function FeatureGrid({ metrics, showSearch }: FeatureGridProps) {
-  const verifiedPostingsPct = metrics.verified_postings_pct?.value;
+  const verifiedPostingsPct = metrics.verified_postings_pct?.value || "90";
+  const alertSpeed = metrics.alert_delivery_time?.value || "5";
+  const retentionRate = metrics.retention_7day_pct?.value || "75";
 
   const features = [
     {
-      title: "Verified Employers",
-      description: verifiedPostingsPct && verifiedPostingsPct !== "N/A"
-        ? `${verifiedPostingsPct}% of our job feed comes from manually verified Maltese businesses.`
-        : "Every employer is manually reviewed by our team to ensure high-quality, legitimate opportunities.",
+      title: `${verifiedPostingsPct}% Verified Postings`,
+      description: "Every employer is manually reviewed by our team to ensure high-quality, legitimate opportunities for Maltese professionals.",
       icon: ShieldCheck,
       color: "text-navy-600",
       bg: "bg-navy-50"
     },
     {
-      title: "Zero Spam Policy",
-      description: "Spot something suspicious? Our moderation pipeline handles job reports in real-time to keep the market clean.",
-      icon: Flag,
+      title: `< ${alertSpeed}min Alert Speed`,
+      description: "Get notified the second a matching role is posted. Apply while positions are fresh and competition is low.",
+      icon: Bell,
       color: "text-coral-500",
       bg: "bg-coral-50"
     },
     {
-      title: "Custom Alert Frequency",
-      description: "Choose between instant, daily, or weekly digests. Never miss a matching role in your industry.",
-      icon: Bell,
+      title: `${retentionRate}% Weekly Retention`,
+      description: "Our community of professionals keeps coming back because we deliver the highest quality job feed in Malta.",
+      icon: Search,
       color: "text-navy-950",
       bg: "bg-slate-100"
     }

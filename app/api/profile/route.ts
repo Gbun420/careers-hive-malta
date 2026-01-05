@@ -9,6 +9,11 @@ export const dynamic = "force-dynamic";
 
 const ProfileUpdateSchema = z.object({
   full_name: z.string().trim().min(2).max(100).optional(),
+  headline: z.string().trim().max(120).optional(),
+  bio: z.string().trim().max(1000).optional(),
+  experience: z.array(z.any()).optional(),
+  education: z.array(z.any()).optional(),
+  skills: z.array(z.string()).optional(),
 });
 
 export async function GET() {
@@ -24,7 +29,7 @@ export async function GET() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, role, full_name, created_at")
+    .select("id, role, full_name, headline, bio, experience, education, skills, created_at")
     .eq("id", authData.user.id)
     .single();
 
@@ -67,9 +72,14 @@ export async function PATCH(request: Request) {
     .from("profiles")
     .update({
       full_name: parsed.data.full_name,
+      headline: parsed.data.headline,
+      bio: parsed.data.bio,
+      experience: parsed.data.experience,
+      education: parsed.data.education,
+      skills: parsed.data.skills,
     })
     .eq("id", authData.user.id)
-    .select("id, role, full_name, created_at")
+    .select("id, role, full_name, headline, bio, experience, education, skills, created_at")
     .single();
 
   if (updateError) {
@@ -83,8 +93,7 @@ export async function PATCH(request: Request) {
     entityType: "profile",
     entityId: profile.id,
     meta: {
-      updated_fields: ["full_name"],
-      new_full_name: parsed.data.full_name,
+      updated_fields: Object.keys(parsed.data),
     },
   });
 

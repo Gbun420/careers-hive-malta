@@ -11,7 +11,7 @@ import { matchJobToSearch } from "@/lib/alerts/match";
 import type { SavedSearchCriteria } from "@/lib/alerts/criteria";
 import { logAudit } from "@/lib/audit/log";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
@@ -24,6 +24,8 @@ export async function GET(request: NextRequest) {
   const mine = searchParams.get("mine") === "true";
   const query = searchParams.get("q");
   const location = searchParams.get("location");
+  const salaryMin = searchParams.get("salary_min");
+  const verifiedOnly = searchParams.get("verified_only") === "true";
 
   if (mine) {
     const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -52,7 +54,6 @@ export async function GET(request: NextRequest) {
     }
 
     const jobs = data || [];
-    // Attach details even for "mine" list (e.g. to show featured status)
     const withFeatured = await attachFeaturedStatus(jobs as Job[]);
     const enriched = await attachEmployerVerified(withFeatured);
     
@@ -77,9 +78,7 @@ export async function GET(request: NextRequest) {
   let dbQuery = supabase
     .from("jobs")
     .select("*", { count: "exact" })
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .eq("is_active", true);
 
   if (location) {
     dbQuery = dbQuery.ilike("location", `%${location}%`);
@@ -89,15 +88,26 @@ export async function GET(request: NextRequest) {
     dbQuery = dbQuery.ilike("title", `%${query}%`);
   }
 
-  const { data, error, count } = await dbQuery;
+  if (salaryMin) {
+    dbQuery = dbQuery.gte("salary_min", Number(salaryMin));
+  }
+
+  const { data, error, count } = await dbQuery
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
 
     if (error) {
          return jsonError("DB_ERROR", error.message, 500);
     }
 
   const jobs = data || [];
-  const withFeatured = await attachFeaturedStatus(jobs as Job[]);
-  const enriched = await attachEmployerVerified(withFeatured);
+  let withFeatured = await attachFeaturedStatus(jobs as Job[]);
+  let enriched = await attachEmployerVerified(withFeatured);
+
+  if (verifiedOnly) {
+    enriched = enriched.filter(j => j.employer_verified);
+  }
+
   const sorted = sortFeaturedJobs(enriched);
 
   return NextResponse.json({ 
@@ -180,7 +190,6 @@ export async function POST(request: NextRequest) {
   const serviceSupabase = createServiceRoleClient();
   if (serviceSupabase) {
     try {
-      // 1. Fetch all saved searches
       const { data: searches } = await serviceSupabase
         .from("saved_searches")
         .select("id, jobseeker_id, frequency, search_criteria");

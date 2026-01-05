@@ -1,5 +1,6 @@
 import { fetchDynamicMetrics } from "@/lib/metrics";
-import SiteHeader from "@/components/nav/site-header";
+import { PageShell } from "@/components/ui/page-shell";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { Shield, Activity, Clock, Users, Briefcase, Zap, CheckCircle, BarChart3 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -35,71 +36,70 @@ export default async function MetricsDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <SiteHeader />
-      <main className="mx-auto max-w-7xl px-6 py-12">
-        <div className="flex flex-col gap-2 mb-10">
-          <h1 className="text-4xl font-black tracking-tight text-slate-900">SYSTEM METRICS</h1>
-          <p className="text-slate-500 font-medium">Real-time performance monitoring and data freshness audit.</p>
-        </div>
+    <PageShell>
+      <header className="mb-12">
+        <SectionHeading 
+          title="System Metrics" 
+          subtitle="Real-time performance monitoring and data freshness audit."
+        />
+      </header>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(metrics).map(([key, data]) => (
-            <div 
-              key={key} 
-              className={`relative overflow-hidden rounded-2xl border bg-white p-6 shadow-sm transition-all hover:shadow-md ${
-                data.isStale ? "border-red-200 ring-1 ring-red-100" : "border-slate-200"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`rounded-xl p-2.5 ${data.isStale ? "bg-red-50 text-red-600" : "bg-brand-50 text-brand-600"}`}>
-                  {getIcon(key)}
-                </div>
-                {data.isStale && (
-                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700">
-                    Stale
-                  </span>
-                )}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {Object.entries(metrics).map(([key, data]) => (
+          <div 
+            key={key} 
+            className={`relative overflow-hidden rounded-2xl border bg-white p-6 shadow-sm transition-all hover:shadow-md ${
+              data.isStale ? "border-rose-200 ring-1 ring-rose-100" : "border-slate-200"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className={`rounded-xl p-2.5 ${data.isStale ? "bg-rose-50 text-rose-600" : "bg-brand-primary/10 text-brand-primary"}`}>
+                {getIcon(key)}
               </div>
-              
-              <div className="space-y-1">
-                <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">
-                  {key.replace(/_/g, ' ')}
-                </p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black tabular-nums text-slate-950">
-                    {data.value}
-                  </span>
-                  {key === 'verified_postings_pct' || key === 'featured_adoption_rate' ? (
-                    <span className="text-lg font-bold text-slate-400">%</span>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className="mt-6 flex items-center gap-1.5 border-t border-slate-50 pt-4">
-                <div className={`h-1.5 w-1.5 rounded-full ${data.isStale ? "bg-red-500" : "bg-green-500 animate-pulse"}`} />
-                <p className="text-[10px] font-medium text-slate-400">
-                  Synced: {new Date(data.lastUpdated).toLocaleTimeString()}
-                </p>
+              {data.isStale && (
+                <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                  Stale
+                </span>
+              )}
+            </div>
+            
+            <div className="space-y-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                {key.replace(/_/g, ' ')}
+              </p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-black tabular-nums text-slate-950">
+                  {data.value}
+                </span>
+                {(key === 'verified_postings_pct' || key === 'featured_adoption_rate' || key === 'retention_7day_pct') ? (
+                  <span className="text-lg font-bold text-slate-400">%</span>
+                ) : null}
               </div>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-8">
-          <h2 className="text-lg font-bold text-slate-900 mb-4">Data Freshness Policy</h2>
-          <div className="grid gap-4 text-sm text-slate-600 sm:grid-cols-2">
-            <div className="flex items-start gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-brand-500" />
-              <p>Metrics are cached using <code className="rounded bg-slate-100 px-1 font-mono text-xs">unstable_cache</code> with a 1-hour revalidation window.</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-brand-500" />
-              <p>Stale markers trigger automatically if the database has not been polled within the specified threshold.</p>
+            <div className="mt-6 flex items-center gap-1.5 border-t border-slate-50 pt-4">
+              <div className={`h-1.5 w-1.5 rounded-full ${data.isStale ? "bg-rose-500" : "bg-brand-success animate-pulse"}`} />
+              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">
+                Synced: {new Date(data.lastUpdated).toLocaleTimeString()}
+              </p>
             </div>
           </div>
+        ))}
+      </div>
+
+      <div className="mt-12 rounded-3xl border-2 border-dashed border-slate-200 bg-white p-10 text-center">
+        <h2 className="text-xl font-black text-slate-950 mb-4 tracking-tight">Data Freshness Policy</h2>
+        <div className="grid gap-6 text-sm text-slate-600 sm:grid-cols-2 max-w-4xl mx-auto text-left">
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div className="mt-1.5 h-2 w-2 rounded-full bg-brand-primary shrink-0" />
+            <p className="font-medium leading-relaxed">Metrics are cached using <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs border border-slate-200">unstable_cache</code> with a 1-hour revalidation window for optimal system performance.</p>
+          </div>
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div className="mt-1.5 h-2 w-2 rounded-full bg-brand-primary shrink-0" />
+            <p className="font-medium leading-relaxed">Stale markers trigger automatically if the database has not been polled within the specified threshold for each specific metric.</p>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </PageShell>
   );
 }

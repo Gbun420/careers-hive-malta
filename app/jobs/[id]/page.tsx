@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import type { Job } from "@/lib/jobs/schema";
+import { PageShell } from "@/components/ui/page-shell";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Briefcase, ChevronLeft } from "lucide-react";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -71,17 +74,17 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const { id } = await params;
   if (!isSupabaseConfigured()) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Job details unavailable
-        </h1>
-        <p className="mt-3 text-slate-600">
-          Connect Supabase to view job details.
-        </p>
-        <Button asChild className="mt-6 w-fit">
-          <Link href="/setup">Go to setup</Link>
-        </Button>
-      </main>
+      <PageShell>
+        <EmptyState 
+          icon={Briefcase}
+          title="Job details unavailable"
+          description="Connect Supabase to view matching opportunities in Malta."
+          action={{
+            label: "Go to setup",
+            href: "/setup"
+          }}
+        />
+      </PageShell>
     );
   }
 
@@ -117,7 +120,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
     : null;
 
   return (
-    <>
+    <PageShell>
       {jobPostingJsonLd ? (
         <script
           type="application/ld+json"
@@ -126,14 +129,18 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
           }}
         />
       ) : null}
-      <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-16">
+      
+      <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         <header>
-          <Button variant="outline" asChild>
-            <Link href="/jobs">Back to jobs</Link>
+          <Button variant="ghost" asChild className="-ml-4 text-slate-500 hover:text-brand-primary">
+            <Link href="/jobs" className="flex items-center gap-2">
+              <ChevronLeft className="h-4 w-4" />
+              Back to Opportunities
+            </Link>
           </Button>
         </header>
         <PublicJobDetail id={id} />
-      </main>
-    </>
+      </div>
+    </PageShell>
   );
 }

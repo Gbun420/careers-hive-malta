@@ -2,80 +2,89 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  darkMode: 'class',
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        // Design Tokens
-        navy: {
-          50: '#f2f5f9',
-          100: '#e1e8f2',
-          200: '#c7d5e7',
-          300: '#a1b9d7',
-          400: '#7395c1',
-          500: '#5277a8',
-          600: '#3f5d8a',
-          700: '#334b6f',
-          800: '#2d405d',
-          900: '#29374d',
-          950: '#1b2331', // Primary Navy
-        },
-        coral: {
-          50: '#fff3f2',
-          100: '#ffe4e1',
-          200: '#ffccc7',
-          300: '#ffa69e',
-          400: '#ff7366',
-          500: '#ff5444', // Secondary Coral
-          600: '#ed3422',
-          700: '#c82819',
-          800: '#a52418',
-          900: '#892319',
-          950: '#4b0e08',
-        },
-        gold: {
-          50: '#fdfce9',
-          100: '#fbf7c5',
-          200: '#f7ed8e',
-          300: '#f1db4f',
-          400: '#e9c421',
-          500: '#d5aa16', // Premium Gold
-          600: '#b88510',
-          700: '#926010',
-          800: '#784d14',
-          900: '#674116',
-          950: '#3c2209',
-        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
-          950: "#172554",
+          primary: "#0B5E7F",
+          success: "#10B981",
+          gold: "#FFB300",
         },
-      },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Geist", "Inter", "system-ui", "sans-serif"],
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
       borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
         'premium': '1rem',
         '2xl': '1.25rem',
         '3xl': '1.5rem',
       },
+      fontFamily: {
+        sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
+        display: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
+      },
       boxShadow: {
         'premium': '0 10px 30px -10px rgba(0, 0, 0, 0.1)',
         'premium-hover': '0 20px 40px -15px rgba(0, 0, 0, 0.15)',
-        'gold-glow': '0 0 20px -5px rgba(213, 170, 22, 0.3)',
-      }
+        'gold-glow': '0 0 20px -5px rgba(255, 179, 0, 0.3)',
+        'cta': '0 4px 12px rgba(11, 94, 127, 0.25)',
+      },
+      animation: {
+        "fade-in": "fade-in 0.3s ease-out both",
+      },
+      keyframes: {
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };
 
 export default config;
