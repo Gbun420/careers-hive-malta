@@ -31,21 +31,28 @@ export default function EmployerJobList({
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [billingEnabled, setBillingEnabled] = useState(
     billingEnabledDefault
   );
 
-  const loadJobs = async () => {
-    setLoading(true);
+  const loadJobs = async (pageNum: number, isInitial: boolean) => {
+    if (isInitial) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
     setError(null);
     try {
-      const response = await fetch("/api/jobs?mine=true", {
+      const response = await fetch(`/api/jobs?mine=true&page=${pageNum}&limit=20`, {
         cache: "no-store",
       });
       const payload = (await response.json().catch(() => ({}))) as ApiError & {
         data?: Job[];
-        meta?: { billing_enabled?: boolean };
+        meta?: { billing_enabled?: boolean; has_more?: boolean };
       };
 
       if (!response.ok) {
@@ -53,7 +60,9 @@ export default function EmployerJobList({
         return;
       }
 
-      setJobs(payload.data ?? []);
+      const newJobs = payload.data ?? [];
+      setJobs((prev) => (isInitial ? newJobs : [...prev, ...newJobs]));
+      setHasMore(payload.meta?.has_more ?? false);
       if (typeof payload.meta?.billing_enabled === "boolean") {
         setBillingEnabled(payload.meta.billing_enabled);
       }
@@ -65,12 +74,19 @@ export default function EmployerJobList({
       });
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
   useEffect(() => {
-    void loadJobs();
+    void loadJobs(1, true);
   }, []);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    void loadJobs(nextPage, false);
+  };
 
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm("Delete this job? This cannot be undone.");
@@ -85,7 +101,7 @@ export default function EmployerJobList({
       return;
     }
 
-    await loadJobs();
+    await loadJobs(1, true);
   };
 
   const createdJobId = searchParams.get("jobId");
@@ -167,28 +183,27 @@ export default function EmployerJobList({
       {jobs.map((job) => (
         <div
           key={job.id}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          className="premium-card p-6 rounded-[2rem] bg-white shadow-sm border border-slate-200/60"
         >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-900">{job.title}</p>
-              <p className="mt-1 text-xs text-slate-600">
-                {job.is_active ? "Active" : "Draft"} · {job.location || "No location"}
-              </p>
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <p className="text-xl font-bold text-slate-950 tracking-tightest">{job.title}</p>
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className={job.is_active ? "text-emerald-600" : "text-amber-600"}>
+                  {job.is_active ? "Active" : "Draft"}
+                </span>
+                <span>·</span>
+                <span>{job.location || "No location"}</span>
+              </div>
               {job.is_featured && job.featured_until ? (
-                <p className="mt-2 text-xs font-semibold text-emerald-700">
-                  Featured until{" "}
+                <p className="mt-2 text-[10px] font-extrabold uppercase tracking-widest text-emerald-700">
+                  ★ Featured until{" "}
                   {new Date(job.featured_until).toLocaleDateString()}
-                </p>
-              ) : null}
-              {job.employer_verified ? (
-                <p className="mt-1 text-xs text-emerald-700">
-                  Verified employers stand out.
                 </p>
               ) : null}
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" asChild>
+              <Button variant="outline" asChild className="rounded-xl">
                 <Link href={`/employer/jobs/${job.id}/edit`}>Edit</Link>
               </Button>
               {!job.is_featured ? (
@@ -197,19 +212,34 @@ export default function EmployerJobList({
                   billingEnabled={billingEnabled}
                   label={
                     featuredPriceLabel
-                      ? `Feature (${featuredPriceLabel})`
-                      : "Feature"
+                      ? `Boost (${featuredPriceLabel})`
+                      : "Boost"
                   }
+                  className="rounded-xl px-4"
                   redirectPath="/employer/jobs"
                 />
               ) : null}
-              <Button variant="outline" onClick={() => handleDelete(job.id)}>
+              <Button variant="outline" onClick={() => handleDelete(job.id)} className="rounded-xl text-rose-600 border-rose-100 hover:bg-rose-50 hover:border-rose-200">
                 Delete
               </Button>
             </div>
           </div>
         </div>
       ))}
+
+      {hasMore && (
+        <div className="mt-8 flex justify-center pb-10">
+          <Button
+            variant="outline"
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            size="lg"
+            className="w-full sm:w-auto min-w-[200px]"
+          >
+            {loadingMore ? "Loading more..." : "Load more jobs"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -39,20 +39,22 @@ export default function EmployerPath({
 
         <div
           id="pricing"
-          className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl lg:p-10"
+          className="rounded-[2.5rem] bg-slate-950 p-10 text-white shadow-2xl relative overflow-hidden"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-brand-400">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
+          
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.4em] text-brand-400 relative z-10">
             Pricing
           </p>
-          <h3 className="mt-4 text-2xl font-bold">
-            Featured job upgrades
+          <h3 className="mt-4 text-3xl font-extrabold tracking-tightest relative z-10">
+            Featured Job <span className="text-brand-400 italic">Upgrades.</span>
           </h3>
-          <p className="mt-4 text-slate-300">
+          <p className="mt-4 text-slate-400 leading-relaxed relative z-10">
             {featuredEnabled
               ? "Stripe Checkout is ready for featured boosts. Set your pricing in Stripe."
               : "Enable Stripe to unlock featured boosts for priority visibility."}
           </p>
-          <ul className="mt-6 space-y-4 text-sm text-slate-300">
+          <ul className="mt-8 space-y-5 text-sm font-semibold text-slate-300 relative z-10">
             <li className="flex items-center gap-3">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
               Pay per featured job
@@ -63,7 +65,7 @@ export default function EmployerPath({
             </li>
             <li className="flex items-center gap-3">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-              Duration controlled via settings
+              Real-time matching dashboard
             </li>
           </ul>
         </div>

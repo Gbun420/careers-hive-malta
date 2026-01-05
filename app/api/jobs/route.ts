@@ -35,23 +35,36 @@ export async function GET(request: NextRequest) {
       return jsonError("FORBIDDEN", "Employer or Admin access required.", 403);
     }
 
-    const { data, error } = await supabase
+    const limitParam = Number(searchParams.get("limit") ?? "20");
+    const pageParam = Number(searchParams.get("page") ?? "1");
+    const limit = Math.min(Math.max(1, limitParam), 100);
+    const offset = (Math.max(1, pageParam) - 1) * limit;
+
+    const { data, error, count } = await supabase
       .from("jobs")
-      .select("*")
+      .select("*", { count: "exact" })
       .eq("employer_id", authData.user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     
     if (error) {
          return jsonError("DB_ERROR", error.message, 500);
     }
 
+    const jobs = data || [];
     // Attach details even for "mine" list (e.g. to show featured status)
-    const withFeatured = await attachFeaturedStatus(data as Job[]);
+    const withFeatured = await attachFeaturedStatus(jobs as Job[]);
     const enriched = await attachEmployerVerified(withFeatured);
     
     return NextResponse.json({ 
         data: enriched, 
-        meta: { billing_enabled: false } 
+        meta: { 
+            total: count || 0,
+            limit,
+            page: pageParam,
+            has_more: count ? (offset + jobs.length < count) : false,
+            billing_enabled: false 
+        } 
     });
   }
 
