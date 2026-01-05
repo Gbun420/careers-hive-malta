@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Playfair_Display, Work_Sans } from "next/font/google";
 import LocalBusinessSchema from "@/components/seo/local-business-schema";
+import { siteConfig } from "@/lib/site-config";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -17,11 +18,10 @@ const workSans = Work_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Careers.mt - Malta Job Board 2026",
-    template: "%s | Careers.mt",
+    default: `${siteConfig.name} - Malta Job Board 2026`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Malta's trusted job board. Get instant alerts for IT, marketing, finance jobs from verified Maltese employers.",
+  description: siteConfig.description,
   keywords: [
     "Malta jobs",
     "careers Malta",
@@ -29,16 +29,16 @@ export const metadata: Metadata = {
     "Maltese employment",
   ],
   openGraph: {
-    title: "Careers.mt - Malta Job Board",
+    title: `${siteConfig.name} - Malta Job Board`,
     description: "Find verified jobs in Malta with instant alerts",
-    url: "https://careers-hive-malta-prod.vercel.app/",
-    siteName: "Careers.mt",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     images: [
       {
-        url: "https://careers-hive-malta-prod.vercel.app/og-image-2026.jpg",
+        url: `${siteConfig.url}/og-image-2026.jpg`,
         width: 1200,
         height: 630,
-        alt: "Careers.mt",
+        alt: siteConfig.name,
       },
     ],
     locale: "en_MT",
@@ -46,10 +46,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Careers.mt - Malta Job Board",
+    title: `${siteConfig.name} - Malta Job Board`,
     description: "Find verified jobs in Malta with instant alerts",
-    images: ["https://careers-hive-malta-prod.vercel.app/og-image-2026.jpg"],
-    creator: "@careersmt",
+    images: [`${siteConfig.url}/og-image-2026.jpg`],
+    creator: siteConfig.social.twitter,
   },
 };
 

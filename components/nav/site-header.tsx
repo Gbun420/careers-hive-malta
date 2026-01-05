@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, ShieldCheck, Building2 } from "lucide-react";
+import { siteConfig } from "@/lib/site-config";
 
 const navLinks = [
   { label: "Jobs", href: "/jobs" },
@@ -21,7 +22,7 @@ export default function SiteHeader() {
         <Link href="/" className="flex items-center gap-2">
           <Building2 className="h-6 w-6 text-teal-600" />
           <span className="font-display text-xl font-bold text-slate-900">
-            Careers.mt
+            {siteConfig.name}
           </span>
           <span className="hidden items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 sm:inline-flex">
             <ShieldCheck className="h-3 w-3" aria-hidden="true" />

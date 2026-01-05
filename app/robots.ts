@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { siteConfig } from '@/lib/site-config'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/', '/setup/'],
     },
-    sitemap: 'https://careers-hive-malta-prod.vercel.app/sitemap.xml',
+    sitemap: `${siteConfig.url}/sitemap.xml`,
   }
 }

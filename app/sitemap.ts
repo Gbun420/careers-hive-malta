@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
+import { siteConfig } from '@/lib/site-config'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://careers-hive-malta-prod.vercel.app'
+  const baseUrl = siteConfig.url
   
   return [
     {
