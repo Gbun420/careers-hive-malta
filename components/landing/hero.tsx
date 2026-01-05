@@ -38,11 +38,15 @@ export default function Hero({ employerSignupHref }: HeroProps) {
             </div>
             
             <h1 className="text-6xl font-black leading-[0.9] tracking-tightest text-slate-950 sm:text-7xl lg:text-8xl animate-fade-in">
-              ALERT.<br />MATCH.<br /><span className="text-brand-600">APPLY.</span>
+              ALERT.<br />MATCH.<br /><span className="text-brand-600 uppercase">HIRE.</span>
             </h1>
             
             <p className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-slate-500 animate-fade-in">
-              The high-performance job board for Malta. Real-time alerts from verified employers delivered with zero latency.
+              {stats ? (
+                <>Join <span className="text-brand-600 font-bold">{stats.activeJobseekers}</span> professionals and browse <span className="text-brand-600 font-bold">{stats.totalJobs}</span> live roles from verified Malta employers.</>
+              ) : (
+                "The high-performance job board for Malta. Real-time alerts from verified employers delivered with zero latency."
+              )}
             </p>
             
             <div className="mt-10 flex flex-wrap gap-4 animate-fade-in">

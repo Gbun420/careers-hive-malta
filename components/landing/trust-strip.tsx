@@ -1,24 +1,37 @@
-import { Bell, Flag, ShieldCheck, Search } from "lucide-react";
+import { Bell, Flag, ShieldCheck, Search, Timer } from "lucide-react";
+import { MetricResult } from "@/lib/metrics";
 
 type TrustStripProps = {
   showSearch: boolean;
+  metrics?: MetricResult;
 };
 
-export default function TrustStrip({ showSearch }: TrustStripProps) {
+export default function TrustStrip({ showSearch, metrics }: TrustStripProps) {
+  const verifiedPostingsPct = metrics?.verified_postings_pct?.value;
+  const avgApprovalDays = metrics?.verification_approval_days?.value;
+
   const items = [
     {
-      label: "Verified employers",
-      detail: "Requests reviewed by the team.",
+      label: metrics?.verified_employers 
+        ? `${metrics.verified_employers.value} Verified employers`
+        : "Verified employers",
+      detail: verifiedPostingsPct && verifiedPostingsPct !== "N/A"
+        ? `${verifiedPostingsPct}% of opportunities verified.`
+        : "Requests reviewed by the team.",
       icon: ShieldCheck,
     },
     {
-      label: "Report suspicious jobs",
-      detail: "Built-in moderation pipeline.",
-      icon: Flag,
+      label: "Fast verification",
+      detail: avgApprovalDays && avgApprovalDays !== "N/A"
+        ? `Average ${avgApprovalDays} business days.`
+        : "Built-in moderation pipeline.",
+      icon: Timer,
     },
     {
       label: "Instant / daily / weekly alerts",
-      detail: "Control frequency and noise.",
+      detail: metrics?.alert_delivery_time?.value
+        ? `Delivered within ${metrics.alert_delivery_time.value} mins.`
+        : "Control frequency and noise.",
       icon: Bell,
     },
   ];

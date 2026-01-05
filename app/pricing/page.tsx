@@ -24,7 +24,34 @@ export const metadata: Metadata = {
     : {}),
 };
 
-export default function PricingPage() {
+import Link from "next/link";
+import type { Metadata } from "next";
+import SiteHeader from "@/components/nav/site-header";
+import { Button } from "@/components/ui/button";
+import {
+  getFeaturedDurationDays,
+  getFeaturedPriceLabel,
+  getStripeFeaturedPriceId,
+  isStripeConfigured,
+} from "@/lib/billing/stripe";
+import { fetchDynamicMetrics } from "@/lib/metrics";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+export const metadata: Metadata = {
+  title: "Pricing | Careers.mt",
+  description:
+    "Flexible pricing for hiring in Malta. Post jobs for free or feature urgent roles.",
+  ...(siteUrl
+    ? {
+        alternates: {
+          canonical: `${siteUrl}/pricing`,
+        },
+      }
+    : {}),
+};
+
+export default async function PricingPage() {
   const billingConfigured = isStripeConfigured();
   const featuredDurationDays = getFeaturedDurationDays();
   const featuredPriceLabel = getFeaturedPriceLabel();
@@ -34,6 +61,14 @@ export default function PricingPage() {
     showBillingStatus &&
     typeof featuredPriceId === "string" &&
     featuredPriceId.includes("placeholder");
+
+  const metrics = await fetchDynamicMetrics({
+    queries: ['featured_adoption_rate', 'avg_applications_per_job'],
+    fallbacks: true
+  });
+
+  const featuredAdoption = metrics.featured_adoption_rate?.value;
+  const avgApps = metrics.avg_applications_per_job?.value;
 
   return (
     <div className="min-h-screen">
@@ -50,6 +85,11 @@ export default function PricingPage() {
             Start with a free listing, then boost priority roles to the top of
             the feed and search results for {featuredDurationDays} days.
           </p>
+          {featuredAdoption && featuredAdoption !== 0 && (
+            <p className="text-sm font-medium text-brand-600">
+              {featuredAdoption}% of employers upgrade to featured placement for maximum visibility.
+            </p>
+          )}
         </header>
 
         <section className="grid gap-6 lg:grid-cols-3">
@@ -81,6 +121,9 @@ export default function PricingPage() {
               <li>• Top placement for {featuredDurationDays} days</li>
               <li>• Appears first in search</li>
               <li>• Featured badge on listings</li>
+              {avgApps && (
+                <li className="font-semibold text-amber-900">• Attract an average of {avgApps} candidates</li>
+              )}
             </ul>
             <div className="mt-6">
               {billingConfigured ? (
@@ -134,7 +177,8 @@ export default function PricingPage() {
       {showBillingStatus ? (
         <footer className="mx-auto w-full max-w-6xl px-6 pb-10 text-xs text-slate-500">
           Billing: {billingConfigured ? "configured" : "not configured"} ·
-          Featured duration: {featuredDurationDays} days
+          Featured duration: {featuredDurationDays} days · 
+          Metrics updated {metrics.featured_adoption_rate?.lastUpdated}
         </footer>
       ) : null}
     </div>

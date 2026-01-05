@@ -1,32 +1,28 @@
 import { NextResponse } from "next/server";
-import { createServiceRoleClient } from "@/lib/supabase/server";
+import { fetchDynamicMetrics } from "@/lib/metrics";
 
-export const runtime = "edge";
+export const runtime = "nodejs"; // fetchDynamicMetrics uses unstable_cache which might prefer nodejs in some envs
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const supabase = createServiceRoleClient();
-  if (!supabase) {
+  try {
+    const metrics = await fetchDynamicMetrics({
+      queries: ['active_job_seekers', 'total_job_postings', 'verified_employers'],
+      fallbacks: true
+    });
+
+    return NextResponse.json({
+      totalJobs: metrics.total_job_postings.value,
+      verifiedEmployers: metrics.verified_employers.value,
+      activeJobseekers: metrics.active_job_seekers.value,
+      lastUpdated: metrics.total_job_postings.lastUpdated
+    });
+  } catch (error) {
+    console.error("Error in landing stats API:", error);
     return NextResponse.json({ 
         totalJobs: 0,
         verifiedEmployers: 0,
         activeJobseekers: 0
     });
   }
-
-  const [
-    { count: totalJobs },
-    { count: verifiedEmployers },
-    { count: totalProfiles }
-  ] = await Promise.all([
-    supabase.from("jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
-    supabase.from("employer_verifications").select("*", { count: "exact", head: true }).eq("status", "approved"),
-    supabase.from("profiles").select("*", { count: "exact", head: true })
-  ]);
-
-  return NextResponse.json({
-    totalJobs: (totalJobs || 0) + 120, // Adding baseline for social proof
-    verifiedEmployers: (verifiedEmployers || 0) + 45,
-    activeJobseekers: (totalProfiles || 0) + 850
-  });
 }

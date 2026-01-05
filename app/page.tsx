@@ -8,18 +8,31 @@ import FeaturedCarousel from "@/components/jobs/featured-carousel";
 import CategoryGrid from "@/components/landing/category-grid";
 import { isMeiliConfigured } from "@/lib/search/meili";
 import { isStripeConfigured } from "@/lib/billing/stripe";
+import { fetchDynamicMetrics } from "@/lib/metrics";
 
-export default function Home() {
+export default async function Home() {
   const meiliEnabled = isMeiliConfigured();
   const stripeEnabled = isStripeConfigured();
   const employerSignupHref = "/signup?role=employer";
+
+  const metrics = await fetchDynamicMetrics({
+    queries: [
+      'active_job_seekers', 
+      'total_job_postings', 
+      'verified_employers', 
+      'alert_delivery_time',
+      'verified_postings_pct',
+      'verification_approval_days'
+    ],
+    fallbacks: true
+  });
 
   return (
     <div className="min-h-screen">
       <SiteHeader />
       <main className="relative overflow-hidden">
         <Hero employerSignupHref={employerSignupHref} />
-        <TrustStrip showSearch={meiliEnabled} />
+        <TrustStrip showSearch={meiliEnabled} metrics={metrics} />
         <FeaturedCarousel />
         <CategoryGrid />
         <FeatureCards featuredEnabled={stripeEnabled} />
