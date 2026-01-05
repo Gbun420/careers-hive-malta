@@ -1,9 +1,10 @@
 import Link from "next/link";
 import AdminSignOutButton from "@/components/admin/sign-out-button";
+import DashboardStats from "@/components/admin/dashboard-stats";
 
 export default function AdminDashboard() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-16">
+    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-6 py-16">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-3xl font-semibold text-slate-900">
@@ -15,6 +16,9 @@ export default function AdminDashboard() {
         </div>
         <AdminSignOutButton />
       </header>
+      
+      <DashboardStats />
+
       <section className="grid gap-4 sm:grid-cols-2">
         <Link
           href="/admin/reports"

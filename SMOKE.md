@@ -26,6 +26,17 @@
   - Save.
   - Verify the update is reflected in `/jobs`.
 
+## Admin Enhancements (2026-01-05)
+- **Dashboard Stats**:
+  - Log in as admin.
+  - Navigate to `/admin/dashboard`.
+  - Verify "Active Jobs", "Pending Verifications", "Pending Reports", and "Total Users" cards appear with numbers.
+- **Verification Queue**:
+  - Navigate to `/admin/verifications`.
+  - Verify "Pending Requests" section is visible.
+  - Verify "Past Verifications" section is visible.
+  - (Optional) Approve a request and see it move to "Past".
+
 ## Apply Functionality (2026-01-05)
 - **Create Job with Email Application**:
   - Navigate to `/employer/jobs/new`.
