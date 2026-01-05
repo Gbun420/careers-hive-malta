@@ -18,6 +18,32 @@
   - Verify "Past Verifications" section is visible.
   - (Optional) Approve a request and see it move to "Past".
 
+## SEO Enhancements (2026-01-05)
+- **Meta Tags**:
+  - Inspect root page source.
+  - Verify title and description are updated with keyword-rich content.
+  - Verify OG and Twitter tags are present.
+- **Structured Data**:
+  - Visit a job detail page (e.g., `/jobs/<id>`).
+  - Inspect source for `JobPosting` schema.
+  - Verify it includes salary data if available.
+  - Inspect any page source for `EmploymentAgency` schema.
+- **Landing Pages**:
+  - Visit `/jobs/malta/valletta`.
+  - Verify title and header are location-specific.
+  - Visit `/jobs/industry/it`.
+  - Verify title and header are industry-specific.
+- **Blog**:
+  - Visit `/blog`.
+  - Verify the list of blog posts.
+  - Visit `/blog/malta-job-market-2026`.
+  - Verify the content renders.
+- **Technical SEO**:
+  - Visit `/sitemap.xml`.
+  - Verify it redirects/renders correct URLs (Next.js handles this via `sitemap.ts`).
+  - Visit `/robots.txt`.
+  - Verify rules and sitemap link.
+
 ## Apply Functionality (2026-01-05)
 - **Create Job with Email Application**:
   - Navigate to `/employer/jobs/new`.

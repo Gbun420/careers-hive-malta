@@ -27,7 +27,7 @@ async function getJobForSeo(id: string): Promise<Job | null> {
   const { data } = await supabase
     .from("jobs")
     .select(
-      "id, employer_id, title, description, location, salary_range, created_at, is_active"
+      "id, employer_id, title, description, location, salary_range, salary_min, salary_max, salary_period, currency, created_at, is_active"
     )
     .eq("id", id)
     .eq("is_active", true)
@@ -101,6 +101,18 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             addressCountry: "MT",
           },
         },
+        ...(job.salary_min && {
+          baseSalary: {
+            "@type": "MonetaryAmount",
+            currency: job.currency || "EUR",
+            value: {
+              "@type": "QuantitativeValue",
+              minValue: job.salary_min,
+              maxValue: job.salary_max || job.salary_min,
+              unitText: job.salary_period?.toUpperCase() || "YEAR",
+            },
+          },
+        }),
       }
     : null;
 
