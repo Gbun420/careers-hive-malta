@@ -183,6 +183,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Admin Override: Allow admins to access any role-required path
+  if (role === "admin") {
+    return response;
+  }
+
   if (role !== roleRequired) {
     const url = request.nextUrl.clone();
     url.pathname = getDashboardPath(role);
