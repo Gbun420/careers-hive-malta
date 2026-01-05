@@ -1,5 +1,12 @@
 # Smoke Checks
 
+## Alias fix (2026-01-05)
+- Issue: `https://careers-hive-malta.vercel.app` was still pointing at the older project and looping on `/setup/`.
+- Change: `npx vercel alias set dpl_7wyx6dYqHkBc9Rs8ysjQC6M8VKuv careers-hive-malta.vercel.app`
+- Verify: `HEAD https://careers-hive-malta.vercel.app/` -> 200
+- Verify: `HEAD https://careers-hive-malta.vercel.app/setup` -> 308 -> `/setup/`
+- Verify: `HEAD https://careers-hive-malta.vercel.app/setup/` -> 200
+
 ## Setup redirect loop fix (2026-01-05)
 - Issue: `/setup/` redirected to itself when Supabase env was missing (trailing slash + middleware allowlist).
 - Change: allow `/setup/` in the missing-env allowlist.
