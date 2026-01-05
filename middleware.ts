@@ -123,8 +123,9 @@ export async function middleware(request: NextRequest) {
 
   const missing = getMissingSupabaseEnv();
   if (missing.length > 0) {
+    const isSetupPath = pathname === "/setup" || pathname.startsWith("/setup/");
     if (
-      pathname === "/setup" ||
+      isSetupPath ||
       pathname.startsWith("/jobseeker/alerts") ||
       pathname.startsWith("/jobseeker/notifications") ||
       pathname.startsWith("/employer/jobs") ||

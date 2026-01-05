@@ -1,5 +1,35 @@
 # Smoke Checks
 
+## Alias fix (2026-01-05)
+- Issue: `https://careers-hive-malta.vercel.app` was still pointing at the older project and looping on `/setup/`.
+- Change: `npx vercel alias set dpl_7wyx6dYqHkBc9Rs8ysjQC6M8VKuv careers-hive-malta.vercel.app`
+- Verify: `HEAD https://careers-hive-malta.vercel.app/` -> 200
+- Verify: `HEAD https://careers-hive-malta.vercel.app/setup` -> 308 -> `/setup/`
+- Verify: `HEAD https://careers-hive-malta.vercel.app/setup/` -> 200
+
+## Setup redirect loop fix (2026-01-05)
+- Issue: `/setup/` redirected to itself when Supabase env was missing (trailing slash + middleware allowlist).
+- Change: allow `/setup/` in the missing-env allowlist.
+- Deploy: `npx vercel --prod --yes` -> `dpl_7wyx6dYqHkBc9Rs8ysjQC6M8VKuv` (ready)
+- Verify: `HEAD https://careers-hive-malta-prod.vercel.app/` -> 200
+- Verify: `HEAD https://careers-hive-malta-prod.vercel.app/setup` -> 308 -> `/setup/`
+- Verify: `HEAD https://careers-hive-malta-prod.vercel.app/setup/` -> 200
+
+## Vercel deployment (2026-01-05)
+- Command: `npx vercel --prod --yes`
+- Deployment: `dpl_7gsUZ5vUbBvs4riLvte4JnYZ5nbL` (ready)
+- Inspect: https://vercel.com/gbun420s-projects/careers-hive-malta-prod/7gsUZ5vUbBvs4riLvte4JnYZ5nbL
+- Production URL: https://careers-hive-malta-prod.vercel.app
+- Health app: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/app` -> 200 `{"status":"ok","version":null,"commit":null}`
+- Health db: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/db` -> 200 `{"status":"healthy",...}`
+- Routes (followed redirects): `/`, `/pricing`, `/jobs`, `/signup` -> 200 OK
+
+## Vercel build fix (2026-01-05)
+- Issue: Vercel build failed on commit `ebc0c94` due to `@cloudflare/next-on-pages` peer range vs Next 15.5.9.
+- Change: Cloudflare Pages config removed (`wrangler.toml`) for Vercel-only deployments.
+- Local checks: `npm run lint`, `npm run typecheck`, `npm run review` PASS (build warns about Edge Runtime usage in Supabase modules).
+- Verify: trigger a Vercel deploy on `main`; `npm install` and `npm run build` succeed.
+
 ## Deployment attempt (2026-01-04)
 - Branch: feat/production-launch-system
 - Commit: ad0a193
