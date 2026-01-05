@@ -1,11 +1,35 @@
 # Smoke Checks
 
+## Salary Refactor (2026-01-05)
+- **Create Job with Salary**:
+  - Navigate to `/employer/jobs/new`.
+  - Fill in Title, Description, Location.
+  - Fill in Salary Min (e.g., 30000), Salary Max (e.g., 40000), Period (Yearly).
+  - Submit.
+  - Verify redirect to job list and "Job posted successfully" banner.
+- **View Job Salary**:
+  - Navigate to `/jobs`.
+  - Verify the new job appears.
+  - Verify salary is displayed as "€30,000 - €40,000 / yearly".
+- **Edit Job Salary**:
+  - Go to Employer Dashboard -> Manage job posts.
+  - Click "Edit" on the job.
+  - Verify fields are pre-filled correctly.
+  - Change Salary Min to 35000.
+  - Save.
+  - Verify the update is reflected in `/jobs`.
+
 ## Alias fix (2026-01-05)
 - Issue: `https://careers-hive-malta.vercel.app` was still pointing at the older project and looping on `/setup/`.
 - Change: `npx vercel alias set dpl_7wyx6dYqHkBc9Rs8ysjQC6M8VKuv careers-hive-malta.vercel.app`
 - Verify: `HEAD https://careers-hive-malta.vercel.app/` -> 200
 - Verify: `HEAD https://careers-hive-malta.vercel.app/setup` -> 308 -> `/setup/`
 - Verify: `HEAD https://careers-hive-malta.vercel.app/setup/` -> 200
+
+## Admin sign out (2026-01-05)
+- Not run.
+- Manual: sign in as admin, go to `/admin/dashboard`, `/admin/reports`, or `/admin/verifications`.
+- Expected: "Sign out" button is visible and returns user to `/login` after signing out.
 
 ## Setup redirect loop fix (2026-01-05)
 - Issue: `/setup/` redirected to itself when Supabase env was missing (trailing slash + middleware allowlist).

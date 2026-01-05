@@ -18,7 +18,9 @@ type FormValues = {
   title: string;
   description: string;
   location: string;
-  salary_range: string;
+  salary_min: string;
+  salary_max: string;
+  salary_period: "hourly" | "monthly" | "yearly";
   is_active: boolean;
 };
 
@@ -48,7 +50,9 @@ export default function JobEdit({
         title: job.title,
         description: job.description,
         location: job.location ?? "",
-        salary_range: job.salary_range ?? "",
+        salary_min: job.salary_min?.toString() ?? "",
+        salary_max: job.salary_max?.toString() ?? "",
+        salary_period: (job.salary_period as any) ?? "yearly",
         is_active: job.is_active,
       });
     };

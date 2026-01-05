@@ -6,7 +6,11 @@ export const JobSchema = z.object({
   title: z.string(),
   description: z.string(),
   location: z.string().nullable().optional(),
-  salary_range: z.string().nullable().optional(),
+  salary_range: z.string().nullable().optional(), // Deprecated
+  salary_min: z.number().nullable().optional(),
+  salary_max: z.number().nullable().optional(),
+  salary_period: z.enum(["hourly", "monthly", "yearly"]).optional(),
+  currency: z.string().optional(),
   created_at: z.string(),
   is_active: z.boolean(),
   employer_verified: z.boolean().optional(),
@@ -30,7 +34,10 @@ export const JobCreateSchema = z.object({
     .trim()
     .min(2, "Location must be at least 2 characters.")
     .max(80, "Location must be 80 characters or fewer."),
-  salary_range: z.string().trim().max(40).optional(),
+  salary_min: z.number().min(0).optional(),
+  salary_max: z.number().min(0).optional(),
+  salary_period: z.enum(["hourly", "monthly", "yearly"]).default("yearly"),
+  currency: z.string().default("EUR"),
   is_active: z.boolean().optional(),
 });
 
@@ -53,7 +60,10 @@ export const JobUpdateSchema = z.object({
     .min(2, "Location must be at least 2 characters.")
     .max(80, "Location must be 80 characters or fewer.")
     .optional(),
-  salary_range: z.string().trim().max(40).optional(),
+  salary_min: z.number().min(0).optional(),
+  salary_max: z.number().min(0).optional(),
+  salary_period: z.enum(["hourly", "monthly", "yearly"]).optional(),
+  currency: z.string().optional(),
   is_active: z.boolean().optional(),
 });
 
@@ -75,6 +85,6 @@ export function normalizeJobPayload(input: JobCreate | JobUpdate) {
     title: normalizeText(input.title),
     description: normalizeText(input.description),
     location: normalizeText(input.location),
-    salary_range: normalizeText(input.salary_range),
+    // salary_range is deprecated, logic moved to structured fields
   };
 }

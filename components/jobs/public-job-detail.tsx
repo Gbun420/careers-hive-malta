@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Job } from "@/lib/jobs/schema";
 import ReportJobDialog from "@/components/jobs/report-job-dialog";
+import { formatSalary } from "@/lib/jobs/format";
 
 type ApiError = {
   error?: {
@@ -86,7 +87,7 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
         <div>
           <p className="text-sm font-semibold text-slate-900">{job.title}</p>
           <p className="mt-1 text-xs text-slate-600">
-            {job.location || "Remote/On-site"} · {job.salary_range || "Salary TBD"}
+            {job.location || "Remote/On-site"} · {formatSalary(job)}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {job.is_featured ? (

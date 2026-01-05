@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import type { Job } from "@/lib/jobs/schema";
+import { formatSalary } from "@/lib/jobs/format";
 
 type ApiError = {
   error?: {
@@ -143,7 +144,7 @@ export default function PublicJobsList() {
               ) : null}
             </div>
             <p className="mt-1 text-xs text-slate-600">
-              {job.location || "Remote/On-site"} · {job.salary_range || "Salary TBD"}
+              {job.location || "Remote/On-site"} · {formatSalary(job)}
             </p>
           </Link>
         ))}
