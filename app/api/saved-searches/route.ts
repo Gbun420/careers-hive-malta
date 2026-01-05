@@ -24,8 +24,8 @@ export async function GET() {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "jobseeker") {
-    return jsonError("FORBIDDEN", "Jobseeker access required.", 403);
+  if (role !== "jobseeker" && role !== "admin") {
+    return jsonError("FORBIDDEN", "Jobseeker or Admin access required.", 403);
   }
 
   const { data, error } = await supabase
@@ -57,8 +57,8 @@ export async function POST(request: Request) {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "jobseeker") {
-    return jsonError("FORBIDDEN", "Jobseeker access required.", 403);
+  if (role !== "jobseeker" && role !== "admin") {
+    return jsonError("FORBIDDEN", "Jobseeker or Admin access required.", 403);
   }
 
   let payload: unknown;

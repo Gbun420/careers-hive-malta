@@ -18,8 +18,8 @@ async function getEmployerAuth() {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "employer") {
-    return { supabase: null, error: jsonError("FORBIDDEN", "Employer access required.", 403) };
+  if (role !== "employer" && role !== "admin") {
+    return { supabase: null, error: jsonError("FORBIDDEN", "Employer or Admin access required.", 403) };
   }
 
   return { supabase, userId: authData.user.id };

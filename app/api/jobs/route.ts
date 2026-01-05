@@ -36,8 +36,8 @@ export async function GET(request: NextRequest) {
       return jsonError("UNAUTHORIZED", "Authentication required.", 401);
     }
     const role = getUserRole(authData.user);
-    if (role !== "employer") {
-      return jsonError("FORBIDDEN", "Employer access required.", 403);
+    if (role !== "employer" && role !== "admin") {
+      return jsonError("FORBIDDEN", "Employer or Admin access required.", 403);
     }
 
     const { data, error } = await auth.supabase

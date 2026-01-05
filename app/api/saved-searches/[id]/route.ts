@@ -24,8 +24,8 @@ async function getAuthedJobseeker() {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "jobseeker") {
-    return { supabase: null, error: jsonError("FORBIDDEN", "Jobseeker access required.", 403) };
+  if (role !== "jobseeker" && role !== "admin") {
+    return { supabase: null, error: jsonError("FORBIDDEN", "Jobseeker or Admin access required.", 403) };
   }
 
   return { supabase, userId: authData.user.id };
