@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { createEdgeClient, createEdgeServiceClient } from "@/lib/supabase-edge";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { JobCreateSchema, normalizeJobPayload } from "@/lib/jobs/schema";
@@ -11,19 +11,8 @@ import { attachFeaturedStatus, sortFeaturedJobs, type JobWithFeatured } from "@/
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-async function getSupabase() {
-  const supabase = createRouteHandlerClient();
-  if (!supabase) {
-    return { supabase: null, error: jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503) };
-  }
-  return { supabase };
-}
-
 export async function GET(request: NextRequest) {
-  const auth = await getSupabase();
-  if (!auth.supabase) {
-    return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
+  const supabase = createEdgeClient();
 
   const { searchParams } = new URL(request.url);
   const mine = searchParams.get("mine") === "true";
@@ -31,7 +20,7 @@ export async function GET(request: NextRequest) {
   const location = searchParams.get("location");
 
   if (mine) {
-    const { data: authData, error: authError } = await auth.supabase.auth.getUser();
+    const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError || !authData.user) {
       return jsonError("UNAUTHORIZED", "Authentication required.", 401);
     }
@@ -40,7 +29,7 @@ export async function GET(request: NextRequest) {
       return jsonError("FORBIDDEN", "Employer or Admin access required.", 403);
     }
 
-    const { data, error } = await auth.supabase
+    const { data, error } = await supabase
       .from("jobs")
       .select("*")
       .eq("employer_id", authData.user.id)
@@ -61,7 +50,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Public search
-  let dbQuery = auth.supabase
+  let dbQuery = supabase
     .from("jobs")
     .select("*")
     .eq("is_active", true)
@@ -96,12 +85,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await getSupabase();
-  if (!auth.supabase) {
-    return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
+  const supabase = createEdgeClient();
 
-  const { data: authData, error: authError } = await auth.supabase.auth.getUser();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData.user) {
     return jsonError("UNAUTHORIZED", "Authentication required.", 401);
   }
@@ -124,7 +110,7 @@ export async function POST(request: NextRequest) {
   }
 
   const normalized = normalizeJobPayload(parsed.data);
-  const { data, error } = await auth.supabase
+  const { data, error } = await supabase
     .from("jobs")
     .insert({
         ...normalized,

@@ -9,6 +9,16 @@ const nextConfig = {
   },
   // Add trailing slash for better compatibility
   trailingSlash: true,
+  // Suppress process.version warnings in Edge Runtime
+  webpack: (config, { isServer, nextRuntime }) => {
+    if (isServer && nextRuntime === 'edge') {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        process: false,
+      };
+    }
+    return config;
+  },
 }
 
 module.exports = nextConfig;
