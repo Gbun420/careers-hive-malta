@@ -1,15 +1,19 @@
 import Link from "next/link";
+import AdminSignOutButton from "@/components/admin/sign-out-button";
 
 export default function AdminDashboard() {
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-16">
-      <header>
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Admin dashboard
-        </h1>
-        <p className="mt-2 text-slate-600">
-          Moderate jobs and manage platform trust signals.
-        </p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-semibold text-slate-900">
+            Admin dashboard
+          </h1>
+          <p className="mt-2 text-slate-600">
+            Moderate jobs and manage platform trust signals.
+          </p>
+        </div>
+        <AdminSignOutButton />
       </header>
       <section className="grid gap-4 sm:grid-cols-2">
         <Link
