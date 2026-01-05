@@ -1,5 +1,13 @@
 # Smoke Checks
 
+## Vercel deployment (2026-01-05)
+- Command: `npx vercel --prod --yes`
+- Deployment: `dpl_7gsUZ5vUbBvs4riLvte4JnYZ5nbL` (ready)
+- Inspect: https://vercel.com/gbun420s-projects/careers-hive-malta-prod/7gsUZ5vUbBvs4riLvte4JnYZ5nbL
+- Production URL: https://careers-hive-malta-prod.vercel.app
+- Health app: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/app` -> 200 `{"status":"ok","version":null,"commit":null}`
+- Health db: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/db` -> 200 `{"status":"healthy",...}`
+
 ## Vercel build fix (2026-01-05)
 - Issue: Vercel build failed on commit `ebc0c94` due to `@cloudflare/next-on-pages` peer range vs Next 15.5.9.
 - Change: Cloudflare Pages config removed (`wrangler.toml`) for Vercel-only deployments.
