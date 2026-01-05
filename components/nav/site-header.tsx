@@ -17,25 +17,25 @@ export default function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/85 backdrop-blur">
+    <header className="glass-header">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <Building2 className="h-6 w-6 text-teal-600" />
+        <Link href="/" className="flex items-center gap-2 group transition-opacity hover:opacity-90">
+          <Building2 className="h-6 w-6 text-brand-600" />
           <span className="font-display text-xl font-bold text-slate-900">
             {siteConfig.name}
           </span>
-          <span className="hidden items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 sm:inline-flex">
+          <span className="hidden items-center gap-1 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 sm:inline-flex">
             <ShieldCheck className="h-3 w-3" aria-hidden="true" />
             Verified
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
+        <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-600 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="transition hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/40"
+              className="transition hover:text-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
             >
               {link.label}
             </Link>
@@ -44,7 +44,7 @@ export default function SiteHeader() {
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-full border border-slate-200 p-2 text-slate-700 transition hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/40 md:hidden"
+          className="inline-flex items-center justify-center rounded-full border border-slate-200 p-2 text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500/40 md:hidden"
           aria-label="Toggle navigation"
           aria-expanded={open}
           aria-controls="mobile-nav"

@@ -39,7 +39,7 @@ export default function TrustStrip({ showSearch }: TrustStripProps) {
             key={item.label}
             className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3"
           >
-            <span className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-teal-50 text-teal-700">
+            <span className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-brand-700">
               <item.icon className="h-4 w-4" />
             </span>
             <div>

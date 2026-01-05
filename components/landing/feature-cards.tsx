@@ -5,14 +5,14 @@ type FeatureCardsProps = {
 };
 
 const cardBase =
-  "flex h-full flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm";
+  "card-gradient flex h-full flex-col gap-4 rounded-2xl border border-slate-200 p-6 shadow-sm";
 
 export default function FeatureCards({ featuredEnabled }: FeatureCardsProps) {
   return (
     <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-10">
       <div className="grid gap-6 md:grid-cols-3">
         <div className={cardBase}>
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-teal-50 text-teal-700">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-50 text-brand-700">
             <Bell className="h-5 w-5" />
           </span>
           <div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import type { Job } from "@/lib/jobs/schema";
 import { formatSalary } from "@/lib/jobs/format";
+import { MapPin, Euro, Briefcase } from "lucide-react";
 
 type ApiError = {
   error?: {
@@ -108,19 +109,19 @@ export default function PublicJobsList() {
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
         <Input
-          placeholder="Search roles"
+          placeholder="Search roles (e.g. Developer, Designer)"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
         <Input
-          placeholder="Filter by location"
+          placeholder="Location (e.g. Valletta)"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
         />
       </div>
       {searchBackend === "meili" ? (
-        <p className="text-xs text-slate-500">
-          Search powered by fast index.
+        <p className="text-xs text-slate-500 font-medium">
+          ⚡ Search results updated instantly.
         </p>
       ) : null}
       <div className="space-y-4">
@@ -128,24 +129,37 @@ export default function PublicJobsList() {
           <Link
             key={job.id}
             href={`/jobs/${job.id}`}
-            className="block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-200"
+            className="group block rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-brand-300 hover:shadow-soft"
           >
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="text-sm font-semibold text-slate-900">{job.title}</p>
-              {job.is_featured ? (
-                <span className="rounded-full bg-amber-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
-                  Featured
-                </span>
-              ) : null}
-              {job.employer_verified ? (
-                <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
-                  Verified
-                </span>
-              ) : null}
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-1">
+                <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-600">
+                  {job.title}
+                </h3>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-slate-400" />
+                    {job.location || "Remote/On-site"}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Euro className="h-4 w-4 text-slate-400" />
+                    {formatSalary(job)}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {job.is_featured ? (
+                  <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700 ring-1 ring-inset ring-amber-200">
+                    Featured
+                  </span>
+                ) : null}
+                {job.employer_verified ? (
+                  <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-700 ring-1 ring-inset ring-brand-200">
+                    Verified
+                  </span>
+                ) : null}
+              </div>
             </div>
-            <p className="mt-1 text-xs text-slate-600">
-              {job.location || "Remote/On-site"} · {formatSalary(job)}
-            </p>
           </Link>
         ))}
       </div>

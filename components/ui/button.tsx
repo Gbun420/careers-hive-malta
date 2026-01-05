@@ -9,9 +9,9 @@ const baseClasses =
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-teal-700 text-white shadow-sm hover:bg-teal-800 ring-offset-slate-50",
+    "bg-brand-600 text-white shadow-sm hover:bg-brand-700 ring-offset-slate-50 active:scale-[0.98]",
   outline:
-    "border border-teal-700 text-teal-700 hover:bg-teal-50 ring-offset-slate-50",
+    "border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 hover:border-slate-300 ring-offset-slate-50 active:scale-[0.98]",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
