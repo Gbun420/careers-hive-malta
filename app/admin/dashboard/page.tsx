@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AdminSignOutButton from "@/components/admin/sign-out-button";
 import DashboardStats from "@/components/admin/dashboard-stats";
+import ReloadSchemaButton from "@/components/admin/reload-schema-button";
 
 export default function AdminDashboard() {
   return (
@@ -14,7 +15,10 @@ export default function AdminDashboard() {
             Moderate jobs and manage platform trust signals.
           </p>
         </div>
-        <AdminSignOutButton />
+        <div className="flex flex-wrap items-center gap-3">
+          <ReloadSchemaButton />
+          <AdminSignOutButton />
+        </div>
       </header>
       
       <DashboardStats />
