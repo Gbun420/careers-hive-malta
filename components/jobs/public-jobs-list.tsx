@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/jobs/schema";
 import { formatSalary } from "@/lib/jobs/format";
 import { MapPin, Euro, Briefcase } from "lucide-react";
@@ -17,62 +18,81 @@ type ApiError = {
 export default function PublicJobsList() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [searchBackend, setSearchBackend] = useState<"meili" | "db" | null>(
     null
   );
 
-  useEffect(() => {
-    const loadJobs = async () => {
+  const loadJobs = useCallback(async (pageNum: number, isInitial: boolean) => {
+    if (isInitial) {
       setLoading(true);
-      setError(null);
-      try {
-        const params = new URLSearchParams();
-        if (query.trim().length > 0) {
-          params.set("q", query.trim());
-        }
-        if (location.trim().length > 0) {
-          params.set("location", location.trim());
-        }
-        params.set("is_active", "true");
-
-        const response = await fetch(`/api/jobs?${params.toString()}`, {
-          cache: "no-store",
-        });
-        const payload = (await response.json().catch(() => ({}))) as ApiError & {
-          data?: Job[];
-          source?: "meili" | "db";
-          meta?: { search_backend?: "meili" | "db" };
-        };
-
-        if (!response.ok) {
-          setError(payload);
-          return;
-        }
-
-        setJobs(payload.data ?? []);
-        setSearchBackend(
-          payload.source ?? payload.meta?.search_backend ?? null
-        );
-      } catch (err) {
-        setError({
-          error: {
-            message: "Unable to load jobs.",
-          },
-        });
-      } finally {
-        setLoading(false);
+    } else {
+      setLoadingMore(true);
+    }
+    setError(null);
+    try {
+      const params = new URLSearchParams();
+      if (query.trim().length > 0) {
+        params.set("q", query.trim());
       }
-    };
+      if (location.trim().length > 0) {
+        params.set("location", location.trim());
+      }
+      params.set("is_active", "true");
+      params.set("page", pageNum.toString());
+      params.set("limit", "20");
 
+      const response = await fetch(`/api/jobs?${params.toString()}`, {
+        cache: "no-store",
+      });
+      const payload = (await response.json().catch(() => ({}))) as ApiError & {
+        data?: Job[];
+        source?: "meili" | "db";
+        meta?: { search_backend?: "meili" | "db"; has_more?: boolean };
+      };
+
+      if (!response.ok) {
+        setError(payload);
+        return;
+      }
+
+      const newJobs = payload.data ?? [];
+      setJobs((prev) => (isInitial ? newJobs : [...prev, ...newJobs]));
+      setHasMore(payload.meta?.has_more ?? false);
+      setSearchBackend(
+        payload.source ?? payload.meta?.search_backend ?? null
+      );
+    } catch (err) {
+      setError({
+        error: {
+          message: "Unable to load jobs.",
+        },
+      });
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  }, [query, location]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
-      void loadJobs();
+      setPage(1);
+      void loadJobs(1, true);
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [query, location]);
+  }, [query, location, loadJobs]);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    void loadJobs(nextPage, false);
+  };
 
   if (loading) {
     return <p className="text-sm text-slate-600">Loading jobs...</p>;
@@ -129,32 +149,32 @@ export default function PublicJobsList() {
           <Link
             key={job.id}
             href={`/jobs/${job.id}`}
-            className="group block rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-brand-300 hover:shadow-soft"
+            className="premium-card group block p-6 rounded-3xl"
           >
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-1">
-                <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-600">
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-slate-950 tracking-tightest group-hover:text-brand-600 transition-colors">
                   {job.title}
                 </h3>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                <div className="flex flex-wrap items-center gap-5 text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-slate-400" />
-                    {job.location || "Remote/On-site"}
+                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                    {job.location || "Malta"}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Euro className="h-4 w-4 text-slate-400" />
+                    <Euro className="h-3.5 w-3.5 text-slate-400" />
                     {formatSalary(job)}
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 {job.is_featured ? (
-                  <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700 ring-1 ring-inset ring-amber-200">
+                  <span className="rounded-xl bg-amber-100/50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-amber-700 border border-amber-200">
                     Featured
                   </span>
                 ) : null}
                 {job.employer_verified ? (
-                  <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-700 ring-1 ring-inset ring-brand-200">
+                  <span className="rounded-xl bg-slate-950 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white border border-slate-950 shadow-lg shadow-slate-200">
                     Verified
                   </span>
                 ) : null}
@@ -163,6 +183,20 @@ export default function PublicJobsList() {
           </Link>
         ))}
       </div>
+
+      {hasMore && (
+        <div className="mt-10 flex justify-center pb-10">
+          <Button
+            variant="outline"
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            size="lg"
+            className="w-full sm:w-auto min-w-[200px]"
+          >
+            {loadingMore ? "Loading more..." : "Load more jobs"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus, sortFeaturedJobs, type JobWithFeatured } from "@/lib/billing/featured";
 import { matchJobToSearch } from "@/lib/alerts/match";
 import type { SavedSearchCriteria } from "@/lib/alerts/criteria";
+import { logAudit } from "@/lib/audit/log";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -55,11 +56,17 @@ export async function GET(request: NextRequest) {
   }
 
   // Public search
+  const limitParam = Number(searchParams.get("limit") ?? "20");
+  const pageParam = Number(searchParams.get("page") ?? "1");
+  const limit = Math.min(Math.max(1, limitParam), 100);
+  const offset = (Math.max(1, pageParam) - 1) * limit;
+
   let dbQuery = supabase
     .from("jobs")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (location) {
     dbQuery = dbQuery.ilike("location", `%${location}%`);
@@ -69,7 +76,7 @@ export async function GET(request: NextRequest) {
     dbQuery = dbQuery.ilike("title", `%${query}%`);
   }
 
-  const { data, error } = await dbQuery;
+  const { data, error, count } = await dbQuery;
 
     if (error) {
          return jsonError("DB_ERROR", error.message, 500);
@@ -82,6 +89,12 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({ 
     data: sorted,
+    meta: {
+        total: count || 0,
+        limit,
+        page: pageParam,
+        has_more: count ? (offset + jobs.length < count) : false
+    },
     source: "db"
   }, {
       headers: { 
@@ -133,6 +146,22 @@ export async function POST(request: NextRequest) {
   }
 
   const job = data as Job;
+
+  // Log audit event
+  try {
+    await logAudit({
+      actorId: authData.user.id,
+      action: "job_created",
+      entityType: "job",
+      entityId: job.id,
+      meta: {
+        title: job.title,
+        location: job.location,
+      },
+    });
+  } catch (auditError) {
+    console.error("Failed to log job creation audit:", auditError);
+  }
 
   // Match with saved searches and enqueue notifications
   const serviceSupabase = createServiceRoleClient();

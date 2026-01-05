@@ -18,24 +18,22 @@ export default function SiteHeader() {
 
   return (
     <header className="glass-header">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 group transition-opacity hover:opacity-90">
-          <Building2 className="h-6 w-6 text-brand-600" />
-          <span className="font-display text-xl font-bold text-slate-900">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="bg-slate-950 p-1.5 rounded-xl group-hover:bg-brand-600 transition-colors">
+            <Building2 className="h-5 w-5 text-white" />
+          </div>
+          <span className="font-sans text-xl font-extrabold tracking-tightest text-slate-950">
             {siteConfig.name}
-          </span>
-          <span className="hidden items-center gap-1 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 sm:inline-flex">
-            <ShieldCheck className="h-3 w-3" aria-hidden="true" />
-            Verified
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-600 md:flex">
+        <nav className="hidden items-center gap-7 text-[13px] font-bold uppercase tracking-wider text-slate-500 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="transition hover:text-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="transition hover:text-slate-900 focus:outline-none"
             >
               {link.label}
             </Link>

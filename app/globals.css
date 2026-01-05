@@ -3,34 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --brand: #0d9488;
-  --brand-strong: #0f766e;
-  --accent: #f59e0b;
-  --ink: #0f172a;
-  --surface: #fcfcfd;
+  --brand: #4f64e9;
+  --brand-strong: #323b8a;
+  --ink: #020617;
+  --surface: #ffffff;
 }
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 selection:bg-brand-100 selection:text-brand-900;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply bg-[#fcfcfd] text-slate-900 selection:bg-brand-100 selection:text-brand-900 antialiased;
+    background-image: radial-gradient(#e5e7eb 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
   }
 
   h1, h2, h3, h4 {
-    @apply font-display tracking-tight text-slate-900;
+    @apply font-sans tracking-tightest font-bold text-slate-950;
   }
 }
 
 @layer components {
   .glass-header {
-    @apply sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-md;
+    @apply sticky top-0 z-40 w-full border-b border-slate-200/50 bg-white/70 backdrop-blur-xl;
   }
 
-  .card-gradient {
-    @apply relative overflow-hidden bg-white shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1;
+  .premium-card {
+    @apply relative overflow-hidden bg-white border border-slate-200/60 shadow-premium transition-all duration-500 hover:border-brand-200 hover:shadow-2xl hover:-translate-y-0.5;
   }
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 active:scale-[0.98];
+  .btn-premium {
+    @apply inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-brand-600 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-slate-200;
   }
 }
