@@ -1,5 +1,12 @@
 # Smoke Checks
 
+## Vercel deployment (2026-01-05 - Salary Refactor)
+- Command: `npx vercel --prod`
+- Deployment: `https://careers-hive-malta-prod.vercel.app`
+- Inspect: https://vercel.com/gbun420s-projects/careers-hive-malta-prod/HimzESxuMN7g981PgWy9197axVXY
+- Health app: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/app`
+- Health db: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/db`
+
 ## Salary Refactor (2026-01-05)
 - **Create Job with Salary**:
   - Navigate to `/employer/jobs/new`.
@@ -18,6 +25,27 @@
   - Change Salary Min to 35000.
   - Save.
   - Verify the update is reflected in `/jobs`.
+
+## Apply Functionality (2026-01-05)
+- **Create Job with Email Application**:
+  - Navigate to `/employer/jobs/new`.
+  - Fill in required fields.
+  - Select "Via Email" and enter a valid email.
+  - Submit.
+  - Go to `/jobs` and click the job.
+  - Verify "Apply now" button exists and is a `mailto:` link.
+- **Create Job with URL Application**:
+  - Navigate to `/employer/jobs/new`.
+  - Fill in required fields.
+  - Select "Via External URL" and enter a valid URL (e.g., `https://example.com`).
+  - Submit.
+  - Go to `/jobs` and click the job.
+  - Verify "Apply now" button exists and links to `https://example.com`.
+- **Edit Job Application Method**:
+  - Edit a job.
+  - Change method from Email to URL.
+  - Save.
+  - Verify change in public view.
 
 ## Alias fix (2026-01-05)
 - Issue: `https://careers-hive-malta.vercel.app` was still pointing at the older project and looping on `/setup/`.

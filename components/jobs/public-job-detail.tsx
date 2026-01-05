@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/jobs/schema";
 import ReportJobDialog from "@/components/jobs/report-job-dialog";
 import { formatSalary } from "@/lib/jobs/format";
@@ -102,9 +103,24 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
             ) : null}
           </div>
         </div>
-        <ReportJobDialog jobId={job.id} />
+        <div className="flex flex-col items-end gap-2">
+          {job.application_method === "url" && job.application_url ? (
+            <Button asChild size="lg" className="w-full sm:w-auto">
+              <a href={job.application_url} target="_blank" rel="noopener noreferrer">
+                Apply now
+              </a>
+            </Button>
+          ) : job.application_method === "email" && job.application_email ? (
+            <Button asChild size="lg" className="w-full sm:w-auto">
+              <a href={`mailto:${job.application_email}?subject=Application for ${job.title}`}>
+                Apply now
+              </a>
+            </Button>
+          ) : null}
+          <ReportJobDialog jobId={job.id} />
+        </div>
       </div>
-      <div className="mt-4 space-y-3 text-sm text-slate-700">
+      <div className="mt-6 space-y-3 text-sm text-slate-700">
         {(job.description || "").split("\n").map((line, index) => (
           <p key={`${job.id}-line-${index}`}>{line}</p>
         ))}
