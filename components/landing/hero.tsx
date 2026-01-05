@@ -25,50 +25,79 @@ export default function Hero({ employerSignupHref }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-white">
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-24 pt-20 sm:pb-32 sm:pt-32 text-center items-center">
-        <div className="flex flex-col gap-8 items-center">
-          <div className="flex flex-wrap items-center gap-2 animate-fade-up">
-            <span className="w-fit rounded-full border border-slate-200 bg-slate-50 px-4 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 shadow-inner-soft">
-              Next-Gen Malta Job Board
-            </span>
-          </div>
-          <div className="max-w-4xl animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            <h1
-              className="font-sans text-6xl font-extrabold leading-[0.95] text-slate-950 sm:text-7xl lg:text-8xl tracking-tightest"
-              style={{ textWrap: "balance" }}
-            >
-              Find your next role, <span className="text-brand-600 italic">instantly.</span>
+    <section className="relative border-b border-slate-200 bg-white">
+      <div className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          <div className="flex flex-col items-start text-left">
+            <div className="inline-flex items-center gap-2 px-2 py-1 rounded border border-brand-100 bg-brand-50 text-[10px] font-black uppercase tracking-[0.2em] text-brand-700 mb-8 animate-fade-in">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+              </span>
+              Live Malta Job Feed
+            </div>
+            
+            <h1 className="text-6xl font-black leading-[0.9] tracking-tightest text-slate-950 sm:text-7xl lg:text-8xl animate-fade-in">
+              ALERT.<br />MATCH.<br /><span className="text-brand-600">APPLY.</span>
             </h1>
-          </div>
-          <p className="max-w-2xl text-lg leading-relaxed text-slate-500 sm:text-xl animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            Careers.mt delivers real-time job alerts from Malta&apos;s most trusted employers directly to your inbox. No noise, just opportunities.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            <Button asChild size="lg" className="h-14 px-10 rounded-2xl text-lg">
-              <Link href="/signup">Start your search</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="h-14 px-10 rounded-2xl text-lg">
-              <Link href="/jobs">Browse all jobs</Link>
-            </Button>
+            
+            <p className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-slate-500 animate-fade-in">
+              The high-performance job board for Malta. Real-time alerts from verified employers delivered with zero latency.
+            </p>
+            
+            <div className="mt-10 flex flex-wrap gap-4 animate-fade-in">
+              <Button asChild size="lg" className="rounded-lg h-12 px-8">
+                <Link href="/signup">Create Free Account</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="rounded-lg h-12 px-8">
+                <Link href="/jobs">View Active Roles</Link>
+              </Button>
+            </div>
           </div>
 
-          {stats && (
-            <div className="mt-12 grid grid-cols-2 gap-8 divide-x divide-slate-100 border-t border-slate-100 pt-12 sm:grid-cols-3 animate-fade-in">
-              <div className="px-8">
-                <p className="text-3xl font-extrabold text-slate-950">{stats.totalJobs}+</p>
-                <p className="text-sm font-semibold uppercase tracking-wider text-slate-400 mt-1">Live Jobs</p>
+          <div className="hidden lg:block relative">
+            <div className="absolute inset-0 bg-brand-500/5 blur-3xl rounded-full" />
+            <div className="relative border border-slate-200 bg-white p-8 rounded-2xl shadow-premium">
+              <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
+                <div className="flex gap-1.5">
+                  <div className="h-3 w-3 rounded-full bg-slate-200" />
+                  <div className="h-3 w-3 rounded-full bg-slate-200" />
+                  <div className="h-3 w-3 rounded-full bg-slate-200" />
+                </div>
+                <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">System Monitor</div>
               </div>
-              <div className="px-8">
-                <p className="text-3xl font-extrabold text-slate-950">{stats.verifiedEmployers}</p>
-                <p className="text-sm font-semibold uppercase tracking-wider text-slate-400 mt-1">Verified Brands</p>
-              </div>
-              <div className="hidden px-8 sm:block">
-                <p className="text-3xl font-extrabold text-slate-950">{stats.activeJobseekers}+</p>
-                <p className="text-sm font-semibold uppercase tracking-wider text-slate-400 mt-1">Active Users</p>
+              
+              <div className="space-y-6">
+                {stats ? (
+                  <>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <span>Active Database Entries</span>
+                        <span className="text-brand-600">Live</span>
+                      </div>
+                      <div className="text-4xl font-black tabular-nums tracking-tighter text-slate-950">{stats.totalJobs}</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <span>Verified Maltese Brands</span>
+                        <span className="text-brand-600">Verified</span>
+                      </div>
+                      <div className="text-4xl font-black tabular-nums tracking-tighter text-slate-950">{stats.verifiedEmployers}</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <span>Synced Jobseekers</span>
+                        <span className="text-brand-600">Synced</span>
+                      </div>
+                      <div className="text-4xl font-black tabular-nums tracking-tighter text-slate-950">{stats.activeJobseekers}</div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-48 flex items-center justify-center text-slate-300 font-mono text-xs italic">Initializing Data Stream...</div>
+                )}
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </section>

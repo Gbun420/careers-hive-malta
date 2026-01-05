@@ -149,32 +149,32 @@ export default function PublicJobsList() {
           <Link
             key={job.id}
             href={`/jobs/${job.id}`}
-            className="premium-card group block p-6 rounded-3xl"
+            className="tech-card group block rounded-xl border-slate-200"
           >
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-2">
-                <h3 className="text-xl font-bold text-slate-950 tracking-tightest group-hover:text-brand-600 transition-colors">
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-slate-950 tracking-tightest group-hover:text-brand-600 transition-colors">
                   {job.title}
                 </h3>
-                <div className="flex flex-wrap items-center gap-5 text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                    {job.location || "Malta"}
+                <div className="flex flex-wrap items-center gap-6 text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em]">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-3 w-3 text-brand-500" />
+                    <span className="font-mono text-slate-600">{job.location || "Malta"}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Euro className="h-3.5 w-3.5 text-slate-400" />
-                    {formatSalary(job)}
+                  <div className="flex items-center gap-2">
+                    <Euro className="h-3 w-3 text-brand-500" />
+                    <span className="font-mono text-slate-600">{formatSalary(job)}</span>
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 {job.is_featured ? (
-                  <span className="rounded-xl bg-amber-100/50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-amber-700 border border-amber-200">
-                    Featured
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded border border-amber-200 bg-amber-50 text-[10px] font-black uppercase tracking-widest text-amber-700">
+                    Priority
                   </span>
                 ) : null}
                 {job.employer_verified ? (
-                  <span className="rounded-xl bg-slate-950 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white border border-slate-950 shadow-lg shadow-slate-200">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded border border-slate-900 bg-slate-950 text-[10px] font-black uppercase tracking-widest text-white shadow-lg">
                     Verified
                   </span>
                 ) : null}

@@ -5,13 +5,13 @@ type ButtonVariant = "default" | "outline";
 type ButtonSize = "default" | "lg";
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-2xl font-bold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
+  "inline-flex items-center justify-center rounded-lg font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]";
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-slate-950 text-white shadow-lg shadow-slate-200 hover:bg-brand-600",
+    "bg-slate-950 text-white hover:bg-brand-600 shadow-subtle",
   outline:
-    "border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 hover:border-slate-300 shadow-sm",
+    "border border-slate-200 bg-white text-slate-950 hover:border-slate-300 hover:bg-slate-50",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

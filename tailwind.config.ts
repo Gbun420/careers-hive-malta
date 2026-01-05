@@ -6,53 +6,48 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#f5f7ff",
-          100: "#ebf0fe",
-          200: "#dae3fd",
-          300: "#bccdfb",
-          400: "#91abf8",
-          500: "#6381f1",
-          600: "#4f64e9",
-          700: "#414fd6",
-          800: "#3942ad",
-          900: "#323b8a",
-          950: "#1e2251",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
         },
         slate: {
           950: "#020617",
         }
       },
       fontFamily: {
-        display: ["var(--font-sans)", "sans-serif"], // High-end sans for headings
+        display: ["var(--font-sans)", "sans-serif"],
         sans: ["var(--font-sans)", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
       },
       animation: {
-        "fade-up": "fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
-        "fade-in": "fade-in 0.4s ease-out both",
-        "pulse-subtle": "pulse-subtle 3s ease-in-out infinite",
+        "scan": "scan 3s linear infinite",
+        "fade-in": "fade-in 0.3s ease-out both",
       },
       keyframes: {
-        "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        "scan": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(100%)" },
         },
         "fade-in": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
-        "pulse-subtle": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.8" },
-        }
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-        'premium': '0 20px 50px -12px rgba(0, 0, 0, 0.05)',
-        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+        'flat': '0 0 0 1px rgba(0, 0, 0, 0.05)',
+        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'glow': '0 0 20px -5px rgba(59, 130, 246, 0.5)',
       },
-      letterSpacing: {
-        'tightest': '-0.04em',
-        'tighter': '-0.02em',
+      borderRadius: {
+        'premium': '1rem',
       }
     },
   },

@@ -32,22 +32,22 @@ export default function CategoryGrid() {
         </p>
       </div>
 
-      <div className="grid gap-6 grid-cols-2 md:grid-cols-3">
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {industries.map((industry) => (
           <Link
             key={industry.slug}
             href={`/jobs/industry/${industry.slug}`}
-            className="premium-card p-8 rounded-[2.5rem] group hover:bg-slate-950 transition-colors duration-500"
+            className="tech-card p-6 rounded-xl group"
           >
-            <div className="flex flex-col gap-6">
-              <div className="h-12 w-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 group-hover:bg-brand-500 group-hover:text-white transition-all duration-500">
-                <industry.icon className="h-6 w-6" />
+            <div className="flex flex-col gap-4">
+              <div className="h-10 w-10 rounded border border-slate-100 bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-500 group-hover:text-white group-hover:border-brand-500 transition-all duration-300">
+                <industry.icon className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-950 group-hover:text-white transition-colors tracking-tight">
+                <h3 className="text-sm font-black text-slate-950 tracking-tight group-hover:text-brand-600 transition-colors">
                   {industry.name}
                 </h3>
-                <p className="text-sm font-semibold text-slate-400 mt-1 group-hover:text-slate-300 transition-colors uppercase tracking-wider">
+                <p className="text-[10px] font-bold font-mono text-slate-400 mt-1 uppercase tracking-widest">
                   {industry.count}
                 </p>
               </div>

@@ -17,23 +17,23 @@ export default function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="glass-header">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="bg-slate-950 p-1.5 rounded-xl group-hover:bg-brand-600 transition-colors">
-            <Building2 className="h-5 w-5 text-white" />
+    <header className="tech-header">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3">
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="bg-slate-950 p-1.5 rounded-lg group-hover:bg-brand-600 transition-colors">
+            <Building2 className="h-4 w-4 text-white" />
           </div>
-          <span className="font-sans text-xl font-extrabold tracking-tightest text-slate-950">
-            {siteConfig.name}
+          <span className="font-sans text-lg font-black tracking-tighter text-slate-950">
+            {siteConfig.name.toUpperCase()}
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-[13px] font-bold uppercase tracking-wider text-slate-500 md:flex">
+        <nav className="hidden items-center gap-10 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="transition hover:text-slate-900 focus:outline-none"
+              className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-500 transition hover:text-brand-600"
             >
               {link.label}
             </Link>
