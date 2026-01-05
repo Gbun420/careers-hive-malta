@@ -112,6 +112,25 @@
 - Manual: sign in as admin, go to `/admin/dashboard`, `/admin/reports`, or `/admin/verifications`.
 - Expected: "Sign out" button is visible and returns user to `/login` after signing out.
 
+## Dynamic Data Audit (2026-01-05)
+- **Admin Metrics Dashboard**:
+  - Log in as admin.
+  - Navigate to `/admin/metrics`.
+  - Verify all 8 metrics (Job Seekers, Postings, Employers, etc.) display with "Synced" timestamps.
+  - Verify "Stale" markers appear if data is old (test by manually checking `lib/metrics.ts` logic).
+- **Dynamic Social Proof**:
+  - Visit `/` (Homepage).
+  - Verify Hero copy includes real numbers for seekers/jobs (or fallback text if DB is empty).
+  - Visit `/pricing`.
+  - Verify "Featured upgrade" card includes `${avg_applications_per_job}` if available.
+- **Event Tracking**:
+  - Open Browser DevTools -> Console.
+  - Sign up as a new user.
+  - Verify `[Analytics] signup_initiated` log appears.
+  - Create a saved search/alert.
+  - Verify `[Analytics] alert_signup_complete` log appears.
+  - Check `localStorage.getItem('ch_event_history')` for persisted events.
+
 ## Setup redirect loop fix (2026-01-05)
 - Issue: `/setup/` redirected to itself when Supabase env was missing (trailing slash + middleware allowlist).
 - Change: allow `/setup/` in the missing-env allowlist.

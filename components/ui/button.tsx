@@ -1,8 +1,8 @@
 import * as React from "react";
 
-type ButtonVariant = "default" | "outline";
+type ButtonVariant = "default" | "outline" | "ghost";
 
-type ButtonSize = "default" | "lg";
+type ButtonSize = "default" | "lg" | "sm";
 
 const baseClasses =
   "inline-flex items-center justify-center rounded-lg font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]";
@@ -12,11 +12,13 @@ const variantClasses: Record<ButtonVariant, string> = {
     "bg-slate-950 text-white hover:bg-brand-600 shadow-subtle",
   outline:
     "border border-slate-200 bg-white text-slate-950 hover:border-slate-300 hover:bg-slate-50",
+  ghost: "hover:bg-slate-100 text-slate-950",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
   default: "h-10 px-5 text-sm",
   lg: "h-12 px-6 text-base",
+  sm: "h-8 px-3 text-xs",
 };
 
 function cx(...classes: Array<string | undefined>) {

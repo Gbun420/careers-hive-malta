@@ -1,76 +1,58 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShieldCheck, Building2 } from "lucide-react";
-import { siteConfig } from "@/lib/site-config";
-
-const navLinks = [
-  { label: "Jobs", href: "/jobs" },
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "For Employers", href: "/#for-employers" },
-  { label: "Sign in", href: "/login" },
-];
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function SiteHeader() {
-  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  const navItems = [
+    { name: "Browse Jobs", href: "/jobs" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "Blog", href: "/blog" },
+  ];
 
   return (
-    <header className="tech-header">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-slate-950 p-1.5 rounded-lg group-hover:bg-brand-600 transition-colors">
-            <Building2 className="h-4 w-4 text-white" />
-          </div>
-          <span className="font-sans text-lg font-black tracking-tighter text-slate-950">
-            {siteConfig.name.toUpperCase()}
-          </span>
-        </Link>
-
-        <nav className="hidden items-center gap-10 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-500 transition hover:text-brand-600"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-full border border-slate-200 p-2 text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500/40 md:hidden"
-          aria-label="Toggle navigation"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-
-      {open ? (
-        <div
-          id="mobile-nav"
-          className="border-t border-slate-200 bg-white/95 px-6 py-4 md:hidden"
-        >
-          <div className="flex flex-col gap-3 text-sm font-medium text-slate-700">
-            {navLinks.map((link) => (
+    <header className="sticky top-0 z-50 w-full border-b border-navy-100 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-2">
+            <Image 
+              src="/brand/logo-horizontal.svg" 
+              alt="Careers.mt" 
+              width={140} 
+              height={35} 
+              className="h-8 w-auto"
+            />
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => (
               <Link
-                key={link.label}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-2 py-1 transition hover:bg-slate-100"
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "text-sm font-bold transition-colors hover:text-coral-500",
+                  pathname === item.href ? "text-navy-950" : "text-slate-500"
+                )}
               >
-                {link.label}
+                {item.name}
               </Link>
             ))}
-          </div>
+          </nav>
         </div>
-      ) : null}
+
+        <div className="flex items-center gap-3">
+          <Button asChild variant="ghost" className="hidden sm:inline-flex font-bold text-navy-950 hover:text-coral-500 hover:bg-coral-50">
+            <Link href="/login">Sign In</Link>
+          </Button>
+          <Button asChild className="bg-navy-950 hover:bg-navy-800 text-white font-bold rounded-xl px-6">
+            <Link href="/signup">Post a Job</Link>
+          </Button>
+        </div>
+      </div>
     </header>
   );
 }

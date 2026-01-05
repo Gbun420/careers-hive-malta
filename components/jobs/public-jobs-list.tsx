@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/jobs/schema";
-import { formatSalary } from "@/lib/jobs/format";
-import { MapPin, Euro, Briefcase } from "lucide-react";
+import { JobCard } from "@/components/ui/job-card";
+import { Search, MapPin } from "lucide-react";
 
 type ApiError = {
   error?: {
@@ -16,7 +16,7 @@ type ApiError = {
 };
 
 export default function PublicJobsList() {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
@@ -95,105 +95,97 @@ export default function PublicJobsList() {
   };
 
   if (loading) {
-    return <p className="text-sm text-slate-600">Loading jobs...</p>;
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-40 w-full animate-pulse rounded-2xl bg-slate-100" />
+        ))}
+      </div>
+    );
   }
 
   if (error?.error?.code === "SUPABASE_NOT_CONFIGURED") {
     return (
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-        Jobs are unavailable. Connect Supabase to load listings. {" "}
-        <Link href="/setup" className="underline">Go to setup</Link>.
-      </div>
-    );
-  }
-
-  if (error?.error?.message) {
-    return (
-      <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-        {error.error.message}
-      </div>
-    );
-  }
-
-  if (jobs.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center">
-        <p className="text-sm text-slate-600">
-          No jobs found yet. Check back soon.
+      <div className="rounded-3xl border border-gold-200 bg-gold-50/50 p-8 text-center">
+        <h3 className="text-lg font-bold text-navy-950">System Configuration Required</h3>
+        <p className="mt-2 text-sm text-slate-600">
+          Connect your database to view the live Malta job feed.
         </p>
+        <Button asChild variant="outline" className="mt-6 border-gold-300">
+          <Link href="/setup">Complete Setup</Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
-        <Input
-          placeholder="Search roles (e.g. Developer, Designer)"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-        <Input
-          placeholder="Location (e.g. Valletta)"
-          value={location}
-          onChange={(event) => setLocation(event.target.value)}
-        />
-      </div>
-      {searchBackend === "meili" ? (
-        <p className="text-xs text-slate-500 font-medium">
-          ⚡ Search results updated instantly.
-        </p>
-      ) : null}
-      <div className="space-y-4">
-        {jobs.map((job) => (
-          <Link
-            key={job.id}
-            href={`/jobs/${job.id}`}
-            className="tech-card group block rounded-xl border-slate-200"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-3">
-                <h3 className="text-xl font-black text-slate-950 tracking-tightest group-hover:text-brand-600 transition-colors">
-                  {job.title}
-                </h3>
-                <div className="flex flex-wrap items-center gap-6 text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em]">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3 w-3 text-brand-500" />
-                    <span className="font-mono text-slate-600">{job.location || "Malta"}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Euro className="h-3 w-3 text-brand-500" />
-                    <span className="font-mono text-slate-600">{formatSalary(job)}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                {job.is_featured ? (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded border border-amber-200 bg-amber-50 text-[10px] font-black uppercase tracking-widest text-amber-700">
-                    Priority
-                  </span>
-                ) : null}
-                {job.employer_verified ? (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded border border-slate-900 bg-slate-950 text-[10px] font-black uppercase tracking-widest text-white shadow-lg">
-                    Verified
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          </Link>
-        ))}
+    <div className="space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="relative flex-grow">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            placeholder="Search roles (e.g. Developer, Designer)"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-12 pr-4 text-sm font-medium text-navy-950 focus:border-navy-400 focus:outline-none focus:ring-1 focus:ring-navy-400 transition-all"
+          />
+        </div>
+        <div className="relative sm:w-1/3">
+          <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            placeholder="Location (e.g. Valletta)"
+            value={location}
+            onChange={(event) => setLocation(event.target.value)}
+            className="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-12 pr-4 text-sm font-medium text-navy-950 focus:border-navy-400 focus:outline-none focus:ring-1 focus:ring-navy-400 transition-all"
+          />
+        </div>
       </div>
 
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-black uppercase tracking-widest text-navy-400">
+          {jobs.length} Opportunities Found
+        </h2>
+        {searchBackend === "meili" && (
+          <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-green-600">
+            <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+            Live Search Active
+          </div>
+        )}
+      </div>
+
+      {jobs.length === 0 ? (
+        <div className="rounded-[2.5rem] border border-dashed border-slate-200 bg-white px-6 py-16 text-center">
+          <p className="text-lg font-bold text-navy-950">No matching roles found.</p>
+          <p className="mt-2 text-slate-500">Try adjusting your search or filters to find more opportunities.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          {jobs.map((job) => (
+            <JobCard
+              key={job.id}
+              id={job.id}
+              title={job.title}
+              employerName={job.profiles?.email?.split('@')[0] || "Verified Employer"}
+              location={job.location || "Malta"}
+              salaryRange={job.salary_range}
+              createdAt={job.created_at}
+              isFeatured={job.is_featured}
+              isVerified={job.employer_verified}
+            />
+          ))}
+        </div>
+      )}
+
       {hasMore && (
-        <div className="mt-10 flex justify-center pb-10">
+        <div className="mt-12 flex justify-center pb-10">
           <Button
             variant="outline"
             onClick={handleLoadMore}
             disabled={loadingMore}
             size="lg"
-            className="w-full sm:w-auto min-w-[200px]"
+            className="w-full sm:w-auto min-w-[200px] rounded-2xl font-black uppercase tracking-widest text-xs border-navy-200 hover:bg-navy-50"
           >
-            {loadingMore ? "Loading more..." : "Load more jobs"}
+            {loadingMore ? "Synchronizing..." : "Load More Opportunities"}
           </Button>
         </div>
       )}

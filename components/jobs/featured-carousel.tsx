@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, Euro, Sparkles } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import type { Job } from "@/lib/jobs/schema";
-import { formatSalary } from "@/lib/jobs/format";
+import { JobCard } from "@/components/ui/job-card";
 
 export default function FeaturedCarousel() {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,9 +20,9 @@ export default function FeaturedCarousel() {
 
   if (loading) {
     return (
-      <div className="flex gap-6 overflow-hidden px-6">
+      <div className="flex gap-6 overflow-hidden px-6 py-20">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 w-80 flex-shrink-0 animate-pulse rounded-[2rem] bg-slate-100" />
+          <div key={i} className="h-64 w-80 flex-shrink-0 animate-pulse rounded-[2.5rem] bg-slate-100" />
         ))}
       </div>
     );
@@ -31,61 +31,42 @@ export default function FeaturedCarousel() {
   if (jobs.length === 0) return null;
 
   return (
-    <section className="w-full py-20 bg-slate-50/50 overflow-hidden">
-      <div className="mx-auto max-w-6xl px-6 mb-10 flex items-center justify-between">
+    <section className="w-full py-24 bg-white overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-widest text-[10px] mb-2">
-            <Sparkles className="h-3.5 w-3.5" />
-            Featured Roles
+          <div className="flex items-center gap-2 text-gold-600 font-black uppercase tracking-widest text-[10px] mb-4">
+            <Sparkles className="h-3.5 w-3.5 fill-gold-500" />
+            Premium Placement
           </div>
-          <h2 className="text-4xl font-extrabold tracking-tightest">
-            Hand-picked opportunities.
+          <h2 className="text-4xl font-black tracking-tight text-navy-950 sm:text-5xl">
+            Featured Opportunities.
           </h2>
         </div>
-        <Link href="/jobs" className="text-sm font-bold text-slate-950 hover:text-brand-600 transition-colors">
-          View all jobs →
+        <Link href="/jobs" className="group flex items-center gap-2 text-sm font-black uppercase tracking-widest text-navy-400 hover:text-navy-950 transition-colors">
+          View all active roles <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
 
-      <div className="flex gap-6 overflow-x-auto px-6 pb-10 scrollbar-hide snap-x snap-mandatory">
-        {/* Visual offset for center alignment on large screens */}
-        <div className="flex-shrink-0 w-[calc((100vw-72rem)/2)] hidden xl:block" />
+      <div className="flex gap-6 overflow-x-auto px-6 pb-12 scrollbar-hide snap-x snap-mandatory">
+        {/* Padding for center alignment */}
+        <div className="flex-shrink-0 w-[calc((100vw-80rem)/2)] hidden 2xl:block" />
         
         {jobs.map((job) => (
-          <Link
-            key={job.id}
-            href={`/jobs/${job.id}`}
-            className="snap-center premium-card flex-shrink-0 w-80 p-8 rounded-[2.5rem] bg-white group"
-          >
-            <div className="flex flex-col h-full justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-slate-950 group-hover:text-brand-600 transition-colors line-clamp-2">
-                  {job.title}
-                </h3>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-                    <MapPin className="h-3 w-3" />
-                    {job.location || "Malta"}
-                  </div>
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-                    <Euro className="h-3 w-3" />
-                    {formatSalary(job)}
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 flex items-center justify-between">
-                <span className="text-xs font-bold text-brand-600 uppercase tracking-widest">
-                  {job.employer_verified ? "Verified" : "New Post"}
-                </span>
-                <div className="h-10 w-10 rounded-full bg-slate-950 flex items-center justify-center text-white group-hover:bg-brand-600 transition-colors">
-                  →
-                </div>
-              </div>
-            </div>
-          </Link>
+          <div key={job.id} className="snap-center flex-shrink-0 w-80 sm:w-96">
+            <JobCard 
+              id={job.id}
+              title={job.title}
+              employerName={job.profiles?.email?.split('@')[0] || "Verified Employer"}
+              location={job.location || "Malta"}
+              salaryRange={job.salary_range}
+              createdAt={job.created_at}
+              isFeatured={true}
+              isVerified={job.employer_verified}
+            />
+          </div>
         ))}
         
-        <div className="flex-shrink-0 w-[calc((100vw-72rem)/2)] hidden xl:block" />
+        <div className="flex-shrink-0 w-[calc((100vw-80rem)/2)] hidden 2xl:block" />
       </div>
     </section>
   );

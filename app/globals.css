@@ -4,31 +4,32 @@
 
 @layer base {
   body {
-    @apply bg-white text-slate-900 selection:bg-brand-500 selection:text-white antialiased;
-    background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px),
-      linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+    @apply bg-white text-navy-950 selection:bg-coral-100 selection:text-coral-900 antialiased;
+    background-image: linear-gradient(to right, #f8fafc 1px, transparent 1px),
+      linear-gradient(to bottom, #f8fafc 1px, transparent 1px);
     background-size: 4rem 4rem;
   }
 
   h1, h2, h3, h4 {
-    @apply font-sans tracking-tighter font-bold text-slate-950;
+    @apply font-sans tracking-tight font-black text-navy-950;
   }
 }
 
 @layer components {
+  /* Legacy classes kept for compatibility or updated to brand colors */
   .tech-header {
-    @apply sticky top-0 z-40 w-full border-b border-slate-200 bg-white/90 backdrop-blur-md;
+    @apply sticky top-0 z-40 w-full border-b border-navy-100 bg-white/90 backdrop-blur-md;
   }
 
   .tech-card {
-    @apply relative overflow-hidden bg-white border border-slate-200 p-6 transition-all duration-200 hover:border-brand-500 hover:shadow-subtle;
+    @apply relative overflow-hidden bg-white border border-slate-200 p-6 transition-all duration-200 hover:border-navy-500 hover:shadow-premium;
   }
 
   .tech-badge {
-    @apply inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-600;
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-navy-100 bg-navy-50 text-navy-600;
   }
 
   .btn-tech {
-    @apply inline-flex items-center justify-center rounded-lg bg-slate-950 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-brand-600 active:bg-brand-700 disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-2xl bg-navy-950 px-6 py-3 text-sm font-black text-white transition-all hover:bg-navy-800 active:bg-navy-900 disabled:opacity-50;
   }
 }
