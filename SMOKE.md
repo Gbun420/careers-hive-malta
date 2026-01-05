@@ -1,30 +1,11 @@
 # Smoke Checks
 
-## Vercel deployment (2026-01-05 - Salary Refactor)
+## Vercel deployment (2026-01-05 - Admin & Apply Features)
 - Command: `npx vercel --prod`
 - Deployment: `https://careers-hive-malta-prod.vercel.app`
-- Inspect: https://vercel.com/gbun420s-projects/careers-hive-malta-prod/HimzESxuMN7g981PgWy9197axVXY
+- Inspect: https://vercel.com/gbun420s-projects/careers-hive-malta-prod/7Zo96ua4kQEtgNXDFgV51nARpzHo
 - Health app: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/app`
 - Health db: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/db`
-
-## Salary Refactor (2026-01-05)
-- **Create Job with Salary**:
-  - Navigate to `/employer/jobs/new`.
-  - Fill in Title, Description, Location.
-  - Fill in Salary Min (e.g., 30000), Salary Max (e.g., 40000), Period (Yearly).
-  - Submit.
-  - Verify redirect to job list and "Job posted successfully" banner.
-- **View Job Salary**:
-  - Navigate to `/jobs`.
-  - Verify the new job appears.
-  - Verify salary is displayed as "€30,000 - €40,000 / yearly".
-- **Edit Job Salary**:
-  - Go to Employer Dashboard -> Manage job posts.
-  - Click "Edit" on the job.
-  - Verify fields are pre-filled correctly.
-  - Change Salary Min to 35000.
-  - Save.
-  - Verify the update is reflected in `/jobs`.
 
 ## Admin Enhancements (2026-01-05)
 - **Dashboard Stats**:
