@@ -1,5 +1,11 @@
 # Smoke Checks
 
+## Vercel build fix (2026-01-05)
+- Issue: Vercel build failed on commit `ebc0c94` due to `@cloudflare/next-on-pages` peer range vs Next 15.5.9.
+- Change: Cloudflare Pages config removed (`wrangler.toml`) for Vercel-only deployments.
+- Local checks: `npm run lint`, `npm run typecheck`, `npm run review` PASS (build warns about Edge Runtime usage in Supabase modules).
+- Verify: trigger a Vercel deploy on `main`; `npm install` and `npm run build` succeed.
+
 ## Deployment attempt (2026-01-04)
 - Branch: feat/production-launch-system
 - Commit: ad0a193
