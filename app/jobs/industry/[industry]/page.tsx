@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const industryName = industryMap[industry.toLowerCase()] || industry.charAt(0).toUpperCase() + industry.slice(1);
   
   return {
-    title: `${industryName} Jobs in Malta | Careers Hive Malta`,
+    title: `${industryName} Jobs in Malta | Careers.mt`,
     description: `Browse ${industryName} career opportunities in Malta from top employers. Apply for the latest roles in ${industryName.toLowerCase()} today.`,
   };
 }

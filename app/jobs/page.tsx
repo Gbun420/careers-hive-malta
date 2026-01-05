@@ -7,7 +7,7 @@ import { isSupabaseConfigured } from "@/lib/auth/session";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
-  title: "Latest jobs in Malta | Careers Hive Malta",
+  title: "Latest jobs in Malta | Careers.mt",
   description:
     "Discover new jobs in Malta with instant alerts and verified employers.",
   ...(siteUrl

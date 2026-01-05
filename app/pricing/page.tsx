@@ -12,7 +12,7 @@ import {
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
-  title: "Pricing | Careers Hive Malta",
+  title: "Pricing | Careers.mt",
   description:
     "Flexible pricing for hiring in Malta. Post jobs for free or feature urgent roles.",
   ...(siteUrl

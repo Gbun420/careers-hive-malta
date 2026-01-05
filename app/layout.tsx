@@ -16,20 +16,29 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Malta Job Board 2026 - Fastest Job Alerts from Verified Employers | Careers Hive Malta",
-  description: "Find the latest 2026 jobs in Malta with Careers Hive. Get instant job alerts for IT, marketing, finance positions from verified Maltese employers. Malta's most trusted job board.",
-  keywords: ["Malta jobs", "jobs in Malta", "Malta job board", "careers Malta", "IT jobs Malta", "marketing jobs Malta"],
+  title: {
+    default: "Careers.mt - Malta Job Board 2026",
+    template: "%s | Careers.mt",
+  },
+  description:
+    "Malta's trusted job board. Get instant alerts for IT, marketing, finance jobs from verified Maltese employers.",
+  keywords: [
+    "Malta jobs",
+    "careers Malta",
+    "jobs in Malta",
+    "Maltese employment",
+  ],
   openGraph: {
-    title: "Malta Job Board 2026 - Careers Hive Malta",
+    title: "Careers.mt - Malta Job Board",
     description: "Find verified jobs in Malta with instant alerts",
     url: "https://careers-hive-malta-prod.vercel.app/",
-    siteName: "Careers Hive Malta",
+    siteName: "Careers.mt",
     images: [
       {
         url: "https://careers-hive-malta-prod.vercel.app/og-image-2026.jpg",
         width: 1200,
         height: 630,
-        alt: "Careers Hive Malta",
+        alt: "Careers.mt",
       },
     ],
     locale: "en_MT",
@@ -37,9 +46,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Malta Job Board 2026 - Careers Hive Malta",
+    title: "Careers.mt - Malta Job Board",
     description: "Find verified jobs in Malta with instant alerts",
     images: ["https://careers-hive-malta-prod.vercel.app/og-image-2026.jpg"],
+    creator: "@careersmt",
   },
 };
 

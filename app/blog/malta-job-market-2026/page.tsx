@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: 'Malta Job Market Outlook 2026 | Careers Hive Malta',
+  title: 'Malta Job Market Outlook 2026 | Careers.mt',
   description: 'In-depth analysis of emerging trends, top industries, and skills in demand for Malta’s 2026 job market.',
 };
 
@@ -30,7 +30,7 @@ export default function BlogPost() {
         </p>
         <h2 className="mt-8 text-2xl font-bold text-slate-900">2. Remote & Hybrid Flexibility</h2>
         <p>
-          The hybrid model is now the standard in Malta. Verified employers on Careers Hive are increasingly offering 3-day office weeks, making Sliema and St. Julians even more attractive for international talent.
+          The hybrid model is now the standard in Malta. Verified employers on Careers.mt are increasingly offering 3-day office weeks, making Sliema and St. Julians even more attractive for international talent.
         </p>
         <h2 className="mt-8 text-2xl font-bold text-slate-900">Conclusion</h2>
         <p>

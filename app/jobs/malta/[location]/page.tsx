@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locationName = locationMap[location.toLowerCase()] || location.charAt(0).toUpperCase() + location.slice(1);
   
   return {
-    title: `Jobs in ${locationName}, Malta | Careers Hive Malta`,
+    title: `Jobs in ${locationName}, Malta | Careers.mt`,
     description: `Find employment opportunities in ${locationName}, Malta. Browse IT, marketing, finance jobs from verified Maltese employers.`,
   };
 }

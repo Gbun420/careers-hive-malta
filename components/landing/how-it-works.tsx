@@ -29,7 +29,7 @@ export default function HowItWorks() {
           Alert. Match. Apply.
         </h2>
         <p className="max-w-2xl text-slate-600">
-          Careers Hive keeps you ahead of the Maltese market with fast alerts
+          Careers.mt keeps you ahead of the Maltese market with fast alerts
           and trusted postings.
         </p>
       </div>

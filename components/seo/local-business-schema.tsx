@@ -2,7 +2,7 @@ export default function LocalBusinessSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "EmploymentAgency",
-    "name": "Careers Hive Malta",
+    "name": "Careers.mt",
     "description": "Malta's fastest job alerts platform with verified employers",
     "url": "https://careers-hive-malta-prod.vercel.app/",
     "telephone": "+356-XXXX-XXXX",

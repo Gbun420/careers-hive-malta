@@ -50,8 +50,8 @@ export async function generateMetadata({
   const { id } = await params;
   const job = await getJobForSeo(id);
   const title = job?.title
-    ? `${job.title} | Careers Hive Malta`
-    : "Job in Malta | Careers Hive Malta";
+    ? `${job.title} | Careers.mt`
+    : "Job in Malta | Careers.mt";
   const description = buildDescription(job?.description);
 
   return {

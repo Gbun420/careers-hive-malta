@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: 'Malta Career Blog - Job Search Tips & Employment Trends | Careers Hive Malta',
+  title: 'Malta Career Blog - Job Search Tips & Employment Trends | Careers.mt',
   description: 'Stay updated with the latest Malta job market insights, career advice, and employment trends for Maltese job seekers.',
 };
 

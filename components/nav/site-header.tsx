@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShieldCheck } from "lucide-react";
+import { Menu, X, ShieldCheck, Building2 } from "lucide-react";
 
 const navLinks = [
   { label: "Jobs", href: "/jobs" },
@@ -18,13 +18,14 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/85 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="font-display text-lg font-semibold text-slate-900">
-            Careers Hive Malta
+        <Link href="/" className="flex items-center gap-2">
+          <Building2 className="h-6 w-6 text-teal-600" />
+          <span className="font-display text-xl font-bold text-slate-900">
+            Careers.mt
           </span>
           <span className="hidden items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 sm:inline-flex">
             <ShieldCheck className="h-3 w-3" aria-hidden="true" />
-            Verified employers
+            Verified
           </span>
         </Link>
 
