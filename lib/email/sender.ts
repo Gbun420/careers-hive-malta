@@ -21,6 +21,7 @@ type DigestPayload = {
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const resendApiKey = process.env.RESEND_API_KEY;
 const resendFrom = process.env.RESEND_FROM || "Careers.mt <onboarding@resend.dev>";
+const recipientOverride = process.env.EMAIL_RECIPIENT_OVERRIDE;
 
 export function isEmailConfigured() {
   return Boolean(resendApiKey);
@@ -35,6 +36,9 @@ async function sendEmail(to: string, subject: string, html: string): Promise<Ema
     };
   }
 
+  // Use override if present (for testing with unverified Resend domains)
+  const finalTo = recipientOverride || to;
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -43,8 +47,8 @@ async function sendEmail(to: string, subject: string, html: string): Promise<Ema
     },
     body: JSON.stringify({
       from: resendFrom,
-      to,
-      subject,
+      to: finalTo,
+      subject: recipientOverride ? `[OVERRIDE to ${to}] ${subject}` : subject,
       html,
     }),
   });
