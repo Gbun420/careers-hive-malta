@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { z } from "zod";
+import { logAudit } from "@/lib/audit/log";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -74,6 +75,18 @@ export async function PATCH(request: Request) {
   if (updateError) {
     return jsonError("DB_ERROR", updateError.message, 500);
   }
+
+  // Log the profile update
+  await logAudit({
+    actorId: authData.user.id,
+    action: "profile_updated",
+    entityType: "profile",
+    entityId: profile.id,
+    meta: {
+      updated_fields: ["full_name"],
+      new_full_name: parsed.data.full_name,
+    },
+  });
 
   return NextResponse.json({ data: profile });
 }
