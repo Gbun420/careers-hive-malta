@@ -1,13 +1,16 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import PublicJobsList from "@/components/jobs/public-jobs-list";
-import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
+import { PageShell } from "@/components/ui/page-shell";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Briefcase } from "lucide-react";
+import { getJobs } from "@/lib/jobs/get-jobs";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
-  title: "Latest jobs in Malta | Careers Hive Malta",
+  title: "Latest jobs in Malta | Careers.mt",
   description:
     "Discover new jobs in Malta with instant alerts and verified employers.",
   ...(siteUrl
@@ -19,34 +22,35 @@ export const metadata: Metadata = {
     : {}),
 };
 
-export default function JobsPage() {
+export default async function JobsPage() {
   if (!isSupabaseConfigured()) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-16">
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Jobs feed unavailable
-        </h1>
-        <p className="mt-3 text-slate-600">
-          Connect Supabase to load job listings.
-        </p>
-        <Button asChild className="mt-6 w-fit">
-          <Link href="/setup">Go to setup</Link>
-        </Button>
-      </main>
+      <PageShell>
+        <EmptyState 
+          icon={Briefcase}
+          title="Jobs feed unavailable"
+          description="Connect Supabase to load job listings and explore matching opportunities in Malta."
+          action={{
+            label: "Go to setup",
+            href: "/setup"
+          }}
+        />
+      </PageShell>
     );
   }
 
+  // Initial fetch for SSR
+  const initialData = await getJobs({ limit: 20 });
+
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-6 py-16">
-      <header>
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Latest jobs in Malta
-        </h1>
-        <p className="mt-2 text-slate-600">
-          Discover roles filtered by alerts and verified employers.
-        </p>
+    <PageShell>
+      <header className="mb-12">
+        <SectionHeading 
+          title="Latest Jobs in Malta" 
+          subtitle="Discover high-performance roles filtered by real-time alerts and manual employer verification."
+        />
       </header>
-      <PublicJobsList />
-    </main>
+      <PublicJobsList initialData={initialData.data} initialMeta={initialData.meta} />
+    </PageShell>
   );
 }

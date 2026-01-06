@@ -1,0 +1,82 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - link "Careers.mt" [ref=e6]:
+            - /url: /
+            - img [ref=e8]
+            - generic [ref=e20]: Careers.mt
+          - navigation [ref=e21]:
+            - link "Browse Jobs" [ref=e22]:
+              - /url: /jobs/
+              - text: Browse Jobs
+            - link "For Employers" [ref=e23]:
+              - /url: /for-employers/
+              - text: For Employers
+            - link "Pricing" [ref=e24]:
+              - /url: /pricing/
+              - text: Pricing
+            - link "Blog" [ref=e25]:
+              - /url: /blog/
+              - text: Blog
+        - generic [ref=e27]:
+          - link "Sign In" [ref=e28]:
+            - /url: /login/
+          - link "Post a Job" [ref=e29]:
+            - /url: /signup/?role=employer
+    - main [ref=e30]:
+      - generic [ref=e34]:
+        - heading "Account Settings" [level=2] [ref=e35]
+        - paragraph [ref=e36]: Manage your personal information and preferences.
+    - contentinfo [ref=e37]:
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - link "C Careers.mt" [ref=e41]:
+              - /url: /
+              - generic [ref=e42]: C
+              - generic [ref=e43]: Careers.mt
+            - paragraph [ref=e44]: Malta's high-performance job feed. Bridging the gap between top talent and verified Maltese brands.
+          - generic [ref=e45]:
+            - heading "Platform" [level=4] [ref=e46]
+            - list [ref=e47]:
+              - listitem [ref=e48]:
+                - link "Browse Jobs" [ref=e49]:
+                  - /url: /jobs/
+              - listitem [ref=e50]:
+                - link "For Employers" [ref=e51]:
+                  - /url: /for-employers/
+              - listitem [ref=e52]:
+                - link "Pricing" [ref=e53]:
+                  - /url: /pricing/
+              - listitem [ref=e54]:
+                - link "Blog" [ref=e55]:
+                  - /url: /blog/
+          - generic [ref=e56]:
+            - heading "Support" [level=4] [ref=e57]
+            - list [ref=e58]:
+              - listitem [ref=e59]:
+                - link "Contact Us" [ref=e60]:
+                  - /url: "#"
+              - listitem [ref=e61]:
+                - link "Help Center" [ref=e62]:
+                  - /url: "#"
+              - listitem [ref=e63]:
+                - link "Privacy Policy" [ref=e64]:
+                  - /url: "#"
+              - listitem [ref=e65]:
+                - link "Terms of Service" [ref=e66]:
+                  - /url: "#"
+        - generic [ref=e67]:
+          - paragraph [ref=e68]: © 2026 Careers.mt. All Rights Reserved.
+          - generic [ref=e69]:
+            - link "Sitemap" [ref=e70]:
+              - /url: /sitemap.xml
+            - link "Robots" [ref=e71]:
+              - /url: /robots.txt
+  - alert [ref=e72]
+```

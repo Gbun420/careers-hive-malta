@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import SavedSearchForm from "@/components/alerts/saved-search-form";
 import type { SavedSearchCreate } from "@/lib/alerts/criteria";
+import { trackEvent } from "@/lib/analytics";
 
 export default function SavedSearchCreate() {
   const router = useRouter();
@@ -20,6 +21,11 @@ export default function SavedSearchCreate() {
       const data = await response.json().catch(() => null);
       throw new Error(data?.error?.message ?? "Unable to create alert.");
     }
+
+    trackEvent('alert_signup_complete', {
+      frequency: payload.frequency,
+      keywords: payload.search_criteria?.keywords
+    });
 
     router.push("/jobseeker/alerts");
   };

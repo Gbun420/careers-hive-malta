@@ -187,7 +187,7 @@ export async function fulfillFeaturedCheckoutSession(
   const { data: job } = await service
     .from("jobs")
     .select(
-      "id, employer_id, title, description, location, salary_range, created_at, is_active"
+      "id, employer_id, title, description, location, salary_range, salary_min, salary_max, salary_period, currency, created_at, is_active"
     )
     .eq("id", jobId)
     .maybeSingle();

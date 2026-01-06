@@ -12,7 +12,12 @@ type JobFormValues = {
   title: string;
   description: string;
   location: string;
-  salary_range: string;
+  salary_min: string;
+  salary_max: string;
+  salary_period: "hourly" | "monthly" | "yearly";
+  application_method: "email" | "url";
+  application_url: string;
+  application_email: string;
   is_active: boolean;
 };
 
@@ -26,7 +31,12 @@ const defaultValues: JobFormValues = {
   title: "",
   description: "",
   location: "",
-  salary_range: "",
+  salary_min: "",
+  salary_max: "",
+  salary_period: "yearly",
+  application_method: "email",
+  application_url: "",
+  application_email: "",
   is_active: true,
 };
 
@@ -59,7 +69,12 @@ export default function JobForm({
         title: values.title.trim(),
         description: values.description.trim(),
         location: values.location.trim() || undefined,
-        salary_range: values.salary_range.trim() || undefined,
+        salary_min: values.salary_min ? Number(values.salary_min) : undefined,
+        salary_max: values.salary_max ? Number(values.salary_max) : undefined,
+        salary_period: values.salary_period,
+        application_method: values.application_method,
+        application_url: values.application_url,
+        application_email: values.application_email,
         is_active: values.is_active,
       });
     } catch (validationError) {
@@ -86,7 +101,8 @@ export default function JobForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+    <form onSubmit={handleSubmit} className="mt-8 space-y-8">
+      <div className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
         <Input
@@ -108,25 +124,107 @@ export default function JobForm({
           required
         />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="space-y-2">
+        <Label htmlFor="location">Location</Label>
+        <Input
+          id="location"
+          value={values.location}
+          onChange={(event) => handleChange("location", event.target.value)}
+          placeholder="e.g. Valletta"
+        />
+      </div>
+      
+      <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor="salary_min">Min Salary</Label>
           <Input
-            id="location"
-            value={values.location}
-            onChange={(event) => handleChange("location", event.target.value)}
-            placeholder="e.g. Valletta"
+            id="salary_min"
+            type="number"
+            value={values.salary_min}
+            onChange={(event) => handleChange("salary_min", event.target.value)}
+            placeholder="e.g. 30000"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="salary_range">Salary range</Label>
+          <Label htmlFor="salary_max">Max Salary</Label>
           <Input
-            id="salary_range"
-            value={values.salary_range}
-            onChange={(event) => handleChange("salary_range", event.target.value)}
-            placeholder="e.g. €35k-€45k"
+            id="salary_max"
+            type="number"
+            value={values.salary_max}
+            onChange={(event) => handleChange("salary_max", event.target.value)}
+            placeholder="e.g. 40000"
           />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="salary_period">Period</Label>
+          <div className="relative">
+            <select
+              id="salary_period"
+              value={values.salary_period}
+              onChange={(event) => handleChange("salary_period", event.target.value as any)}
+              className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="yearly">Yearly</option>
+              <option value="monthly">Monthly</option>
+              <option value="hourly">Hourly</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <h3 className="font-semibold text-slate-900">How to apply</h3>
+        <div className="flex items-center gap-6">
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="radio"
+              name="application_method"
+              value="email"
+              checked={values.application_method === "email"}
+              onChange={() => handleChange("application_method", "email")}
+              className="h-4 w-4 border-slate-300 text-teal-600 focus:ring-teal-500"
+            />
+            Via Email
+          </label>
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="radio"
+              name="application_method"
+              value="url"
+              checked={values.application_method === "url"}
+              onChange={() => handleChange("application_method", "url")}
+              className="h-4 w-4 border-slate-300 text-teal-600 focus:ring-teal-500"
+            />
+            Via External URL
+          </label>
+        </div>
+
+        {values.application_method === "email" ? (
+          <div className="space-y-2">
+            <Label htmlFor="application_email">Application Email</Label>
+            <Input
+              id="application_email"
+              type="email"
+              value={values.application_email}
+              onChange={(event) => handleChange("application_email", event.target.value)}
+              placeholder="jobs@company.com"
+              required
+            />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <Label htmlFor="application_url">Application URL</Label>
+            <Input
+              id="application_url"
+              type="url"
+              value={values.application_url}
+              onChange={(event) => handleChange("application_url", event.target.value)}
+              placeholder="https://company.com/careers/apply"
+              required
+            />
+          </div>
+        )}
       </div>
 
       <label className="flex items-center gap-3 text-sm text-slate-700">

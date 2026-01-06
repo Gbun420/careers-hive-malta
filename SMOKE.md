@@ -1,11 +1,143 @@
 # Smoke Checks
 
+## Vercel deployment (2026-01-05 - Admin & Apply Features)
+- Command: `npx vercel --prod`
+- Deployment: `https://careers-hive-malta-prod.vercel.app`
+- Inspect: https://vercel.com/gbun420s-projects/careers-hive-malta-prod/7Zo96ua4kQEtgNXDFgV51nARpzHo
+- Health app: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/app`
+- Health db: `curl -iL https://careers-hive-malta-prod.vercel.app/api/health/db`
+
+## Admin Enhancements (2026-01-05)
+- **Dashboard Stats**:
+  - Log in as admin.
+  - Navigate to `/admin/dashboard`.
+  - Verify "Active Jobs", "Pending Verifications", "Pending Reports", and "Total Users" cards appear with numbers.
+- **Verification Queue**:
+  - Navigate to `/admin/verifications`.
+  - Verify "Pending Requests" section is visible.
+  - Verify "Past Verifications" section is visible.
+- **Audit Logs**:
+  - Navigate to `/admin/audit`.
+  - Verify recent system logs appear with action type and timestamp.
+
+## User Profile & Settings (2026-01-05)
+- **Update Profile**:
+  - Navigate to `/settings` (via any dashboard).
+  - Verify your email is displayed (read-only).
+  - Enter a new "Full name".
+  - Click "Save changes".
+  - Verify success message.
+  - Refresh page and verify name is persisted.
+
+## Email Notifications (2026-01-05)
+- **Signup Confirmation**:
+  - Sign up with a new email.
+  - Verify if using override: check `bundyglenn@gmail.com` for the email.
+  - Verify if no override: check the provided email.
+- **Job Alerts**:
+  - As a jobseeker, create a saved search for "Engineer" in "Valletta" with "Instant" frequency.
+  - As an employer, post a job with title "Senior Engineer" and location "Valletta".
+  - Admin: Check `notifications` table in Supabase or `/jobseeker/notifications` page.
+  - Verify a new "pending" email notification exists.
+  - (Internal) Run `/api/alerts/dispatch` with secret to send.
+
+## Job Reporting (2026-01-05)
+- **Report a Job**:
+  - As any user (or admin in preview), go to a job detail page.
+  - Click "Report job".
+  - Select a reason and add details.
+  - Submit.
+  - Verify success message.
+- **Admin Review**:
+  - Log in as admin.
+  - Navigate to `/admin/reports`.
+  - Verify the report appears in the list.
+
+## SEO Enhancements (2026-01-05)
+- **Meta Tags**:
+  - Inspect root page source.
+  - Verify title and description are updated with keyword-rich content.
+  - Verify OG and Twitter tags are present.
+- **Structured Data**:
+  - Visit a job detail page (e.g., `/jobs/<id>`).
+  - Inspect source for `JobPosting` schema.
+  - Verify it includes salary data if available.
+  - Inspect any page source for `EmploymentAgency` schema.
+- **Landing Pages**:
+  - Visit `/jobs/malta/valletta`.
+  - Verify title and header are location-specific.
+  - Visit `/jobs/industry/it`.
+  - Verify title and header are industry-specific.
+- **Blog**:
+  - Visit `/blog`.
+  - Verify the list of blog posts.
+  - Visit `/blog/malta-job-market-2026`.
+  - Verify the content renders.
+- **Technical SEO**:
+  - Visit `/sitemap.xml`.
+  - Verify it redirects/renders correct URLs (Next.js handles this via `sitemap.ts`).
+  - Visit `/robots.txt`.
+  - Verify rules and sitemap link.
+
+## Apply Functionality (2026-01-05)
+- **Create Job with Email Application**:
+  - Navigate to `/employer/jobs/new`.
+  - Fill in required fields.
+  - Select "Via Email" and enter a valid email.
+  - Submit.
+  - Go to `/jobs` and click the job.
+  - Verify "Apply now" button exists and is a `mailto:` link.
+- **Create Job with URL Application**:
+  - Navigate to `/employer/jobs/new`.
+  - Fill in required fields.
+  - Select "Via External URL" and enter a valid URL (e.g., `https://example.com`).
+  - Submit.
+  - Go to `/jobs` and click the job.
+  - Verify "Apply now" button exists and links to `https://example.com`.
+- **Edit Job Application Method**:
+  - Edit a job.
+  - Change method from Email to URL.
+  - Save.
+  - Verify change in public view.
+
 ## Alias fix (2026-01-05)
 - Issue: `https://careers-hive-malta.vercel.app` was still pointing at the older project and looping on `/setup/`.
 - Change: `npx vercel alias set dpl_7wyx6dYqHkBc9Rs8ysjQC6M8VKuv careers-hive-malta.vercel.app`
 - Verify: `HEAD https://careers-hive-malta.vercel.app/` -> 200
 - Verify: `HEAD https://careers-hive-malta.vercel.app/setup` -> 308 -> `/setup/`
 - Verify: `HEAD https://careers-hive-malta.vercel.app/setup/` -> 200
+
+## Admin sign out (2026-01-05)
+- Not run.
+- Manual: sign in as admin, go to `/admin/dashboard`, `/admin/reports`, or `/admin/verifications`.
+- Expected: "Sign out" button is visible and returns user to `/login` after signing out.
+
+## Dynamic Data Audit (2026-01-05)
+- **Admin Metrics Dashboard**:
+  - Log in as admin.
+  - Navigate to `/admin/metrics`.
+  - Verify all 8 metrics (Job Seekers, Postings, Employers, etc.) display with "Synced" timestamps.
+  - Verify "Stale" markers appear if data is old (test by manually checking `lib/metrics.ts` logic).
+- **Dynamic Social Proof**:
+  - Visit `/` (Homepage).
+  - Verify Hero copy includes real numbers for seekers/jobs (or fallback text if DB is empty).
+  - Visit `/pricing`.
+  - Verify "Featured upgrade" card includes `${avg_applications_per_job}` if available.
+
+## Smart Onboarding & Matching (2026-01-05)
+- **Resume Parsing**:
+  - Log in as jobseeker.
+  - Navigate to `/profile`.
+  - Paste text into "Smart Resume Sync" (e.g., "Senior React Developer with 5 years experience").
+  - Click "Extract Skills".
+  - Verify "Detected Profile" appears with skills (React, JavaScript, etc.).
+  - Click "Apply to Profile".
+  - Verify skills and headline are updated in the form below.
+- **Job Matching**:
+  - Navigate to `/jobseeker/dashboard`.
+  - Verify "Recommended for You" section is visible.
+  - Verify roles appear with "% Match" badges based on your profile skills.
+  - Click a recommended role and verify it leads to the correct job detail page.
 
 ## Setup redirect loop fix (2026-01-05)
 - Issue: `/setup/` redirected to itself when Supabase env was missing (trailing slash + middleware allowlist).

@@ -20,38 +20,42 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="mx-auto w-full max-w-6xl px-6 py-16">
-      <div className="flex flex-col gap-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-          How it works
+    <section id="how-it-works" className="mx-auto w-full max-w-6xl px-6 py-24">
+      <div className="flex flex-col gap-4 text-center items-center">
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.4em] text-brand-600">
+          The Process
         </p>
-        <h2 className="font-display text-3xl font-semibold text-slate-900">
+        <h2 className="font-sans text-5xl font-extrabold text-slate-950 tracking-tightest">
           Alert. Match. Apply.
         </h2>
-        <p className="max-w-2xl text-slate-600">
-          Careers Hive keeps you ahead of the Maltese market with fast alerts
+        <p className="max-w-2xl text-lg text-slate-500 mt-2">
+          Careers.mt keeps you ahead of the Maltese market with fast alerts
           and trusted postings.
         </p>
       </div>
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+      <div className="mt-16 grid gap-8 lg:grid-cols-3 relative">
+        {/* Subtle connector line for desktop */}
+        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 hidden lg:block" />
+        
         {steps.map((step, index) => (
           <div
             key={step.title}
-            className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            className="premium-card p-10 rounded-[3rem] bg-white group z-10"
           >
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
-              {index + 1}
-            </span>
-            <div className="mt-4 flex items-center gap-2">
-              <step.icon className="h-5 w-5 text-teal-600" />
-              <p className="text-lg font-semibold text-slate-900">
-                {step.title}
-              </p>
+            <div className="flex flex-col gap-6">
+              <div className="h-14 w-14 rounded-2xl bg-slate-950 flex items-center justify-center text-white text-xl font-bold shadow-xl shadow-slate-200 group-hover:bg-brand-600 transition-colors">
+                {index + 1}
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <step.icon className="h-6 w-6 text-brand-600" />
+                  <h3 className="text-2xl font-bold text-slate-950 tracking-tight">
+                    {step.title}
+                  </h3>
+                </div>
+                <p className="text-slate-500 leading-relaxed">{step.description}</p>
+              </div>
             </div>
-            <p className="mt-3 text-sm text-slate-600">{step.description}</p>
-            {index < steps.length - 1 ? (
-              <ArrowRight className="absolute right-6 top-6 hidden h-5 w-5 text-slate-300 lg:block" />
-            ) : null}
           </div>
         ))}
       </div>

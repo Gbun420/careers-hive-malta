@@ -1,0 +1,136 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Careers.mt" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - generic [ref=e20]: Careers.mt
+        - button "Open mobile menu" [ref=e22] [cursor=pointer]:
+          - img [ref=e23]
+    - main [ref=e24]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - paragraph [ref=e29]: Pricing
+          - generic [ref=e30]:
+            - heading "Plans for hiring faster in Malta" [level=2] [ref=e31]
+            - paragraph [ref=e32]: Start with a free listing, then boost priority roles to the top of the feed and search results for 7 days.
+          - text: "0"
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - heading "Free Post" [level=3] [ref=e35]
+            - paragraph [ref=e36]: Publish a job to the public feed with standard visibility.
+            - list [ref=e37]:
+              - listitem [ref=e38]:
+                - generic [ref=e39]: ✓
+                - text: Visible on the Malta job feed
+              - listitem [ref=e40]:
+                - generic [ref=e41]: ✓
+                - text: Included in alert matching
+              - listitem [ref=e42]:
+                - generic [ref=e43]: ✓
+                - text: Report + moderation coverage
+            - link "Post a job for free" [ref=e44] [cursor=pointer]:
+              - /url: /signup/?role=employer
+              - text: Post for Free
+          - generic [ref=e45]:
+            - generic [ref=e46]: Most Popular
+            - heading "Featured Upgrade" [level=3] [ref=e47]
+            - paragraph [ref=e48]: Only €49 per post
+            - list [ref=e49]:
+              - listitem [ref=e50]:
+                - generic [ref=e51]: ✓
+                - text: Top placement for 7 days
+              - listitem [ref=e52]:
+                - generic [ref=e53]: ✓
+                - text: Appears first in search results
+              - listitem [ref=e54]:
+                - generic [ref=e55]: ✓
+                - text: Distinctive Featured badge
+              - text: "0"
+            - link "Feature a job upgrade" [ref=e57] [cursor=pointer]:
+              - /url: /signup/?role=employer
+              - text: Feature a Job
+          - generic [ref=e58]:
+            - heading "Professional" [level=3] [ref=e59]
+            - paragraph [ref=e60]: Unlimited posting and team-wide hiring tools.
+            - list [ref=e61]:
+              - listitem [ref=e62]:
+                - generic [ref=e63]: ✓
+                - text: Unlimited job postings
+              - listitem [ref=e64]:
+                - generic [ref=e65]: ✓
+                - text: Advanced ROI analytics
+              - listitem [ref=e66]:
+                - generic [ref=e67]: ✓
+                - text: Team hiring dashboard
+              - listitem [ref=e68]:
+                - generic [ref=e69]: ✓
+                - text: Priority employer support
+            - button "Coming soon" [disabled]
+        - generic [ref=e70]:
+          - heading "Frequently Asked Questions" [level=2] [ref=e72]
+          - generic [ref=e73]:
+            - generic [ref=e74]:
+              - heading "How long does a featured post last?" [level=4] [ref=e75]
+              - paragraph [ref=e76]: Featured posts stay at the top of the feed for 7 days, after which they revert to standard listings.
+            - generic [ref=e77]:
+              - heading "Do you offer bulk discounts?" [level=4] [ref=e78]
+              - paragraph [ref=e79]: Yes, our Professional plan is designed for companies with high-volume hiring needs. Contact us for custom enterprise pricing.
+            - generic [ref=e80]:
+              - heading "Is verification mandatory?" [level=4] [ref=e81]
+              - paragraph [ref=e82]: Verification is recommended to build trust with candidates, but you can post roles immediately after signing up.
+            - generic [ref=e83]:
+              - heading "What is the average time-to-hire?" [level=4] [ref=e84]
+              - paragraph [ref=e85]: Most verified employers on Careers.mt fill their roles within 14-21 days.
+    - contentinfo [ref=e86]:
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - link "C Careers.mt" [ref=e90] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e91]: C
+              - generic [ref=e92]: Careers.mt
+            - paragraph [ref=e93]: Malta's high-performance job feed. Bridging the gap between top talent and verified Maltese brands.
+          - generic [ref=e94]:
+            - heading "Platform" [level=4] [ref=e95]
+            - list [ref=e96]:
+              - listitem [ref=e97]:
+                - link "Browse Jobs" [ref=e98] [cursor=pointer]:
+                  - /url: /jobs/
+              - listitem [ref=e99]:
+                - link "For Employers" [ref=e100] [cursor=pointer]:
+                  - /url: /for-employers/
+              - listitem [ref=e101]:
+                - link "Pricing" [ref=e102] [cursor=pointer]:
+                  - /url: /pricing/
+              - listitem [ref=e103]:
+                - link "Blog" [ref=e104] [cursor=pointer]:
+                  - /url: /blog/
+          - generic [ref=e105]:
+            - heading "Support" [level=4] [ref=e106]
+            - list [ref=e107]:
+              - listitem [ref=e108]:
+                - link "Contact Us" [ref=e109] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e110]:
+                - link "Help Center" [ref=e111] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e112]:
+                - link "Privacy Policy" [ref=e113] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e114]:
+                - link "Terms of Service" [ref=e115] [cursor=pointer]:
+                  - /url: "#"
+        - generic [ref=e116]:
+          - paragraph [ref=e117]: © 2026 Careers.mt. All Rights Reserved.
+          - generic [ref=e118]:
+            - link "Sitemap" [ref=e119] [cursor=pointer]:
+              - /url: /sitemap.xml
+            - link "Robots" [ref=e120] [cursor=pointer]:
+              - /url: /robots.txt
+  - alert [ref=e121]
+```

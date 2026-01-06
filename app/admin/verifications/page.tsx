@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 import AdminVerificationsList from "@/components/admin/verifications-list";
+import AdminSignOutButton from "@/components/admin/sign-out-button";
 
 export default function AdminVerificationsPage() {
   if (!isSupabaseConfigured()) {
@@ -22,13 +23,16 @@ export default function AdminVerificationsPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-6 py-16">
-      <header>
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Employer verifications
-        </h1>
-        <p className="mt-2 text-slate-600">
-          Approve or reject employer verification requests.
-        </p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-semibold text-slate-900">
+            Employer verifications
+          </h1>
+          <p className="mt-2 text-slate-600">
+            Approve or reject employer verification requests.
+          </p>
+        </div>
+        <AdminSignOutButton />
       </header>
       <AdminVerificationsList />
     </main>

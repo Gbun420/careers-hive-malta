@@ -39,8 +39,8 @@ class VercelDeployer {
   }
 
   async linkVercelProject() {
-    console.log('Linking Vercel project...');
-    execSync('npx vercel link', {
+    console.log(`Linking Vercel project: ${this.projectName}...`);
+    execSync(`npx vercel link --yes --project ${this.projectName}`, {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'inherit'],
     });
@@ -60,7 +60,7 @@ class VercelDeployer {
 
   async deployProduction() {
     console.log('\nDeploying to production...');
-    const output = execSync('npx vercel --prod', {
+    const output = execSync('npx vercel --prod --yes', {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'inherit'],
     });

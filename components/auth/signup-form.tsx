@@ -11,6 +11,7 @@ import {
   roles,
   type UserRole,
 } from "@/lib/auth/roles";
+import { trackEvent } from "@/lib/analytics";
 
 type SignupFormProps = {
   allowAdminSignup: boolean;
@@ -86,6 +87,7 @@ export default function SignupForm({
         return;
       }
 
+      trackEvent('signup_initiated', { role });
       setMessage("Check your email to confirm your account.");
     } catch (err) {
       console.error("Signup form error:", err);
