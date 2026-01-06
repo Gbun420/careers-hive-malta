@@ -25,7 +25,7 @@ export default function SiteHeader() {
         <div className="flex items-center gap-8 lg:gap-12">
           <div className="flex items-center gap-2">
             <DynamicLogo />
-            <span className="hidden items-center gap-1 rounded-full border border-brandAccent/20 bg-brandAccent/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brandAccent sm:inline-flex">
+            <span className="hidden items-center gap-1 rounded-full border border-brand-accent/20 bg-brand-accent/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brand-accent sm:inline-flex">
               <ShieldCheck className="h-3 w-3" aria-hidden="true" />
               Verified
             </span>

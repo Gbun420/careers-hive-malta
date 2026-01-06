@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { PageShell } from "@/components/ui/page-shell";
+import { SectionHeading } from "@/components/ui/section-heading";
 
 export const metadata: Metadata = {
   title: 'Malta Career Blog - Job Search Tips & Employment Trends | Careers.mt',
@@ -38,9 +39,6 @@ const blogPosts = [
   }
 ];
 
-import { PageShell } from "@/components/ui/page-shell";
-import { SectionHeading } from "@/components/ui/section-heading";
-
 export default function BlogPage() {
   return (
     <PageShell>
@@ -53,21 +51,21 @@ export default function BlogPage() {
 
       <section className="grid gap-10 sm:grid-cols-2">
         {blogPosts.map((post) => (
-          <article key={post.slug} className="group relative flex flex-col p-10 rounded-[3rem] border border-slate-200 bg-white transition-all duration-300 hover:border-brand-primary hover:shadow-premium hover:-translate-y-1">
+          <article key={post.slug} className="group relative flex flex-col p-10 rounded-[3rem] border border-slate-200 bg-white transition-all duration-300 hover:border-brand hover:shadow-premium hover:-translate-y-1">
             <div className="flex items-center gap-4 mb-6">
-              <span className="bg-brand-primary/10 text-brand-primaryDark text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+              <span className="bg-brand/10 text-brand text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
                 {post.category}
               </span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{post.date}</span>
             </div>
-            <h2 className="text-3xl font-black text-slate-950 group-hover:text-brand-primary transition-colors tracking-tightest leading-tight">
+            <h2 className="text-3xl font-black text-slate-950 group-hover:text-brand transition-colors tracking-tightest leading-tight">
               <Link href={`/blog/${post.slug}`}>{post.title}</Link>
             </h2>
             <p className="mt-6 text-lg text-slate-500 font-medium leading-relaxed flex-1">{post.excerpt}</p>
             <div className="mt-10 pt-8 border-t border-slate-50">
               <Link 
                 href={`/blog/${post.slug}`}
-                className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-950 hover:text-brand-primary transition-all group/link"
+                className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-slate-950 hover:text-brand transition-all group/link"
               >
                 Read full guide
                 <span className="text-xl transition-transform group-hover/link:translate-x-1">→</span>

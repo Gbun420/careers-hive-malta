@@ -40,7 +40,7 @@ export default async function MaltaLocationPage({ params }: Props) {
   return (
     <PageShell>
       <header className="mb-12">
-        <Button variant="ghost" asChild className="-ml-4 mb-8 text-slate-500 hover:text-brand-primary">
+        <Button variant="ghost" asChild className="-ml-4 mb-8 text-slate-500 hover:text-brand">
           <Link href="/jobs" className="flex items-center gap-2">
             <ChevronLeft className="h-4 w-4" />
             All Opportunities

@@ -10,16 +10,16 @@ const baseClasses =
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-primary text-primary-foreground hover:bg-primary/95 shadow-md",
+    "bg-primary text-primary-foreground hover:opacity-90 shadow-cta",
   secondary:
-    "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   outline:
-    "border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
-  ghost: "text-foreground hover:bg-muted hover:text-foreground",
+    "border border-border bg-transparent text-foreground hover:bg-muted",
+  ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
   premium: 
-    "bg-primary text-primary-foreground shadow-lg hover:shadow-xl hover:-translate-y-0.5",
+    "bg-brand text-white shadow-cta hover:shadow-cta-hover hover:-translate-y-0.5",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

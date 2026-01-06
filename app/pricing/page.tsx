@@ -7,7 +7,6 @@ import {
   getStripeFeaturedPriceId,
   isStripeConfigured,
 } from "@/lib/billing/stripe";
-import { fetchDynamicMetrics } from "@/lib/metrics";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionHeading } from "@/components/ui/section-heading";
 
@@ -37,14 +36,6 @@ export default async function PricingPage() {
     typeof featuredPriceId === "string" &&
     featuredPriceId.includes("placeholder");
 
-  const metrics = await fetchDynamicMetrics({
-    queries: ['featured_adoption_rate', 'avg_applications_per_job'],
-    fallbacks: true
-  });
-
-  const featuredAdoption = metrics.featured_adoption_rate?.value;
-  const avgApps = metrics.avg_applications_per_job?.value;
-  
   // High-conversion pricing logic: ensure we never show a "0" or empty price
   const displayPrice = billingConfigured && featuredPriceLabel && featuredPriceLabel !== "0" && featuredPriceLabel !== "€0"
     ? featuredPriceLabel 
@@ -62,11 +53,9 @@ export default async function PricingPage() {
             subtitle={`Start with a free listing, then boost priority roles to the top of the feed and search results for ${featuredDurationDays} days.`}
             align="center"
           />
-          {featuredAdoption && Number(featuredAdoption) > 0 && (
-            <p className="text-sm font-medium text-brand-primary">
-              {featuredAdoption}% of employers upgrade to featured placement for maximum visibility.
-            </p>
-          )}
+          <p className="text-sm font-medium text-brand">
+            Trusted by verified Maltese brands for high-performance recruitment.
+          </p>
         </header>
 
         <section className="grid gap-6 lg:grid-cols-3">
@@ -78,26 +67,26 @@ export default async function PricingPage() {
             </p>
             <ul className="mt-8 space-y-4 text-sm text-slate-600 flex-1">
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Visible on the Malta job feed
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Included in alert matching
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Report + moderation coverage
               </li>
             </ul>
-            <Button asChild size="lg" variant="outline" className="mt-8 w-full rounded-2xl" aria-label="Post a job for free">
+            <Button asChild size="lg" variant="outline" className="mt-8 w-full rounded-2xl border-brand/20 text-brand hover:bg-brand/5" aria-label="Post a job for free">
               <Link href="/signup?role=employer">Post for Free</Link>
             </Button>
           </div>
 
           {/* Featured Plan */}
-          <div className="rounded-3xl border-2 border-brand-primary bg-brand-primary/5 p-8 shadow-premium flex flex-col relative overflow-hidden scale-105 z-10">
-            <div className="absolute top-0 right-0 bg-brand-primary text-white text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest">
+          <div className="rounded-3xl border-2 border-brand bg-brand/5 p-8 shadow-premium flex flex-col relative overflow-hidden scale-105 z-10">
+            <div className="absolute top-0 right-0 bg-brand text-white text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest">
               Most Popular
             </div>
             <h3 className="text-xl font-black text-slate-950">Featured Upgrade</h3>
@@ -106,31 +95,29 @@ export default async function PricingPage() {
             </p>
             <ul className="mt-8 space-y-4 text-sm text-slate-700 flex-1">
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Top placement for {featuredDurationDays} days
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Appears first in search results
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Distinctive Featured badge
               </li>
-              {avgApps && Number(avgApps) > 0 && (
-                <li className="flex items-start gap-3 font-bold text-brand-secondary">
-                  <span className="text-brand-success font-black">✓</span>
-                  Avg. {avgApps} candidates per post
-                </li>
-              )}
+              <li className="flex items-start gap-3 font-bold text-brand">
+                <span className="text-emerald-600 font-black">✓</span>
+                Verified trust signal
+              </li>
             </ul>
             <div className="mt-8">
-              <Button asChild size="lg" className="w-full rounded-2xl shadow-cta" aria-label="Feature a job upgrade">
+              <Button asChild size="lg" className="w-full rounded-2xl shadow-cta bg-brand text-white border-none" aria-label="Feature a job upgrade">
                 <Link href="/signup?role=employer">Feature a Job</Link>
               </Button>
             </div>
             {showPlaceholderWarning && (
-              <p className="mt-4 text-center text-[10px] text-brand-primary font-black uppercase tracking-widest">
+              <p className="mt-4 text-center text-[10px] text-brand font-black uppercase tracking-widest">
                 Stripe Sandbox Active
               </p>
             )}
@@ -144,19 +131,19 @@ export default async function PricingPage() {
             </p>
             <ul className="mt-8 space-y-4 text-sm text-slate-600 flex-1">
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Unlimited job postings
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Advanced ROI analytics
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Team hiring dashboard
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-brand-success font-black">✓</span>
+                <span className="text-emerald-600 font-black">✓</span>
                 Priority employer support
               </li>
             </ul>

@@ -36,7 +36,7 @@ export default function BlogPost() {
       <div className="not-prose mt-12 rounded-3xl bg-slate-900 p-8 text-white shadow-2xl">
         <h3 className="text-2xl font-bold text-white">Ready to start?</h3>
         <p className="mt-4 text-slate-300">Browse verified tech roles currently active on our platform.</p>
-        <Button asChild className="mt-6 bg-brand-primary hover:bg-brand-primaryDark shadow-lg">
+        <Button asChild className="mt-6 bg-brand hover:bg-brand/90 shadow-lg">
           <Link href="/jobs/industry/it">View Tech Jobs</Link>
         </Button>
       </div>

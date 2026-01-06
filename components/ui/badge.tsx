@@ -8,18 +8,18 @@ type BadgeProps = {
 
 export function Badge({ children, variant = 'default', className }: BadgeProps) {
   const variants = {
-    default: "bg-neutral-100 text-neutral-800 border-neutral-300",
-    verified: "bg-brand-secondary text-white border-transparent",
-    featured: "bg-brand-primary text-white border-transparent shadow-sm",
-    new: "bg-brand-secondaryLight/10 text-brand-secondaryDark border-brand-secondaryLight/20",
-    success: "bg-success-light/10 text-success-primary border-success-light/20",
-    warning: "bg-brand-primaryLight/10 text-brand-primaryDark border-brand-primaryLight/20",
+    default: "bg-muted text-muted-foreground border-border",
+    verified: "bg-brand/10 text-brand border-brand/20",
+    featured: "bg-brand-accent/10 text-brand-accent border-brand-accent/20 shadow-sm",
+    new: "bg-brand/10 text-brand border-brand/20",
+    success: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    warning: "bg-brand-accent/10 text-brand-accent border-brand-accent/20",
     error: "bg-rose-500/10 text-rose-600 border-rose-500/20",
   };
 
   return (
     <span className={cn(
-      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold tracking-tight",
+      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-tight uppercase",
       variants[variant],
       className
     )}>

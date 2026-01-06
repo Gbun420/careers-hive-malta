@@ -126,7 +126,7 @@ export default function LoginForm({
         <p className="text-sm font-medium text-slate-600">
           Supabase configuration required. Please visit setup to link your database.
         </p>
-        <Button asChild variant="outline" className="w-full rounded-xl">
+        <Button asChild variant="outline" className="w-full rounded-xl border-border">
           <Link href="/setup">Go to setup</Link>
         </Button>
       </div>
@@ -171,7 +171,7 @@ export default function LoginForm({
           </p>
         ) : null}
         
-        <Button type="submit" size="lg" disabled={loading} className="w-full rounded-xl bg-brand-primary hover:bg-brand-primaryDark shadow-lg shadow-brand-primary/20">
+        <Button type="submit" size="lg" disabled={loading} className="w-full rounded-xl bg-brand hover:opacity-90 shadow-cta transition-all text-white border-none">
           {loading ? "Signing in..." : "Sign In"}
         </Button>
       </form>
@@ -181,7 +181,7 @@ export default function LoginForm({
           New to Careers.mt?{" "}
           <Link
             href={`/signup${redirectedFrom ? `?redirectedFrom=${encodeURIComponent(redirectedFrom)}` : ""}`}
-            className="font-black text-brand-primary hover:text-brand-primaryDark transition-colors underline decoration-2 underline-offset-4"
+            className="font-black text-brand hover:opacity-80 transition-colors underline decoration-2 underline-offset-4"
           >
             Create an account
           </Link>

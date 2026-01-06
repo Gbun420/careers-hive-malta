@@ -221,7 +221,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
         <header>
 
-          <Button variant="ghost" asChild className="-ml-4 text-muted-foreground hover:text-primary">
+          <Button variant="ghost" asChild className="-ml-4 text-muted-foreground hover:text-brand">
 
             <Link href="/jobs" className="flex items-center gap-2">
 

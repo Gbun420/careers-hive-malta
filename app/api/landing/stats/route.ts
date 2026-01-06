@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { fetchDynamicMetrics } from "@/lib/metrics";
-import { publicMetricsEnabled } from "@/lib/flags";
 
-export const runtime = "nodejs"; // fetchDynamicMetrics uses unstable_cache which might prefer nodejs in some envs
+export const runtime = "nodejs"; 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  if (!publicMetricsEnabled) {
-    return NextResponse.json({
-      totalJobs: "Live Feed",
-      verifiedEmployers: "Active",
-      activeJobseekers: "Verified",
-    });
+export async function GET(request: Request) {
+  const token = request.headers.get("X-INTERNAL-STATS-TOKEN");
+  const internalToken = process.env.INTERNAL_STATS_TOKEN;
+
+  // Protect the endpoint: only allow access if the token matches or if we're not in production
+  // Actually, instructions say: require header matching env; otherwise return 404.
+  if (!internalToken || token !== internalToken) {
+    return new NextResponse(null, { status: 404 });
   }
 
   try {

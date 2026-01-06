@@ -53,7 +53,7 @@ export default async function MetricsDashboard() {
             }`}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`rounded-xl p-2.5 ${data.isStale ? "bg-rose-50 text-rose-600" : "bg-brand-primary/10 text-brand-primary"}`}>
+              <div className={`rounded-xl p-2.5 ${data.isStale ? "bg-rose-50 text-rose-600" : "bg-brand/10 text-brand"}`}>
                 {getIcon(key)}
               </div>
               {data.isStale && (
@@ -78,7 +78,7 @@ export default async function MetricsDashboard() {
             </div>
 
             <div className="mt-6 flex items-center gap-1.5 border-t border-slate-50 pt-4">
-              <div className={`h-1.5 w-1.5 rounded-full ${data.isStale ? "bg-rose-500" : "bg-brand-success animate-pulse"}`} />
+              <div className={`h-1.5 w-1.5 rounded-full ${data.isStale ? "bg-rose-500" : "bg-emerald-600 animate-pulse"}`} />
               <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">
                 Synced: {new Date(data.lastUpdated).toLocaleTimeString()}
               </p>
@@ -91,11 +91,11 @@ export default async function MetricsDashboard() {
         <h2 className="text-xl font-black text-slate-950 mb-4 tracking-tight">Data Freshness Policy</h2>
         <div className="grid gap-6 text-sm text-slate-600 sm:grid-cols-2 max-w-4xl mx-auto text-left">
           <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="mt-1.5 h-2 w-2 rounded-full bg-brand-primary shrink-0" />
+            <div className="mt-1.5 h-2 w-2 rounded-full bg-brand shrink-0" />
             <p className="font-medium leading-relaxed">Metrics are cached using <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs border border-slate-200">unstable_cache</code> with a 1-hour revalidation window for optimal system performance.</p>
           </div>
           <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="mt-1.5 h-2 w-2 rounded-full bg-brand-primary shrink-0" />
+            <div className="mt-1.5 h-2 w-2 rounded-full bg-brand shrink-0" />
             <p className="font-medium leading-relaxed">Stale markers trigger automatically if the database has not been polled within the specified threshold for each specific metric.</p>
           </div>
         </div>

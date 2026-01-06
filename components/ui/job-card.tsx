@@ -16,139 +16,71 @@ type JobCardProps = {
 };
 
 export function JobCard({
-
   id,
-
   title,
-
   employerName,
-
   location,
-
   salaryRange,
-
   createdAt,
-
   isFeatured,
-
   isVerified,
-
   matchScore
-
 }: JobCardProps) {
-
   return (
-
     <Link 
-
       href={`/jobs/${id}`}
-
       className={cn(
-
-        "group relative flex flex-col gap-4 rounded-xl border bg-card p-6 transition-all duration-300 card-interactive",
-
+        "group relative flex flex-col gap-4 rounded-xl border bg-card p-6 transition-all duration-300",
         isFeatured 
-
-          ? "border-primary/50 shadow-md hover:-translate-y-1" 
-
-          : "border-border hover:border-primary hover:shadow-lg hover:-translate-y-1"
-
+          ? "border-brand/50 shadow-md hover:-translate-y-1" 
+          : "border-border hover:border-brand hover:shadow-lg hover:-translate-y-1"
       )}
-
     >
-
       <div className="flex items-start justify-between gap-4">
-
         <div className="space-y-1">
-
           <div className="flex flex-wrap gap-2 mb-2">
-
             {isFeatured && (
-
-              <Badge variant="featured" className="bg-primary text-primary-foreground border-none shadow-sm">
-
+              <Badge variant="featured">
                 Featured
-
               </Badge>
-
             )}
-
             {isVerified && (
-
-              <Badge variant="verified" className="bg-muted text-foreground border-none">
-
-                ✓ Verified
-
+              <Badge variant="verified">
+                Verified
               </Badge>
-
             )}
-
             {matchScore && matchScore >= 50 && (
-
-              <div className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary">
-
-                <Zap className="h-3 w-3 mr-1 fill-primary" />
-
+              <div className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-brand/10 text-brand">
+                <Zap className="h-3 w-3 mr-1 fill-brand" />
                 {matchScore}% Match
-
               </div>
-
             )}
-
           </div>
-
-          <h3 className="text-lg font-black text-foreground group-hover:text-primary transition-colors leading-tight uppercase tracking-tightest">
-
+          <h3 className="text-lg font-black text-foreground group-hover:text-brand transition-colors leading-tight uppercase tracking-tightest">
             {title}
-
           </h3>
-
           <p className="text-sm font-bold text-muted-foreground">{employerName}</p>
-
         </div>
-
-        <div className="rounded-full bg-muted p-2 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all">
-
+        <div className="rounded-full bg-muted p-2 text-muted-foreground group-hover:bg-brand/10 group-hover:text-brand transition-all">
           <ExternalLink className="h-5 w-5" />
-
         </div>
-
       </div>
-
-
 
       <div className="mt-4 flex flex-wrap gap-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-
         <div className="flex items-center gap-1.5">
-
-          <MapPin className="h-3.5 w-3.5 text-primary" />
-
+          <MapPin className="h-3.5 w-3.5 text-brand" />
           {location}
-
         </div>
-
         <div className="flex items-center gap-1.5">
-
-          <Calendar className="h-3.5 w-3.5 text-primary" />
-
+          <Calendar className="h-3.5 w-3.5 text-brand" />
           {new Date(createdAt).toLocaleDateString()}
-
         </div>
-
         {salaryRange && (
-
-          <div className="flex items-center gap-1.5 font-black text-foreground bg-primary/10 px-2 py-1 rounded">
-
+          <div className="flex items-center gap-1.5 font-black text-foreground bg-brand/10 px-2 py-1 rounded">
             {salaryRange}
-
           </div>
-
         )}
-
       </div>
-
     </Link>
-
   );
-
 }

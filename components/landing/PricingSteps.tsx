@@ -19,12 +19,12 @@ function StepCard({ s }: { s: Step }) {
       className={cn(
         "rounded-2xl border bg-white/5 backdrop-blur px-6 py-5 shadow-sm transition-all hover:bg-white/10",
         "border-white/10",
-        s.highlight && "ring-1 ring-brandAccent/50 bg-brandAccent/5 border-brandAccent/20"
+        s.highlight && "ring-1 ring-brand-accent/50 bg-brand-accent/5 border-brand-accent/20"
       )}
     >
       <div className={cn(
         "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-wide",
-        s.highlight ? "border-brandAccent/30 bg-brandAccent/20 text-brandAccent" : "border-white/10 bg-white/10 text-white/80"
+        s.highlight ? "border-brand-accent/30 bg-brand-accent/20 text-brand-accent" : "border-white/10 bg-white/10 text-white/80"
       )}>
         {s.badge}
       </div>

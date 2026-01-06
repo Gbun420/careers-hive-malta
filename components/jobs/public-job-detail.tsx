@@ -59,20 +59,22 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
   if (loading) {
     return (
       <div className="animate-pulse space-y-8">
-        <div className="h-32 rounded-3xl bg-slate-100" />
-        <div className="h-64 rounded-3xl bg-slate-100" />
+        <div className="h-32 rounded-3xl bg-muted" />
+        <div className="h-64 rounded-3xl bg-muted" />
       </div>
     );
   }
 
   if (error?.error?.code === "SUPABASE_NOT_CONFIGURED") {
     return (
-      <div className="rounded-3xl border border-primary/20 bg-muted/50 p-8 text-center">
+      <div className="rounded-3xl border border-brand/20 bg-muted/50 p-8 text-center">
         <h3 className="text-xl font-black text-foreground uppercase tracking-tightest">System Configuration Required</h3>
         <p className="mt-2 text-sm font-bold text-muted-foreground">Connect your database to view the live Malta job feed.</p>
-        <Button asChild variant="outline" className="mt-6 border-primary/50">
-          <Link href="/setup">Complete Setup</Link>
-        </Button>
+        <div className="mt-6 flex justify-center">
+          <Button asChild variant="outline" className="border-brand/50">
+            <Link href="/setup">Complete Setup</Link>
+          </Button>
+        </div>
       </div>
     );
   }
@@ -99,28 +101,28 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-6">
             <div className="flex flex-wrap gap-2">
-              {job.is_featured && <Badge variant="featured" className="bg-primary text-primary-foreground">Featured Priority</Badge>}
-              {job.employer_verified && <Badge variant="verified" className="bg-muted text-foreground">Verified Maltese Brand</Badge>}
+              {job.is_featured && <Badge variant="featured">Featured Priority</Badge>}
+              {job.employer_verified && <Badge variant="verified">Verified Maltese Brand</Badge>}
             </div>
             
             <div className="space-y-2">
-              <h1 className="text-4xl font-black tracking-tightest text-foreground lg:text-6xl uppercase">
+              <h1 className="text-4xl font-black tracking-tightest text-foreground lg:text-6xl uppercase leading-tight">
                 {job.title}
               </h1>
-              <p className="text-xl font-bold text-primary">Verified Employer</p>
+              <p className="text-xl font-bold text-brand">Verified Employer</p>
             </div>
 
             <div className="flex flex-wrap gap-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" />
+                <MapPin className="h-4 w-4 text-brand" />
                 {job.location || "Malta"}
               </div>
               <div className="flex items-center gap-2">
-                <Euro className="h-4 w-4 text-primary" />
+                <Euro className="h-4 w-4 text-brand" />
                 {formatSalary(job)}
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+                <Calendar className="h-4 w-4 text-brand" />
                 Posted {new Date(job.created_at).toLocaleDateString()}
               </div>
             </div>

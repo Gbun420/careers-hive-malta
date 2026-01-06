@@ -43,7 +43,7 @@ export default function SetupPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-brand-success font-bold">
+              <p className="text-sm text-emerald-600 font-bold">
                 Database synchronization is active. You can now <Link href="/login" className="underline decoration-2 underline-offset-4">Sign in to your account</Link>.
               </p>
             )}
@@ -76,7 +76,7 @@ export default function SetupPage() {
         </div>
 
         <p className="mt-12 text-center text-xs font-bold uppercase tracking-widest text-slate-400">
-          Need help? Consult <code className="text-brand-primary">docs/DB.md</code> for platform architectural details.
+          Need help? Consult <code className="text-brand">docs/DB.md</code> for platform architectural details.
         </p>
       </div>
     </PageShell>

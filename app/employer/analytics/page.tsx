@@ -58,7 +58,7 @@ export default async function EmployerAnalyticsPage() {
                 <span className="text-white">92%</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-navy-900 overflow-hidden">
-                <div className="h-full w-[92%] bg-brand-primary" />
+                <div className="h-full w-[92%] bg-brand" />
               </div>
             </div>
             <div className="space-y-2">
@@ -67,14 +67,14 @@ export default async function EmployerAnalyticsPage() {
                 <span className="text-white">Verified</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-navy-900 overflow-hidden">
-                <div className="h-full w-[100%] bg-brand-success shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                <div className="h-full w-[100%] bg-emerald-600 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
               </div>
             </div>
           </div>
         </div>
 
         <div className="rounded-[2.5rem] border border-slate-200 bg-white p-10 shadow-sm flex flex-col justify-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primaryDark mb-6">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand/90 mb-6">
             <ArrowUpRight className="h-8 w-8" />
           </div>
           <h3 className="text-2xl font-black text-navy-950">Boost Conversion.</h3>
@@ -82,7 +82,7 @@ export default async function EmployerAnalyticsPage() {
             Featured listings are currently receiving <span className="text-navy-950 font-bold">3.2x more views</span> and <span className="text-navy-950 font-bold">2.8x more applications</span> across the network.
           </p>
           <div className="mt-8">
-            <button className="text-[10px] font-black uppercase tracking-widest text-brand-primaryDark hover:text-brand-primary flex items-center gap-2 transition-colors">
+            <button className="text-[10px] font-black uppercase tracking-widest text-brand/90 hover:text-brand flex items-center gap-2 transition-colors">
               Analyze Boost ROI <ArrowRight className="h-4 w-4" />
             </button>
           </div>

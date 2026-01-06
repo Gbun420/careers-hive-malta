@@ -16,7 +16,7 @@ export function renderJobAlertEmail({ job, baseUrl }: JobAlertTemplateProps) {
         <h2 style="margin: 0 0 12px;">${job.title}</h2>
         <p style="margin: 0 0 8px;">${job.location ?? "Remote/On-site"} · ${job.salary_range ?? "Salary TBD"}</p>
         <p style="margin: 0 0 16px;">${job.description}</p>
-        <a href="${jobUrl}" style="display: inline-block; padding: 10px 16px; background: #0f766e; color: #fff; text-decoration: none; border-radius: 999px;">View job</a>
+        <a href="${jobUrl}" style="display: inline-block; padding: 10px 16px; background: #0d748c; color: #fff; text-decoration: none; border-radius: 999px;">View job</a>
         <p style="margin-top: 16px; font-size: 12px; color: #64748b;">
           Manage alerts: <a href="${manageUrl}">Saved searches</a>
         </p>

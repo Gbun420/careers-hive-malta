@@ -26,27 +26,27 @@ export default function JobseekerDashboard() {
             <div className="grid gap-4">
               <Link
                 href="/jobseeker/alerts"
-                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand-primary hover:shadow-premium group"
+                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand hover:shadow-premium group"
               >
-                <p className="font-black text-slate-950 group-hover:text-brand-primary transition-colors uppercase tracking-widest text-[10px]">Alert preferences</p>
+                <p className="font-black text-slate-950 group-hover:text-brand transition-colors uppercase tracking-widest text-[10px]">Alert preferences</p>
                 <p className="mt-2 text-xs font-medium text-slate-500 leading-relaxed">
                   Update saved searches and delivery settings.
                 </p>
               </Link>
               <Link
                 href="/profile"
-                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand-primary hover:shadow-premium group"
+                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand hover:shadow-premium group"
               >
-                <p className="font-black text-slate-950 group-hover:text-brand-primary transition-colors uppercase tracking-widest text-[10px]">Professional Profile</p>
+                <p className="font-black text-slate-950 group-hover:text-brand transition-colors uppercase tracking-widest text-[10px]">Professional Profile</p>
                 <p className="mt-2 text-xs font-medium text-slate-500 leading-relaxed">
                   Sync your resume and manage skills.
                 </p>
               </Link>
               <Link
                 href="/settings"
-                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand-primary hover:shadow-premium group"
+                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand hover:shadow-premium group"
               >
-                <p className="font-black text-slate-950 group-hover:text-brand-primary transition-colors uppercase tracking-widest text-[10px]">Account settings</p>
+                <p className="font-black text-slate-950 group-hover:text-brand transition-colors uppercase tracking-widest text-[10px]">Account settings</p>
                 <p className="mt-2 text-xs font-medium text-slate-500 leading-relaxed">
                   Update your security and preferences.
                 </p>

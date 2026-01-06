@@ -109,27 +109,27 @@ export default function PublicJobsList({ initialData = [], initialMeta }: Public
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-grow">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <input
               placeholder="Search roles (e.g. Developer, Designer)"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full rounded-2xl border-2 border-slate-100 bg-white py-4 pl-12 pr-4 text-sm font-bold text-slate-950 shadow-sm focus:border-brand-primary focus:outline-none transition-all"
+              className="w-full rounded-2xl border border-border bg-white py-4 pl-12 pr-4 text-sm font-bold text-foreground shadow-sm focus:border-brand focus:outline-none transition-all"
             />
           </div>
           <div className="relative sm:w-1/3">
-            <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <input
               placeholder="Location (e.g. Valletta)"
               value={location}
               onChange={e => setLocation(e.target.value)}
-              className="w-full rounded-2xl border-2 border-slate-100 bg-white py-4 pl-12 pr-4 text-sm font-bold text-slate-950 shadow-sm focus:border-brand-primary focus:outline-none transition-all"
+              className="w-full rounded-2xl border border-border bg-white py-4 pl-12 pr-4 text-sm font-bold text-foreground shadow-sm focus:border-brand focus:outline-none transition-all"
             />
           </div>
           <Button 
             variant="outline" 
             onClick={() => setShowFilters(!showFilters)}
-            className={`rounded-2xl h-[58px] px-6 gap-2 border-2 ${showFilters ? 'border-brand-primary bg-brand-primary/5' : 'border-slate-100'}`}
+            className={`rounded-2xl h-[58px] px-6 gap-2 border ${showFilters ? 'border-brand bg-brand/5' : 'border-border'}`}
           >
             <Filter className="h-4 w-4" />
             <span className="font-bold">Filters</span>
@@ -137,37 +137,37 @@ export default function PublicJobsList({ initialData = [], initialMeta }: Public
         </div>
 
         {showFilters && (
-          <div className="rounded-3xl border-2 border-slate-100 bg-white p-6 animate-fade-in shadow-sm">
+          <div className="rounded-3xl border border-border bg-white p-6 animate-fade-in shadow-sm">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Minimum Salary (EUR)</label>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Minimum Salary (EUR)</label>
                 <div className="relative">
-                  <Euro className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Euro className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <input 
                     type="number"
                     placeholder="e.g. 35000"
                     value={salaryMin}
                     onChange={e => setSalaryMin(e.target.value)}
-                    className="w-full rounded-xl border-2 border-slate-50 bg-slate-50 py-2.5 pl-10 pr-3 text-sm font-bold focus:border-brand-primary focus:bg-white focus:outline-none transition-all"
+                    className="w-full rounded-xl border border-border bg-muted/30 py-2.5 pl-10 pr-3 text-sm font-bold focus:border-brand focus:bg-white focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Trust Gating</label>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Trust Gating</label>
                 <button 
                   onClick={() => setVerifiedOnly(!verifiedOnly)}
-                  className={`flex w-full items-center gap-3 rounded-xl border-2 py-2 px-4 transition-all ${
-                    verifiedOnly ? 'bg-brand-primary border-brand-primary text-white' : 'bg-slate-50 border-slate-50 text-slate-600 hover:border-slate-200'
+                  className={`flex w-full items-center gap-3 rounded-xl border py-2 px-4 transition-all ${
+                    verifiedOnly ? 'bg-brand border-brand text-white' : 'bg-muted/30 border-border text-muted-foreground hover:border-brand/20'
                   }`}
                 >
-                  <ShieldCheck className={`h-5 w-5 ${verifiedOnly ? 'text-white' : 'text-slate-400'}`} />
+                  <ShieldCheck className={`h-5 w-5 ${verifiedOnly ? 'text-white' : 'text-brand'}`} />
                   <span className="text-sm font-bold tracking-tight">Verified Employers Only</span>
                 </button>
               </div>
 
               <div className="flex items-end justify-end">
-                <button onClick={clearFilters} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand-primary transition-colors flex items-center gap-2 mb-2">
+                <button onClick={clearFilters} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-brand transition-colors flex items-center gap-2 mb-2">
                   <X className="h-3 w-3" /> Clear All
                 </button>
               </div>
@@ -179,11 +179,11 @@ export default function PublicJobsList({ initialData = [], initialMeta }: Public
       {/* Status Indicators */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-black uppercase tracking-widest text-slate-400">
+          <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">
             {loading ? "Syncing..." : `${total} Opportunities Found`}
           </span>
           {(query || location || salaryMin || verifiedOnly) && !loading && (
-            <Badge variant="new" className="bg-brand-primary/10 text-brand-primary border-none">Filtered View</Badge>
+            <Badge variant="new">Filtered View</Badge>
           )}
         </div>
       </div>
@@ -191,26 +191,26 @@ export default function PublicJobsList({ initialData = [], initialMeta }: Public
       {/* Main Content Area */}
       <div className="min-h-[400px]">
         {error ? (
-          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-3xl border-2 border-rose-100 bg-rose-50/50 p-8 text-center animate-fade-in">
+          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-3xl border border-rose-100 bg-rose-50/50 p-8 text-center animate-fade-in">
             <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-rose-100 text-rose-600 mb-6">
               <ShieldCheck className="h-10 w-10" />
             </div>
-            <h3 className="text-2xl font-black text-slate-950 mb-2">Error</h3>
-            <p className="text-slate-500 font-medium max-w-sm mb-8">{error}</p>
-            <Button onClick={() => loadJobs(1, true)} variant="default" className="rounded-xl bg-slate-950 text-white">
+            <h3 className="text-2xl font-black text-foreground mb-2">Error</h3>
+            <p className="text-muted-foreground font-medium max-w-sm mb-8">{error}</p>
+            <Button onClick={() => loadJobs(1, true)} variant="default" className="rounded-xl bg-foreground text-background">
               Retry
             </Button>
           </div>
         ) : loading ? (
           <JobsListSkeleton />
         ) : jobs.length === 0 ? (
-          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white p-8 text-center animate-fade-in">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-50 text-slate-400 mb-6">
+          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-3xl border-2 border-dashed border-border bg-white p-8 text-center animate-fade-in">
+            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-muted text-muted-foreground mb-6">
               <Briefcase className="h-10 w-10" />
             </div>
-            <h3 className="text-2xl font-black text-slate-950 mb-2">No matching roles</h3>
-            <p className="text-slate-500 font-medium max-w-sm mb-8">Try adjusting your filters or search terms to explore more careers in Malta.</p>
-            <Button onClick={clearFilters} variant="outline" className="rounded-xl">
+            <h3 className="text-2xl font-black text-foreground mb-2">No matching roles</h3>
+            <p className="text-muted-foreground font-medium max-w-sm mb-8">Try adjusting your filters or search terms to explore more careers in Malta.</p>
+            <Button onClick={clearFilters} variant="outline" className="rounded-xl border-border">
               Reset Search
             </Button>
           </div>
@@ -241,7 +241,7 @@ export default function PublicJobsList({ initialData = [], initialMeta }: Public
             onClick={handleLoadMore}
             disabled={loadingMore}
             size="lg"
-            className="w-full sm:w-auto min-w-[280px] rounded-2xl font-black uppercase tracking-widest text-xs border-2 border-slate-100 hover:bg-slate-50 h-16"
+            className="w-full sm:w-auto min-w-[280px] rounded-2xl font-black uppercase tracking-widest text-xs border border-border hover:bg-muted/50 h-16"
           >
             {loadingMore ? "Loading more..." : "Explore More Jobs"}
           </Button>

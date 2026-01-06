@@ -1,17 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/lib/site-config";
 import { trackEvent } from "@/lib/analytics";
-import { Check, ChevronRight, FileText, User, Settings, Sparkles, Bell, ShieldCheck } from "lucide-react";
+import { Check, ChevronRight, Sparkles, Bell, ShieldCheck } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
-import ResumeUpload from "../profile/resume-upload";
 
 type OnboardingWizardProps = {
   allowAdminSignup: boolean;
@@ -29,7 +27,6 @@ export default function OnboardingWizard({
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   // Step 1: Account
   const [email, setEmail] = useState("");
@@ -72,7 +69,6 @@ export default function OnboardingWizard({
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Signup failed");
 
-      setUserId(data.user_id);
       trackEvent('signup_initiated', { role });
       nextStep();
     } catch (err: any) {
@@ -128,26 +124,26 @@ export default function OnboardingWizard({
           return (
             <div key={s} className="flex items-center">
               <div className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-all ${
-                step === s ? "border-coral-500 bg-coral-50 text-coral-600 ring-4 ring-coral-50" : 
-                step > s ? "border-navy-950 bg-navy-950 text-white" : "border-slate-200 text-slate-400"
+                step === s ? "border-brand-accent bg-brand-accent/5 text-brand-accent ring-4 ring-brand-accent/10" : 
+                step > s ? "border-brand bg-brand text-white" : "border-border text-muted-foreground"
               }`}>
                 {renderStepIcon(s)}
               </div>
-              {s < totalSteps && <div className={`h-0.5 w-12 sm:w-20 ${step > s ? "bg-navy-950" : "bg-slate-100"}`} />}
+              {s < totalSteps && <div className={`h-0.5 w-12 sm:w-20 ${step > s ? "bg-brand" : "bg-border"}`} />}
             </div>
           );
         })}
       </div>
 
-      <div className="w-full max-w-xl rounded-[2.5rem] border border-navy-100 bg-white p-8 shadow-premium lg:p-12">
+      <div className="w-full max-w-xl rounded-[2.5rem] border border-border bg-white p-8 shadow-premium lg:p-12">
         {step === 1 && (
           <form onSubmit={handleStep1} className="space-y-6">
             <div className="space-y-2">
               <Badge variant="new">Phase 1: Identity</Badge>
-              <h2 className="text-3xl font-black text-navy-950">
+              <h2 className="text-3xl font-black text-foreground">
                 {role === "employer" ? "Create employer account" : "Create your account"}
               </h2>
-              <p className="text-slate-500 font-medium">Join Careers.mt to access Malta&apos;s fastest job feed.</p>
+              <p className="text-muted-foreground font-medium">Join Careers.mt to access Malta&apos;s fastest job feed.</p>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -160,7 +156,7 @@ export default function OnboardingWizard({
               </div>
             </div>
             {error && <p className="text-xs font-bold text-rose-600 uppercase tracking-widest">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full bg-navy-950 hover:bg-navy-800 text-white rounded-2xl h-14 font-black">
+            <Button type="submit" disabled={loading} className="w-full bg-brand hover:opacity-90 text-white rounded-2xl h-14 font-black border-none">
               {loading ? "Creating Account..." : "Continue"}
             </Button>
           </form>
@@ -170,8 +166,8 @@ export default function OnboardingWizard({
           <div className="space-y-6">
             <div className="space-y-2">
               <Badge variant="new">Phase 2: Professional</Badge>
-              <h2 className="text-3xl font-black text-navy-950">Tell us about you</h2>
-              <p className="text-slate-500 font-medium">This helps us match you with verified Maltese brands.</p>
+              <h2 className="text-3xl font-black text-foreground">Tell us about you</h2>
+              <p className="text-muted-foreground font-medium">This helps us match you with verified Maltese brands.</p>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -188,13 +184,13 @@ export default function OnboardingWizard({
                   id="location" 
                   value={location} 
                   onChange={e => setLocation(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-navy-950 focus:border-navy-400 focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium text-foreground focus:border-brand focus:outline-none transition-all appearance-none"
                 >
                   {siteConfig.locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
                 </select>
               </div>
             </div>
-            <Button onClick={handleStep2} disabled={loading || !fullName} className="w-full bg-navy-950 hover:bg-navy-800 text-white rounded-2xl h-14 font-black">
+            <Button onClick={handleStep2} disabled={loading || !fullName} className="w-full bg-brand hover:opacity-90 text-white rounded-2xl h-14 font-black border-none">
               Continue to Resume
             </Button>
           </div>
@@ -204,8 +200,8 @@ export default function OnboardingWizard({
           <div className="space-y-6">
             <div className="space-y-2">
               <Badge variant="new">Phase 2: Company</Badge>
-              <h2 className="text-3xl font-black text-navy-950">Company Profile</h2>
-              <p className="text-slate-500 font-medium">Verified details help attract top talent.</p>
+              <h2 className="text-3xl font-black text-foreground">Company Profile</h2>
+              <p className="text-muted-foreground font-medium">Verified details help attract top talent.</p>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -217,7 +213,7 @@ export default function OnboardingWizard({
                 <Input id="website" value={website} onChange={e => setWebsite(e.target.value)} placeholder="https://techcorp.com.mt" />
               </div>
             </div>
-            <Button onClick={handleStep2} disabled={loading || !companyName} className="w-full bg-navy-950 hover:bg-navy-800 text-white rounded-2xl h-14 font-black">
+            <Button onClick={handleStep2} disabled={loading || !companyName} className="w-full bg-brand hover:opacity-90 text-white rounded-2xl h-14 font-black border-none">
               Continue to Verification
             </Button>
           </div>
@@ -225,14 +221,14 @@ export default function OnboardingWizard({
 
         {step === 3 && role === "employer" && (
           <div className="space-y-6 text-center">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-gold-50 text-gold-600 mb-6">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-brand-accent/10 text-brand-accent mb-6">
               <ShieldCheck className="h-10 w-10" />
             </div>
-            <h2 className="text-3xl font-black text-navy-950">Unlock Verified Badge</h2>
-            <p className="text-slate-500 font-medium leading-relaxed text-sm">
+            <h2 className="text-3xl font-black text-foreground">Unlock Verified Badge</h2>
+            <p className="text-muted-foreground font-medium leading-relaxed text-sm">
               Verified employers receive 3x more matching applicants. You can complete the verification process in your dashboard.
             </p>
-            <Button onClick={finishOnboarding} className="w-full bg-coral-500 hover:bg-coral-600 text-white rounded-2xl h-16 font-black text-lg gap-3 shadow-lg shadow-coral-500/20">
+            <Button onClick={finishOnboarding} className="w-full bg-brand-accent hover:opacity-90 text-white rounded-2xl h-16 font-black text-lg gap-3 shadow-cta border-none transition-all">
               Go to Dashboard <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
@@ -242,8 +238,8 @@ export default function OnboardingWizard({
           <div className="space-y-6">
             <div className="space-y-2">
               <Badge variant="new">Phase 4: Discovery</Badge>
-              <h2 className="text-3xl font-black text-navy-950">What are you looking for?</h2>
-              <p className="text-slate-500 font-medium">Select industries you want to receive alerts for.</p>
+              <h2 className="text-3xl font-black text-foreground">What are you looking for?</h2>
+              <p className="text-muted-foreground font-medium">Select industries you want to receive alerts for.</p>
             </div>
             
             <div className="grid grid-cols-2 gap-3">
@@ -257,8 +253,8 @@ export default function OnboardingWizard({
                   }}
                   className={`rounded-xl border p-4 text-left text-xs font-bold transition-all ${
                     selectedIndustries.includes(ind) 
-                      ? "border-coral-500 bg-coral-50 text-coral-700" 
-                      : "border-slate-100 bg-slate-50 text-slate-500 hover:border-navy-200"
+                      ? "border-brand-accent bg-brand-accent/5 text-brand-accent" 
+                      : "border-border bg-muted/30 text-muted-foreground hover:border-brand/20"
                   }`}
                 >
                   {ind}
@@ -267,11 +263,11 @@ export default function OnboardingWizard({
             </div>
 
             <div className="flex gap-4">
-              <Button onClick={prevStep} variant="outline" className="flex-1 rounded-2xl h-14 font-black">Back</Button>
+              <Button onClick={prevStep} variant="outline" className="flex-1 rounded-2xl h-14 font-black border-border">Back</Button>
               <Button 
                 onClick={handleStep4} 
                 disabled={selectedIndustries.length === 0}
-                className="flex-[2] bg-navy-950 hover:bg-navy-800 text-white rounded-2xl h-14 font-black"
+                className="flex-[2] bg-brand hover:opacity-90 text-white rounded-2xl h-14 font-black border-none"
               >
                 Set Alert Speed
               </Button>
@@ -283,8 +279,8 @@ export default function OnboardingWizard({
           <div className="space-y-6">
             <div className="space-y-2">
               <Badge variant="new">Phase 5: Performance</Badge>
-              <h2 className="text-3xl font-black text-navy-950">Alert Frequency</h2>
-              <p className="text-slate-500 font-medium">How fast do you want to be notified of matching roles?</p>
+              <h2 className="text-3xl font-black text-foreground">Alert Frequency</h2>
+              <p className="text-muted-foreground font-medium">How fast do you want to be notified of matching roles?</p>
             </div>
             
             <div className="space-y-4">
@@ -298,29 +294,29 @@ export default function OnboardingWizard({
                   onClick={() => setAlertFrequency(freq.id)}
                   className={`w-full rounded-[1.5rem] border p-6 text-left transition-all ${
                     alertFrequency === freq.id 
-                      ? "border-gold-500 bg-gold-50 ring-1 ring-gold-200" 
-                      : "border-slate-100 bg-slate-50 hover:border-navy-200"
+                      ? "border-brand-accent bg-brand-accent/5 ring-1 ring-brand-accent/20" 
+                      : "border-border bg-muted/30 hover:border-brand/20"
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-black text-navy-950">{freq.title}</p>
-                      <p className="text-xs font-medium text-slate-500 mt-1">{freq.desc}</p>
+                      <p className="text-sm font-black text-foreground">{freq.title}</p>
+                      <p className="text-xs font-medium text-muted-foreground mt-1">{freq.desc}</p>
                     </div>
-                    {alertFrequency === freq.id && <Bell className="h-5 w-5 text-gold-600 fill-gold-500" />}
+                    {alertFrequency === freq.id && <Bell className="h-5 w-5 text-brand-accent fill-brand-accent/20" />}
                   </div>
                 </button>
               ))}
             </div>
 
-            <Button onClick={finishOnboarding} className="w-full bg-coral-500 hover:bg-coral-600 text-white rounded-2xl h-16 font-black text-lg gap-3 shadow-lg shadow-coral-500/20">
+            <Button onClick={finishOnboarding} className="w-full bg-brand-accent hover:opacity-90 text-white rounded-2xl h-16 font-black text-lg gap-3 shadow-cta border-none transition-all">
               Complete Onboarding <Sparkles className="h-5 w-5" />
             </Button>
           </div>
         )}
       </div>
 
-      <p className="mt-8 text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">
+      <p className="mt-8 text-xs font-bold text-muted-foreground uppercase tracking-[0.2em]">
         Careers.mt &copy; 2026 · Secure Onboarding
       </p>
     </div>

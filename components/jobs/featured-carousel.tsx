@@ -86,7 +86,7 @@ export default function FeaturedCarousel() {
               Featured Opportunities.
             </h2>
           </div>
-          <Link href="/jobs" className="group flex items-center gap-2 text-sm font-bold text-primary hover:text-brand-success transition-all" aria-label="View all active job listings in Malta">
+          <Link href="/jobs" className="group flex items-center gap-2 text-sm font-bold text-primary hover:text-emerald-600 transition-all" aria-label="View all active job listings in Malta">
             View all active roles <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
