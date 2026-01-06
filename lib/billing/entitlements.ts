@@ -5,44 +5,51 @@ export type Entitlement = {
   canPublish: boolean;
   isFeatured: boolean;
   plan: "FREE" | "PRO";
+  remainingPosts: number;
 };
 
 export async function getCompanyEntitlements(companyId: string, jobId?: string): Promise<Entitlement> {
   const supabase = createServiceRoleClient();
-  if (!supabase) return { canPublish: false, isFeatured: false, plan: "FREE" };
+  if (!supabase) return { canPublish: false, isFeatured: false, plan: "FREE", remainingPosts: 0 };
 
-  // 1. Check Company Plan
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, plan_status, current_period_end")
-    .eq("id", companyId)
-    .single();
+  // 1. Fetch from employer_entitlements (Source of Truth)
+  const { data: entitlement } = await supabase
+    .from("employer_entitlements")
+    .select("*")
+    .eq("user_id", companyId)
+    .maybeSingle();
 
-  const isPro = profile?.plan === "PRO" && profile?.plan_status === "active";
+  // If no entry, user is definitely FREE with 0 posts
+  if (!entitlement) {
+    return { canPublish: false, isFeatured: false, plan: "FREE", remainingPosts: 0 };
+  }
+
+  const isPro = entitlement.plan === "PRO";
+  const hasRemainingPosts = (entitlement.remaining_job_posts || 0) > 0;
+  const isFeaturedGlobally = entitlement.featured_until ? new Date(entitlement.featured_until) > new Date() : false;
+
+  // 2. Determine if can publish
+  let canPublish = isPro || hasRemainingPosts;
+
+  // 3. Specific Job checks (Legacy or override)
+  let isJobFeatured = isFeaturedGlobally;
   
-  if (isPro) {
-    return { canPublish: true, isFeatured: false, plan: "PRO" };
-  }
-
-  // 2. If not PRO, check for one-time JOB_POST purchase for this specific job
   if (jobId) {
-    const { data: purchase } = await supabase
-      .from("purchases")
-      .select("id, type")
-      .eq("employer_id", companyId)
-      .eq("job_id", jobId)
-      .eq("status", "paid")
-      .in("type", ["JOB_POST", "FEATURED_ADDON", "featured"])
+    const { data: jobPurchase } = await supabase
+      .from("stripe_purchases")
+      .select("id")
+      .eq("user_id", companyId)
+      .eq("consumed", false) // or check if specifically tied to this jobId in metadata
+      .contains("metadata", { jobId })
       .maybeSingle();
-
-    if (purchase) {
-      return { 
-        canPublish: true, 
-        isFeatured: purchase.type === "FEATURED_ADDON" || purchase.type === "featured",
-        plan: "FREE" 
-      };
-    }
+    
+    if (jobPurchase) canPublish = true;
   }
 
-  return { canPublish: false, isFeatured: false, plan: "FREE" };
+  return {
+    canPublish,
+    isFeatured: isJobFeatured,
+    plan: entitlement.plan as "FREE" | "PRO",
+    remainingPosts: entitlement.remaining_job_posts || 0,
+  };
 }
