@@ -122,6 +122,12 @@ export async function middleware(request: NextRequest) {
   }
 
   const missing = getMissingSupabaseEnv();
+  
+  // Block setup in production if configured
+  if (process.env.NODE_ENV === "production" && missing.length === 0 && (pathname === "/setup" || pathname.startsWith("/setup/"))) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (missing.length > 0) {
     const isSetupPath = pathname === "/setup" || pathname.startsWith("/setup/");
     if (
@@ -144,7 +150,9 @@ export async function middleware(request: NextRequest) {
   }
 
   const roleRequired = getRoleFromPath(pathname);
-  if (!roleRequired) {
+  const isProtectedRoute = roleRequired || pathname.startsWith("/settings") || pathname.startsWith("/profile");
+
+  if (!isProtectedRoute) {
     return NextResponse.next();
   }
 

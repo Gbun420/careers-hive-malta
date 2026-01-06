@@ -46,9 +46,13 @@ export default function ProfileForm() {
         setHeadline(data.headline || "");
         setBio(data.bio || "");
         setSkills(data.skills || []);
+      } else {
+        const payload = await response.json() as ApiError;
+        setError(payload.error?.message || "Failed to load profile data.");
       }
     } catch (err) {
       console.error("Failed to load profile", err);
+      setError("An unexpected error occurred while loading your profile.");
     } finally {
       setLoading(false);
     }
@@ -91,6 +95,14 @@ export default function ProfileForm() {
 
   if (loading) {
     return <p className="text-sm text-slate-600 font-bold">Synchronizing profile data...</p>;
+  }
+
+  if (error && !profile) {
+    return (
+      <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
+        {error}
+      </div>
+    );
   }
 
   if (!profile) {
