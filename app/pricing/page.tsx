@@ -9,6 +9,8 @@ import {
 } from "@/lib/billing/stripe";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
+import CheckoutButton from "@/components/billing/CheckoutButton";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -35,6 +37,10 @@ export default async function PricingPage() {
     showBillingStatus &&
     typeof featuredPriceId === "string" &&
     featuredPriceId.includes("placeholder");
+
+  const supabase = createRouteHandlerClient();
+  const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+  const companyId = user?.id;
 
   // High-conversion pricing logic: ensure we never show a "0" or empty price
   const displayPrice = billingConfigured && featuredPriceLabel && featuredPriceLabel !== "0" && featuredPriceLabel !== "€0"
@@ -80,7 +86,7 @@ export default async function PricingPage() {
               </li>
             </ul>
             <Button asChild size="lg" variant="outline" className="mt-8 w-full rounded-2xl border-brand/20 text-brand hover:bg-brand/5" aria-label="Post a job for free">
-              <Link href="/signup?role=employer">Post for Free</Link>
+              <Link href={companyId ? "/employer/jobs/new" : "/signup?role=employer"}>Post for Free</Link>
             </Button>
           </div>
 
@@ -113,7 +119,7 @@ export default async function PricingPage() {
             </ul>
             <div className="mt-8">
               <Button asChild size="lg" className="w-full rounded-2xl shadow-cta bg-brand text-white border-none" aria-label="Feature a job upgrade">
-                <Link href="/signup?role=employer">Feature a Job</Link>
+                <Link href={companyId ? "/employer/jobs" : "/signup?role=employer"}>Feature a Job</Link>
               </Button>
             </div>
             {showPlaceholderWarning && (
@@ -147,9 +153,20 @@ export default async function PricingPage() {
                 Priority employer support
               </li>
             </ul>
-            <Button size="lg" disabled className="mt-8 w-full rounded-2xl" variant="outline">
-              Coming soon
-            </Button>
+            {companyId ? (
+              <CheckoutButton
+                companyId={companyId}
+                product="PRO_SUB"
+                size="lg"
+                className="mt-8 w-full rounded-2xl bg-slate-900 text-white hover:bg-slate-800 border-none shadow-cta"
+              >
+                Go Pro
+              </CheckoutButton>
+            ) : (
+              <Button asChild size="lg" className="mt-8 w-full rounded-2xl bg-slate-900 text-white hover:bg-slate-800" variant="outline">
+                <Link href="/signup?role=employer">Join Professional</Link>
+              </Button>
+            )}
           </div>
         </section>
 

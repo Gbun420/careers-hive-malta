@@ -20,6 +20,7 @@ export type ErrorCode =
   | "BAD_REQUEST"
   | "NOT_FOUND"
   | "JOB_NOT_FOUND"
+  | "SECOND_ME_NOT_ENABLED"
   | "DB_ERROR"
   | "DB_INSERT_FAILED"
   | "DB_UPDATE_FAILED";

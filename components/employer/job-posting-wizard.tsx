@@ -10,15 +10,28 @@ import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/lib/site-config";
 import { JobCreateSchema, type JobCreate } from "@/lib/jobs/schema";
 import { JobCard } from "@/components/ui/job-card";
-import { Check, ChevronRight, Briefcase, MapPin, Euro, Eye, Sparkles, Send } from "lucide-react";
+import { Check, ChevronRight, Briefcase, MapPin, Euro, Eye, Sparkles, Send, Loader2 } from "lucide-react";
+import PaywallModal from "./PaywallModal";
+import { createBrowserClient } from "@/lib/supabase/browser";
+import { useEffect } from "react";
 
 type WizardStep = 1 | 2 | 3 | 4;
 
 export default function JobPostingWizard() {
   const router = useRouter();
+  const supabase = createBrowserClient();
   const [step, setStep] = useState<WizardStep>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [createdJobId, setCreatedJobId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (supabase) {
+      supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id || null));
+    }
+  }, [supabase]);
 
   const [formData, setFormData] = useState<Partial<JobCreate>>({
     title: "",
@@ -30,7 +43,8 @@ export default function JobPostingWizard() {
     application_method: "email",
     application_email: "",
     application_url: "",
-    is_active: true
+    is_active: true,
+    status: "active"
   });
 
   const nextStep = () => setStep(s => (s + 1) as WizardStep);
@@ -51,6 +65,27 @@ export default function JobPostingWizard() {
         body: JSON.stringify(validated),
       });
       const data = await response.json();
+      
+      if (response.status === 402) {
+        // Payment required - Job was NOT created yet in this flow or it was?
+        // Actually our API returns 402 if entitlement check fails.
+        // Let's assume the job was created as draft? No, the API returned 402 BEFORE insert.
+        // Wait, I should probably insert as draft first then show paywall.
+        // Refinement: let's try to save as draft first if publish fails.
+        const draftPayload = { ...validated, status: "draft" };
+        const draftRes = await fetch("/api/jobs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(draftPayload),
+        });
+        const draftData = await draftRes.json();
+        if (!draftRes.ok) throw new Error(draftData.error?.message || "Failed to save draft");
+        
+        setCreatedJobId(draftData.data.id);
+        setShowPaywall(true);
+        return;
+      }
+
       if (!response.ok) throw new Error(data.error?.message || "Failed to publish");
       
       router.push(`/employer/jobs?created=1&jobId=${data.data.id}`);
@@ -234,6 +269,13 @@ export default function JobPostingWizard() {
           </p>
         </div>
       </div>
+
+      <PaywallModal 
+        isOpen={showPaywall} 
+        onOpenChange={setShowPaywall} 
+        companyId={userId || ""} 
+        jobId={createdJobId || ""} 
+      />
     </div>
   );
 }

@@ -4,12 +4,22 @@ import type { ErrorCode } from "@/lib/api/errors";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-const featuredPriceId = process.env.STRIPE_FEATURED_PRICE_ID;
+
+const priceJobPost = process.env.STRIPE_PRICE_JOB_POST;
+const priceFeaturedAddon = process.env.STRIPE_PRICE_FEATURED_ADDON ?? process.env.STRIPE_FEATURED_PRICE_ID;
+const priceProSub = process.env.STRIPE_PRICE_PRO_SUB;
+
 const featuredPriceLabel =
   process.env.FEATURED_PRICE_LABEL ?? process.env.STRIPE_FEATURED_PRICE_LABEL;
 
+export const stripeConfig = {
+  successUrl: process.env.STRIPE_SUCCESS_URL || `${process.env.NEXT_PUBLIC_SITE_URL}/employer/billing/success`,
+  cancelUrl: process.env.STRIPE_CANCEL_URL || `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
+  taxEnabled: process.env.STRIPE_TAX_ENABLED === "true",
+};
+
 export function isStripeConfigured(): boolean {
-  return Boolean(stripeSecretKey && featuredPriceId);
+  return Boolean(stripeSecretKey && priceJobPost && priceFeaturedAddon && priceProSub);
 }
 
 export function isStripeWebhookConfigured(): boolean {
@@ -21,7 +31,16 @@ export function getStripeWebhookSecret(): string | null {
 }
 
 export function getStripeFeaturedPriceId(): string | null {
-  return featuredPriceId ?? null;
+  return priceFeaturedAddon ?? null;
+}
+
+export function getPriceId(product: "JOB_POST" | "FEATURED_ADDON" | "PRO_SUB"): string | null {
+  switch (product) {
+    case "JOB_POST": return priceJobPost ?? null;
+    case "FEATURED_ADDON": return priceFeaturedAddon ?? null;
+    case "PRO_SUB": return priceProSub ?? null;
+    default: return null;
+  }
 }
 
 export function getFeaturedPriceLabel(): string | null {

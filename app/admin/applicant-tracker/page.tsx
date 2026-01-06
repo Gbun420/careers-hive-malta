@@ -44,7 +44,7 @@ const SCORES = ["1 - Poor", "2 - Fair", "3 - Good", "4 - Very Good", "5 - Excell
 export default function ApplicantTrackerPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [applicants, setJobs] = useState<any[]>([]);
+  const [applicants, setApplicants] = useState<any[]>([]);
   const [interviewersMap, setInterviewersMap] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState("kanban");
 
@@ -60,7 +60,7 @@ export default function ApplicantTrackerPage() {
       const res = await fetch(`/api/admin/airtable/applicants?mode=${mode}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch applicants");
-      setJobs(data.applicants);
+      setApplicants(data.applicants);
       setInterviewersMap(data.interviewersMap);
     } catch (err: any) {
       setError(err.message);
@@ -98,7 +98,7 @@ export default function ApplicantTrackerPage() {
       }
       
       // Optimistic update locally
-      setJobs(prev => prev.map(a => 
+      setApplicants(prev => prev.map(a => 
         a.id === editingRecord.id 
           ? { ...a, fields: { ...a.fields, ...editForm } } 
           : a

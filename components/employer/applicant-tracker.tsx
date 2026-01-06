@@ -202,8 +202,10 @@ export default function ApplicantTracker() {
                       Make Offer
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" className="rounded-lg text-slate-400 hover:text-navy-950">
-                    <ChevronRight className="h-5 w-5" />
+                  <Button variant="ghost" size="sm" asChild className="rounded-lg text-slate-400 hover:text-navy-950">
+                    <Link href={`/employer/applications/${app.id}`}>
+                      <ChevronRight className="h-5 w-5" />
+                    </Link>
                   </Button>
                 </div>
               </div>

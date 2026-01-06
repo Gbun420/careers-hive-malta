@@ -16,6 +16,7 @@ type DigestPayload = {
   to: string;
   jobs: Job[];
   frequency: "daily" | "weekly";
+  unsubscribeUrl?: string;
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -101,6 +102,7 @@ export async function sendDigestEmail(payload: DigestPayload): Promise<EmailSend
     baseUrl,
     jobs: payload.jobs,
     frequency: payload.frequency,
+    unsubscribeUrl: payload.unsubscribeUrl,
   });
   return sendEmail(payload.to, subject, html);
 }

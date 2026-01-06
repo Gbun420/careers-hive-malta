@@ -3,11 +3,14 @@ import type { Metadata } from "next";
 import PublicJobDetail from "@/components/jobs/public-job-detail";
 import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
-import { createServiceRoleClient } from "@/lib/supabase/server";
+import { createServiceRoleClient, createRouteHandlerClient } from "@/lib/supabase/server";
 import type { Job } from "@/lib/jobs/schema";
 import { PageShell } from "@/components/ui/page-shell";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Briefcase, ChevronLeft } from "lucide-react";
+import { secondMeEnabled } from "@/lib/flags";
+import SecondMePanel from "@/components/second-me/SecondMePanel";
+import { getUserRole } from "@/lib/auth/roles";
 
 export const runtime = "nodejs";
 
@@ -134,6 +137,10 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
 
   const job = await getJobForSeo(id);
+  const supabase = createRouteHandlerClient();
+  const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+  const role = getUserRole(user);
+  const isJobseeker = role === "jobseeker";
 
   const jobPostingJsonLd = job
 
@@ -233,13 +240,29 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
           </Button>
 
-        </header>
+                </header>
 
-        <PublicJobDetail id={id} />
+                
 
-      </div>
+                <div className="grid gap-10 lg:grid-cols-[1fr_350px] items-start">
 
-    </PageShell>
+                  <PublicJobDetail id={id} />
+
+                  {isJobseeker && (
+
+                    <div className="lg:sticky lg:top-24">
+
+                      <SecondMePanel jobId={id} isEnabled={secondMeEnabled} />
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              </div>
+
+            </PageShell>
 
   );
 

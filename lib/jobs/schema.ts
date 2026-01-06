@@ -20,7 +20,7 @@ export const JobSchema = z.object({
   featured_until: z.string().nullable().optional(),
   is_featured: z.boolean().optional(),
   application_count: z.number().optional(),
-  status: z.enum(["active", "closed", "filled"]).optional(),
+  status: z.enum(["draft", "active", "closed", "filled"]).default("draft"),
 });
 
 export const JobseekerProfileSchema = z.object({
@@ -59,6 +59,7 @@ export const JobCreateSchema = z.object({
   application_url: z.string().trim().url("Invalid URL").optional().or(z.literal("")),
   application_email: z.string().trim().email("Invalid email").optional().or(z.literal("")),
   is_active: z.boolean().optional(),
+  status: z.enum(["draft", "active", "closed", "filled"]).default("draft"),
 }).refine((data) => {
   if (data.application_method === "url") {
     return !!data.application_url;

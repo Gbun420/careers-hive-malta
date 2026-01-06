@@ -3,7 +3,15 @@
  * Adheres to the Dynamic Data Integration Guide for event tracking.
  */
 
-type AnalyticsEvent = 'alert_signup_complete' | 'signup_initiated' | 'application_submitted' | 'verification_requested';
+type AnalyticsEvent = 
+  | 'alert_signup_complete' 
+  | 'signup_initiated' 
+  | 'application_submitted' 
+  | 'verification_requested'
+  | 'alert_created'
+  | 'alert_updated'
+  | 'alert_disabled'
+  | 'alert_digest_sent';
 
 export const trackEvent = (event: AnalyticsEvent, properties?: Record<string, any>) => {
   // 1. Log to console in development

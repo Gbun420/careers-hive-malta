@@ -1,57 +1,66 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
-import { z } from "zod";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
-const StatusUpdateSchema = z.object({
-  status: z.enum(['pending', 'reviewed', 'interviewing', 'rejected', 'offered']),
-});
-
-type RouteParams = {
-  params: Promise<{ id: string }>;
-};
-
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
   const supabase = createRouteHandlerClient();
-  if (!supabase) {
-    return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
+  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured", 503);
 
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError || !authData.user) {
-    return jsonError("UNAUTHORIZED", "Authentication required.", 401);
-  }
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
 
-  let body: any;
-  try {
-    body = await request.json();
-  } catch (error) {
-    return jsonError("INVALID_INPUT", "Invalid JSON body.", 400);
-  }
-
-  const parsed = StatusUpdateSchema.safeParse(body);
-  if (!parsed.success) {
-    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
-  }
-
-  // RLS handles checking if this employer owns the job for this application
   const { data, error } = await supabase
     .from("applications")
-    .update({ 
-      status: parsed.data.status,
-      updated_at: new Date().toISOString()
-    })
+    .select(`
+      *,
+      job:jobs(id, title, location),
+      candidate:profiles!user_id(id, full_name, headline, skills, bio, cv_file_path)
+    `)
     .eq("id", id)
-    .select()
     .single();
 
-  if (error) {
-    return jsonError("DB_ERROR", error.message, 500);
+  if (error) return jsonError("DB_ERROR", error.message, 500);
+  if (!data) return jsonError("NOT_FOUND", "Application not found", 404);
+
+  // Ownership Check: ensure employer owns the job
+  if (data.employer_id !== user.id && data.job?.employer_id !== user.id) {
+      return jsonError("FORBIDDEN", "Unauthorized access", 403);
   }
 
   return NextResponse.json({ data });
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const supabase = createRouteHandlerClient();
+  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured", 503);
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
+
+  try {
+    const { status } = await request.json();
+    if (!status) return jsonError("INVALID_INPUT", "Status required", 400);
+
+    const { error } = await supabase
+      .from("applications")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .or(`employer_id.eq.${user.id},exists(select 1 from jobs where id=applications.job_id and employer_id=${user.id})`);
+
+    if (error) return jsonError("DB_ERROR", error.message, 500);
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return jsonError("BAD_REQUEST", "Invalid JSON", 400);
+  }
 }

@@ -8,8 +8,9 @@ import type { Job } from "@/lib/jobs/schema";
 import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus, sortFeaturedJobs, type JobWithFeatured } from "@/lib/billing/featured";
 import { matchJobToSearch } from "@/lib/alerts/match";
-import type { SavedSearchCriteria } from "@/lib/alerts/criteria";
+import { SavedSearchCriteria } from "@/lib/alerts/criteria";
 import { logAudit } from "@/lib/audit/log";
+import { getCompanyEntitlements } from "@/lib/billing/entitlements";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -78,7 +79,8 @@ export async function GET(request: NextRequest) {
   let dbQuery = supabase
     .from("jobs")
     .select("*", { count: "exact" })
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("status", "active");
 
   if (location) {
     dbQuery = dbQuery.ilike("location", `%${location}%`);
@@ -127,41 +129,131 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+
   const supabase = createRouteHandlerClient();
+
   if (!supabase) {
+
     return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
+
   }
+
+
 
   const { data: authData, error: authError } = await supabase.auth.getUser();
+
   if (authError || !authData.user) {
+
     return jsonError("UNAUTHORIZED", "Authentication required.", 401);
+
   }
+
+
 
   const role = getUserRole(authData.user);
+
   if (role !== "employer" && role !== "admin") {
+
     return jsonError("FORBIDDEN", "Employer or Admin access required.", 403);
+
   }
 
-  let payload: unknown;
+
+
+  let payload: any;
+
   try {
+
     payload = await request.json();
-  } catch (error) {
-    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
+
   }
+
+  catch (error) {
+
+    return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
+
+  }
+
+
 
   const parsed = JobCreateSchema.safeParse(payload);
+
   if (!parsed.success) {
-    return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
+
+    return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
+
   }
 
+
+
+    // Entitlement Check: if trying to publish immediately
+
+
+
+    let finalStatus: "draft" | "active" = "draft";
+
+
+
+    if (parsed.data.status === "active") {
+
+
+
+      const entitlement = await getCompanyEntitlements(authData.user.id);
+
+
+
+      if (entitlement.canPublish) {
+
+
+
+        finalStatus = "active";
+
+
+
+      } else {
+
+
+
+        return jsonError("INVALID_INPUT", "Payment required to publish an active role. Saved as draft.", 402, {
+
+
+
+          reason: "ENTITLEMENT_REQUIRED"
+
+
+
+        });
+
+
+
+      }
+
+
+
+    }
+
+
+
   const normalized = normalizeJobPayload(parsed.data);
+
   const { data, error } = await supabase
+
     .from("jobs")
+
     .insert({
+
         ...normalized,
-        employer_id: authData.user.id
+
+        employer_id: authData.user.id,
+
+        status: finalStatus,
+
+        is_active: finalStatus === "active"
+
     })
+
     .select()
+
     .single();
 
   if (error || !data) {

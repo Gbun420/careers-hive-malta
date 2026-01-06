@@ -105,7 +105,7 @@ export async function POST(request: Request) {
     const { data: jobData, error: jobError } = await supabase
       .from("jobs")
       .select(
-        "id, employer_id, title, description, location, salary_range, created_at, is_active"
+        "id, employer_id, title, description, location, salary_range, created_at, is_active, status"
       )
       .eq("id", notification.job_id)
       .single();
