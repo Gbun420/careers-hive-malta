@@ -1,4 +1,3 @@
-import SiteHeader from "@/components/nav/site-header";
 import Hero from "@/components/landing/hero";
 import TrustStrip from "@/components/landing/trust-strip";
 import CategoryGrid from "@/components/landing/category-grid";
@@ -13,24 +12,20 @@ export default async function Home() {
   const meiliEnabled = isMeiliConfigured();
   const employerSignupHref = "/signup?role=employer";
 
-  // Fetch metrics for landing page social proof
+  // Fetch only necessary metrics for landing page sections
   const metrics = await fetchDynamicMetrics({
     queries: [
-      'active_job_seekers', 
-      'total_job_postings', 
-      'verified_employers', 
-      'alert_delivery_time',
       'verified_postings_pct',
-      'featured_adoption_rate',
-      'avg_applications_per_job',
+      'alert_delivery_time',
+      'retention_7day_pct',
       'placements_30day',
-      'retention_7day_pct'
+      'verified_employers'
     ],
     fallbacks: true
   });
 
   return (
-    <div className="bg-white">
+    <div className="bg-background">
       <main>
         <Hero employerSignupHref={employerSignupHref} />
         

@@ -7,7 +7,7 @@ interface PageShellProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function PageShell({ children, className, ...props }: PageShellProps) {
   return (
-    <div className={cn("min-h-screen py-12 lg:py-20", className)} {...props}>
+    <div className={cn("min-h-screen py-14 md:py-20 bg-background", className)} {...props}>
       <Container>{children}</Container>
     </div>
   );

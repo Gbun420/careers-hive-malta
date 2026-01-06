@@ -47,100 +47,200 @@ type JobDetailPageProps = {
   params: Promise<{ id: string }>;
 };
 
+import { BRAND_NAME } from "@/lib/brand";
+
+
+
 export async function generateMetadata({
+
   params,
+
 }: JobDetailPageProps): Promise<Metadata> {
+
   const { id } = await params;
+
   const job = await getJobForSeo(id);
+
   const title = job?.title
-    ? `${job.title} | Careers.mt`
-    : "Job in Malta | Careers.mt";
+
+    ? `${job.title} | ${BRAND_NAME}`
+
+    : `Job in Malta | ${BRAND_NAME}`;
+
   const description = buildDescription(job?.description);
 
+
+
   return {
+
     title,
+
     description,
+
     ...(siteUrl
+
       ? {
+
           alternates: {
+
             canonical: `${siteUrl}/jobs/${id}`,
+
           },
+
         }
+
       : {}),
+
   };
+
 }
 
+
+
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
+
   const { id } = await params;
+
   if (!isSupabaseConfigured()) {
+
     return (
+
       <PageShell>
+
         <EmptyState 
+
           icon={Briefcase}
+
           title="Job details unavailable"
-          description="Connect Supabase to view matching opportunities in Malta."
+
+          description={`Connect Supabase to view matching opportunities on ${BRAND_NAME}.`}
+
           action={{
+
             label: "Go to setup",
+
             href: "/setup"
+
           }}
+
         />
+
       </PageShell>
+
     );
+
   }
 
+
+
   const job = await getJobForSeo(id);
+
   const jobPostingJsonLd = job
+
     ? {
+
         "@context": "https://schema.org",
+
         "@type": "JobPosting",
+
         title: job.title,
+
         description: job.description,
+
         datePosted: job.created_at,
+
         jobLocation: {
+
           "@type": "Place",
+
           address: {
+
             "@type": "PostalAddress",
+
             addressLocality: job.location || "Malta",
+
             addressCountry: "MT",
+
           },
+
         },
+
         ...(job.salary_min && {
+
           baseSalary: {
+
             "@type": "MonetaryAmount",
+
             currency: job.currency || "EUR",
+
             value: {
+
               "@type": "QuantitativeValue",
+
               minValue: job.salary_min,
+
               maxValue: job.salary_max || job.salary_min,
+
               unitText: job.salary_period?.toUpperCase() || "YEAR",
+
             },
+
           },
+
         }),
+
       }
+
     : null;
 
+
+
   return (
+
     <PageShell>
+
       {jobPostingJsonLd ? (
+
         <script
+
           type="application/ld+json"
+
           dangerouslySetInnerHTML={{
+
             __html: JSON.stringify(jobPostingJsonLd),
+
           }}
+
         />
+
       ) : null}
+
       
-      <div className="flex flex-col gap-8 max-w-4xl mx-auto">
+
+      <div className="flex flex-col gap-8 max-w-5xl mx-auto">
+
         <header>
-          <Button variant="ghost" asChild className="-ml-4 text-slate-500 hover:text-brand-primary">
+
+          <Button variant="ghost" asChild className="-ml-4 text-muted-foreground hover:text-primary">
+
             <Link href="/jobs" className="flex items-center gap-2">
+
               <ChevronLeft className="h-4 w-4" />
+
               Back to Opportunities
+
             </Link>
+
           </Button>
+
         </header>
+
         <PublicJobDetail id={id} />
+
       </div>
+
     </PageShell>
+
   );
+
 }

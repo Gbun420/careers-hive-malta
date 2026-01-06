@@ -22,11 +22,11 @@ export function SectionHeading({
       )}
       {...props}
     >
-      <h2 className="text-3xl font-black tracking-tightest text-slate-950 sm:text-4xl">
+      <h2 className="text-3xl font-black tracking-tightest text-foreground sm:text-4xl uppercase">
         {title}
       </h2>
       {subtitle && (
-        <p className="text-lg font-medium text-slate-500 max-w-2xl">
+        <p className="text-lg font-bold text-muted-foreground max-w-2xl">
           {subtitle}
         </p>
       )}
