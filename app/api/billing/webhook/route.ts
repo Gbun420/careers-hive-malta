@@ -8,7 +8,7 @@ import {
 } from "@/lib/billing/stripe";
 import { fulfillFeaturedCheckoutSession } from "@/lib/billing/fulfillment";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const requestId = crypto.randomUUID();

@@ -4,7 +4,7 @@ import { jsonError } from "@/lib/api/errors";
 import { parseResumeText } from "@/lib/jobs/parser";
 import { logAudit } from "@/lib/audit/log";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**

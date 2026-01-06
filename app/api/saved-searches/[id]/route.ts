@@ -5,7 +5,7 @@ import { getUserRole } from "@/lib/auth/roles";
 import { SavedSearchUpdateSchema } from "@/lib/alerts/criteria";
 
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type RouteParams = {

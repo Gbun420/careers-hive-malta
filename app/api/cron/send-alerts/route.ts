@@ -3,7 +3,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { fetchMatchingJobs } from "@/lib/alerts/matcher";
 import { sendDigestEmail } from "@/lib/email/sender";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {

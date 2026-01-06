@@ -25,7 +25,7 @@ async function getEmployerAuth() {
   return { supabase, userId: authData.user.id };
 }
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {

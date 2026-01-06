@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getMissingSupabaseEnv } from "@/lib/auth/session";
 import { getMissingMeiliEnv, isMeiliConfigured } from "@/lib/search/meili";
 import { PageShell } from "@/components/ui/page-shell";
@@ -6,6 +7,10 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
 
 export default function SetupPage() {
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   const missing = getMissingSupabaseEnv();
   const missingMeili = getMissingMeiliEnv();
 

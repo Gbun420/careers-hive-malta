@@ -8,7 +8,7 @@ import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 const REINDEX_HEADER = "x-search-reindex-secret";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {

@@ -4,7 +4,7 @@ import { jsonError } from "@/lib/api/errors";
 import { z } from "zod";
 import { logAudit } from "@/lib/audit/log";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const ProfileUpdateSchema = z.object({

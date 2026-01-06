@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/auth/admin-guard";
 import { jsonError } from "@/lib/api/errors";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {

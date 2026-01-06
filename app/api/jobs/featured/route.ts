@@ -4,7 +4,7 @@ import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 import type { Job } from "@/lib/jobs/schema";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {

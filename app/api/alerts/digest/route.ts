@@ -8,7 +8,7 @@ import { SavedSearchCriteriaSchema } from "@/lib/alerts/criteria";
 
 const dispatchSecret = process.env.ALERT_DISPATCH_SECRET;
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
