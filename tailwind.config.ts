@@ -4,6 +4,23 @@ const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        brand: "var(--brand)",
+        brandAccent: "var(--brand-accent)",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        muted: {
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
+        },
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+      },
+      fontFamily: {
+        display: ["var(--font-display)", "system-ui"],
+        sans: ["var(--font-sans)", "system-ui"],
+      },
       animation: {
         "fade-up": "fade-up 0.6s ease-out both",
         "fade-up-delayed": "fade-up 0.8s ease-out 0.12s both",

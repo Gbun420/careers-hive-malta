@@ -18,13 +18,13 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/85 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="font-display text-lg font-semibold text-slate-900">
-            Careers Hive Malta
+        <Link href="/" className="flex items-center gap-2 group">
+          <span className="font-display text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-brand">
+            Careers<span className="text-brandAccent">.mt</span>
           </span>
-          <span className="hidden items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 sm:inline-flex">
+          <span className="hidden items-center gap-1 rounded-full border border-brandAccent/20 bg-brandAccent/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brandAccent sm:inline-flex">
             <ShieldCheck className="h-3 w-3" aria-hidden="true" />
-            Verified employers
+            Verified
           </span>
         </Link>
 
