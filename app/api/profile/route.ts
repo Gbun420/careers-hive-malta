@@ -31,18 +31,29 @@ export async function GET() {
     .from("profiles")
     .select("id, role, full_name, headline, bio, experience, education, skills, created_at")
     .eq("id", authData.user.id)
-    .single();
+    .maybeSingle();
 
   if (profileError) {
     return jsonError("DB_ERROR", profileError.message, 500);
   }
 
-  return NextResponse.json({
-    data: {
-      ...profile,
-      email: authData.user.email,
-    },
-  });
+  if (!profile) {
+    // Return a skeleton profile if not found yet (e.g. trigger delay)
+    return NextResponse.json({
+      data: {
+        id: authData.user.id,
+        email: authData.user.email,
+        role: authData.user.user_metadata?.role || "jobseeker",
+        full_name: authData.user.user_metadata?.full_name || "",
+        headline: "",
+        bio: "",
+        experience: [],
+        education: [],
+        skills: [],
+        created_at: new Date().toISOString(),
+      },
+    });
+  }
 }
 
 export async function PATCH(request: Request) {

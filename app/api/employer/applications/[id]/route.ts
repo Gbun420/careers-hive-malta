@@ -47,6 +47,12 @@ export async function PATCH(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
 
+  // Role check
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+  if (profile?.role !== 'employer' && profile?.role !== 'admin') {
+    return jsonError("FORBIDDEN", "Unauthorized access", 403);
+  }
+
   try {
     const { status } = await request.json();
     if (!status) return jsonError("INVALID_INPUT", "Status required", 400);
@@ -54,8 +60,7 @@ export async function PATCH(
     const { error } = await supabase
       .from("applications")
       .update({ status, updated_at: new Date().toISOString() })
-      .eq("id", id)
-      .or(`employer_id.eq.${user.id},exists(select 1 from jobs where id=applications.job_id and employer_id=${user.id})`);
+      .eq("id", id);
 
     if (error) return jsonError("DB_ERROR", error.message, 500);
 
