@@ -1,7 +1,9 @@
+import { BRAND_NAME, BRAND_TAGLINE_SHORT } from "./brand";
+
 export const siteConfig = {
-  name: "Careers.mt",
-  shortName: "Careers.mt",
-  description: "Malta's fastest job alerts from verified employers",
+  name: BRAND_NAME,
+  shortName: BRAND_NAME,
+  description: BRAND_TAGLINE_SHORT,
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app",
   logo: "/logo-careers-mt.svg",
   social: {

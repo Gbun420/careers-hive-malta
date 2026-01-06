@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { BRAND_NAME } from "@/lib/brand";
 
 export default function DynamicLogo() {
   const beeRef = useRef<SVGGElement>(null);
@@ -55,8 +56,8 @@ export default function DynamicLogo() {
           </g>
         </svg>
       </div>
-      <span className="text-xl font-bold tracking-tightest bg-gradient-primary bg-clip-text text-transparent group-hover:text-brand-primaryDark transition-all duration-300">
-        Careers.mt
+      <span className="text-xl font-bold tracking-tightest text-foreground group-hover:text-primary transition-all duration-300">
+        {BRAND_NAME}
       </span>
     </Link>
   );

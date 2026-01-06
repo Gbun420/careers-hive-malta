@@ -8,6 +8,8 @@ import SiteFooter from "@/components/nav/site-footer";
 import SiteHeader from "@/components/nav/site-header";
 import PerformanceAnimator from "@/components/ui/performance-animator";
 
+import { BRAND_NAME } from "@/lib/brand";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -22,22 +24,22 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `Careers.mt - Malta's Premier Career Connection Platform`,
-    template: `%s | Careers.mt`,
+    default: `${BRAND_NAME} - Malta's Premier Career Connection Platform`,
+    template: `%s | ${BRAND_NAME}`,
   },
   description: "98% Verified Postings. Malta's fastest job alerts. Apply before the competition.",
   metadataBase: new URL(siteConfig.url),
   openGraph: {
-    title: `Careers.mt - Malta Job Board`,
+    title: `${BRAND_NAME} - Malta Job Board`,
     description: "Find verified jobs in Malta with instant alerts",
     url: siteConfig.url,
-    siteName: "Careers.mt",
+    siteName: BRAND_NAME,
     locale: "en_MT",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `Careers.mt - Malta Job Board`,
+    title: `${BRAND_NAME} - Malta Job Board`,
     description: "Find verified jobs in Malta with instant alerts",
   },
 };
@@ -49,14 +51,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="min-h-screen bg-slate-50 text-charcoal antialiased font-sans">
+      <body className="min-h-screen bg-background text-foreground antialiased font-sans">
         <PerformanceAnimator />
         <LocalBusinessSchema />
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
-          <div className="flex-1">
+          <main className="flex-1">
             {children}
-          </div>
+          </main>
           <SiteFooter />
         </div>
         <Analytics />

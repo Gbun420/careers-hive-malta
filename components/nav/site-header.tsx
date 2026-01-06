@@ -30,13 +30,13 @@ export default function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-sm font-semibold transition-all duration-300 hover:text-brand-secondary relative group",
-                  pathname === item.href ? "text-brand-secondary" : "text-neutral-600"
+                  "text-sm font-semibold transition-all duration-300 hover:text-primary relative group",
+                  pathname === item.href ? "text-primary" : "text-muted-foreground"
                 )}
               >
                 {item.name}
                 <span className={cn(
-                  "absolute -bottom-1 left-0 h-0.5 bg-brand-secondary transition-all duration-300",
+                  "absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300",
                   pathname === item.href ? "w-full" : "w-0 group-hover:w-full"
                 )} />
               </Link>
@@ -46,7 +46,7 @@ export default function SiteHeader() {
 
         <div className="flex items-center gap-2 sm:gap-4">
           <div className="hidden sm:flex items-center gap-2 lg:gap-4">
-            <Button asChild variant="ghost" className="font-bold text-neutral-600 hover:text-brand-secondary h-10 px-4">
+            <Button asChild variant="ghost" className="font-bold text-muted-foreground hover:text-primary h-10 px-4">
               <Link href="/login">Sign In</Link>
             </Button>
             <Button asChild variant="default" className="rounded-xl h-10 px-6 shadow-md">
@@ -55,7 +55,7 @@ export default function SiteHeader() {
           </div>
           
           <button 
-            className="lg:hidden p-2 text-neutral-600 hover:text-brand-secondary transition-colors"
+            className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -66,7 +66,7 @@ export default function SiteHeader() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden border-t border-neutral-200 bg-white animate-fade-in shadow-xl">
+        <div className="lg:hidden border-t border-border bg-background animate-fade-in shadow-xl">
           <nav className="flex flex-col p-6 gap-4">
             {navItems.map((item) => (
               <Link
@@ -75,15 +75,15 @@ export default function SiteHeader() {
                 onClick={() => setIsMenuOpen(false)}
                 className={cn(
                   "text-lg font-bold transition-all px-2 py-1 rounded-lg",
-                  pathname === item.href ? "text-brand-secondary bg-brand-secondary/5" : "text-neutral-600 hover:bg-neutral-50"
+                  pathname === item.href ? "text-primary bg-primary/5" : "text-foreground hover:bg-muted"
                 )}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="h-px bg-neutral-100 my-2" />
+            <div className="h-px bg-border my-2" />
             <div className="flex flex-col gap-3">
-              <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl border-neutral-200 font-bold" onClick={() => setIsMenuOpen(false)}>
+              <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl font-bold" onClick={() => setIsMenuOpen(false)}>
                 <Link href="/login">Sign In</Link>
               </Button>
               <Button asChild variant="default" className="w-full justify-center h-12 rounded-xl font-bold shadow-lg" onClick={() => setIsMenuOpen(false)}>

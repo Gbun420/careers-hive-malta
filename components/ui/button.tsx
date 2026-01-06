@@ -6,20 +6,20 @@ type ButtonVariant = "default" | "outline" | "ghost" | "secondary" | "destructiv
 type ButtonSize = "default" | "lg" | "sm" | "icon";
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
+  "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:bg-muted disabled:text-muted-foreground active:scale-[0.98]";
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-primary text-primary-foreground hover:bg-primary/90 shadow-cta",
+    "bg-primary text-primary-foreground hover:bg-primary/95 shadow-md",
   secondary:
-    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    "bg-secondary text-secondary-foreground hover:bg-secondary/90",
   outline:
-    "border-2 border-primary bg-transparent text-primary hover:bg-primary/5",
-  ghost: "hover:bg-accent hover:text-accent-foreground",
+    "border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
+  ghost: "text-foreground hover:bg-muted hover:text-foreground",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
   premium: 
-    "bg-brand-gradient text-white shadow-cta hover:shadow-cta-hover hover:-translate-y-0.5",
+    "bg-primary text-primary-foreground shadow-lg hover:shadow-xl hover:-translate-y-0.5",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
