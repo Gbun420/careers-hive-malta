@@ -1,24 +1,30 @@
 import { siteConfig } from "@/lib/site-config";
+import { BRAND_NAME } from "@/lib/brand";
 
 export default function LocalBusinessSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "EmploymentAgency",
-    "name": siteConfig.name,
-    "description": siteConfig.description,
+    "name": BRAND_NAME,
+    "description": `${BRAND_NAME} - Malta's Premier Career Connection Platform. Get real-time job alerts from verified Maltese employers.`,
     "url": siteConfig.url,
-    "telephone": "+356-XXXX-XXXX",
+    "logo": `${siteConfig.url}/logo-careers-mt.svg`,
+    "telephone": "+356-2700-0000",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Malta",
-      "addressLocality": "Malta",
-      "postalCode": "MT1000",
+      "streetAddress": "Digital Hub",
+      "addressLocality": "Valletta",
+      "addressRegion": "Malta",
+      "postalCode": "VLT 1000",
       "addressCountry": "MT"
     },
-    "areaServed": "MT",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Malta"
+    },
     "sameAs": [
       `https://www.linkedin.com/${siteConfig.social.linkedin}`,
-      "https://www.facebook.com/careersmt"
+      "https://x.com/careersmt"
     ]
   };
 

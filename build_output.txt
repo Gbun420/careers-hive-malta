@@ -6,7 +6,29 @@
    - Environments: .env.local, .env
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 2.9s
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (130kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ⚠ Compiled with warnings in 9.7s
+
+./node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+A Node.js API is used (process.versions at line: 39) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+./node_modules/@supabase/realtime-js/dist/module/index.js
+./node_modules/@supabase/supabase-js/dist/index.mjs
+./node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+
+./node_modules/@supabase/supabase-js/dist/index.mjs
+A Node.js API is used (process.version at line: 395) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/supabase-js/dist/index.mjs
+./node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+
    Linting and checking validity of types ...
    Collecting page data ...
  ⚠ Using edge runtime on a page currently disables static generation for that page
@@ -14,18 +36,19 @@
    Generating static pages (7/29) 
    Generating static pages (14/29) 
    Generating static pages (21/29) 
+Supabase service role client not available for metrics
  ✓ Generating static pages (29/29)
    Finalizing page optimization ...
    Collecting build traces ...
 
 Route (app)                                     Size  First Load JS  Revalidate  Expire
-┌ ƒ /                                        6.28 kB         112 kB
+┌ ƒ /                                        3.55 kB         113 kB
 ├ ○ /_not-found                                247 B         102 kB
-├ ○ /admin/audit                              2.1 kB         160 kB
-├ ○ /admin/dashboard                          2.8 kB         161 kB
+├ ○ /admin/audit                             2.16 kB         160 kB
+├ ○ /admin/dashboard                         2.85 kB         161 kB
 ├ ƒ /admin/metrics                             247 B         102 kB
-├ ○ /admin/reports                           2.63 kB         160 kB
-├ ○ /admin/verifications                     2.85 kB         161 kB
+├ ○ /admin/reports                           2.68 kB         160 kB
+├ ○ /admin/verifications                      2.9 kB         161 kB
 ├ ƒ /api/admin/audit                           247 B         102 kB
 ├ ƒ /api/admin/db/reload-schema                247 B         102 kB
 ├ ƒ /api/admin/reports                         247 B         102 kB
@@ -66,35 +89,35 @@ Route (app)                                     Size  First Load JS  Revalidate 
 ├ ƒ /api/saved-searches/[id]                   247 B         102 kB
 ├ ƒ /api/search/reindex                        247 B         102 kB
 ├ ƒ /auth/callback                             247 B         102 kB
-├ ○ /blog                                      193 B         106 kB
+├ ○ /blog                                      189 B         106 kB
 ├ ○ /blog/it-jobs-malta-guide                  166 B         106 kB
-├ ○ /blog/malta-job-market-2026                193 B         106 kB
-├ ○ /blog/malta-salary-guide-2026              193 B         106 kB
-├ ○ /blog/top-companies-malta-2026             193 B         106 kB
-├ ○ /blog/work-permit-malta-2026               193 B         106 kB
+├ ○ /blog/malta-job-market-2026                189 B         106 kB
+├ ○ /blog/malta-salary-guide-2026              189 B         106 kB
+├ ○ /blog/top-companies-malta-2026             189 B         106 kB
+├ ○ /blog/work-permit-malta-2026               189 B         106 kB
 ├ ƒ /employer/analytics                        247 B         102 kB
-├ ○ /employer/dashboard                      3.67 kB         109 kB
+├ ○ /employer/dashboard                      3.66 kB         109 kB
 ├ ○ /employer/jobs                           4.91 kB         110 kB
 ├ ƒ /employer/jobs/[id]/edit                 5.82 kB         124 kB
-├ ○ /employer/jobs/new                       6.54 kB         125 kB
+├ ○ /employer/jobs/new                        6.6 kB         125 kB
 ├ ○ /employer/verification                   4.07 kB         110 kB
-├ ƒ /for-employers                             193 B         106 kB
+├ ƒ /for-employers                           1.82 kB         111 kB
 ├ ○ /jobs                                      128 B         111 kB
-├ ƒ /jobs/[id]                               5.45 kB         124 kB
+├ ƒ /jobs/[id]                               5.48 kB         124 kB
 ├ ƒ /jobs/industry/[industry]                  128 B         111 kB
 ├ ƒ /jobs/malta/[location]                     128 B         111 kB
-├ ○ /jobseeker/alerts                        1.98 kB         107 kB
+├ ○ /jobseeker/alerts                        1.97 kB         107 kB
 ├ ƒ /jobseeker/alerts/[id]/edit              3.22 kB         122 kB
 ├ ○ /jobseeker/alerts/new                    3.13 kB         122 kB
-├ ○ /jobseeker/dashboard                      3.6 kB         109 kB
-├ ƒ /jobseeker/notifications                   193 B         106 kB
-├ ○ /login                                   2.69 kB         161 kB
-├ ○ /pricing                                   193 B         106 kB          1h      1y
+├ ○ /jobseeker/dashboard                     3.59 kB         109 kB
+├ ƒ /jobseeker/notifications                   189 B         106 kB
+├ ○ /login                                   2.75 kB         161 kB
+├ ○ /pricing                                   189 B         106 kB          1h      1y
 ├ ○ /profile                                 2.38 kB         105 kB
 ├ ○ /robots.txt                                247 B         102 kB
 ├ ○ /settings                                4.38 kB         110 kB
-├ ○ /setup                                     193 B         106 kB
-├ ○ /signup                                  5.71 kB         160 kB
+├ ○ /setup                                     189 B         106 kB
+├ ○ /signup                                  5.83 kB         160 kB
 └ ○ /sitemap.xml                               247 B         102 kB
 + First Load JS shared by all                 102 kB
   ├ chunks/1255-f6ae109f82fb4bb6.js            46 kB
@@ -102,7 +125,7 @@ Route (app)                                     Size  First Load JS  Revalidate 
   └ other shared chunks (total)              1.95 kB
 
 
-ƒ Middleware                                 59.8 kB
+ƒ Middleware                                 80.3 kB
 
 ○  (Static)   prerendered as static content
 ƒ  (Dynamic)  server-rendered on demand

@@ -95,21 +95,39 @@ export default function Hero({ employerSignupHref }: HeroProps) {
 
             
 
-            <div className="mt-12 flex flex-wrap gap-4">
+                        <div className="mt-12 flex flex-wrap gap-4">
 
-              <Button asChild size="lg" variant="default" className="rounded-xl px-10 shadow-lg h-16 text-lg">
+            
 
-                <Link href="/signup" className="flex items-center gap-2">Get Job Alerts <ArrowRight className="h-5 w-5" /></Link>
+                          <Button asChild size="lg" variant="default" className="rounded-xl px-10 shadow-lg h-16 text-lg">
 
-              </Button>
+            
 
-              <Button asChild variant="outline" size="lg" className="rounded-xl px-10 h-16 text-lg border-2">
+                            <Link href="/signup" className="flex items-center gap-2" aria-label="Get instant job alerts">Get Job Alerts <ArrowRight className="h-5 w-5" /></Link>
 
-                <Link href="/jobs">Browse Jobs</Link>
+            
 
-              </Button>
+                          </Button>
 
-            </div>
+            
+
+                          <Button asChild variant="outline" size="lg" className="rounded-xl px-10 h-16 text-lg border-2">
+
+            
+
+                            <Link href="/jobs" aria-label="Browse all active jobs">Browse Jobs</Link>
+
+            
+
+                          </Button>
+
+            
+
+                        </div>
+
+            
+
+            
 
 
 

@@ -57,7 +57,7 @@ export default function SiteHeader() {
           <button 
             className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label={isMenuOpen ? "Close mobile menu" : "Open mobile menu"}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>

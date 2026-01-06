@@ -46,17 +46,21 @@ export default function CategoryGrid() {
 
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
 
-          {industries.map((industry) => (
+                    {industries.map((industry) => (
 
-            <Link
+                      <Link
 
-              key={industry.slug}
+                        key={industry.slug}
 
-              href={`/jobs/industry/${industry.slug}`}
+                        href={`/jobs/industry/${industry.slug}`}
 
-              className="group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-card border border-border transition-all duration-300 hover:border-primary hover:shadow-lg hover:-translate-y-1"
+                        className="group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-card border border-border transition-all duration-300 hover:border-primary hover:shadow-lg hover:-translate-y-1"
 
-            >
+                        aria-label={`Browse ${industry.name} jobs in Malta`}
+
+                      >
+
+          
 
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground shadow-sm transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110">
 

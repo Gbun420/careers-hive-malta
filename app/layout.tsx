@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     default: `${BRAND_NAME} - Malta's Premier Career Connection Platform`,
     template: `%s | ${BRAND_NAME}`,
   },
-  description: "98% Verified Postings. Malta's fastest job alerts. Apply before the competition.",
+  description: `${BRAND_NAME} - Malta's Premier Career Connection Platform. Get real-time job alerts from verified Maltese employers and apply before the competition.`,
   metadataBase: new URL(siteConfig.url),
   openGraph: {
     title: `${BRAND_NAME} - Malta Job Board`,

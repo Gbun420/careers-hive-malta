@@ -90,7 +90,7 @@ export default async function PricingPage() {
                 Report + moderation coverage
               </li>
             </ul>
-            <Button asChild size="lg" variant="outline" className="mt-8 w-full rounded-2xl">
+            <Button asChild size="lg" variant="outline" className="mt-8 w-full rounded-2xl" aria-label="Post a job for free">
               <Link href="/signup?role=employer">Post for Free</Link>
             </Button>
           </div>
@@ -125,7 +125,7 @@ export default async function PricingPage() {
               )}
             </ul>
             <div className="mt-8">
-              <Button asChild size="lg" className="w-full rounded-2xl shadow-cta">
+              <Button asChild size="lg" className="w-full rounded-2xl shadow-cta" aria-label="Feature a job upgrade">
                 <Link href="/signup?role=employer">Feature a Job</Link>
               </Button>
             </div>

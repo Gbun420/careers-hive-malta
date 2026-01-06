@@ -53,7 +53,7 @@ export default function EmployerPricingPath({
             
             <div className="mt-12">
               <Button asChild size="lg" variant="default" className="bg-background text-foreground hover:bg-muted rounded-xl px-10 shadow-2xl group transition-all h-16 text-lg">
-                <Link href={employerSignupHref} className="flex items-center gap-2">
+                <Link href={employerSignupHref} className="flex items-center gap-2" aria-label="Post your first job for free">
                   Post Your First Job Free <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
