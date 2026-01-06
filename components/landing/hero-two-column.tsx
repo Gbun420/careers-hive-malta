@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Briefcase, ShieldCheck, Zap } from "lucide-react";
 import { MetricResult } from "@/lib/metrics";
+import { publicMetricsEnabled } from "@/lib/flags";
 
 type HeroProps = {
   metrics: MetricResult;
 };
 
 export default function HeroTwoColumn({ metrics }: HeroProps) {
-  const activeSeekers = metrics.active_job_seekers?.value || "Thousands of";
-  const totalJobs = metrics.total_job_postings?.value || "Live";
-  const verifiedEmployers = metrics.verified_employers?.value || "Trusted";
+  const activeSeekers = publicMetricsEnabled ? (metrics.active_job_seekers?.value || "5,000+") : "Thousands of";
+  const totalJobs = publicMetricsEnabled ? (metrics.total_job_postings?.value || "1,000+") : "Live Feed";
+  const verifiedEmployers = publicMetricsEnabled ? (metrics.verified_employers?.value || "300+") : "Verified Brands";
 
   return (
     <section className="relative overflow-hidden bg-white py-16 lg:py-24">
@@ -31,7 +32,7 @@ export default function HeroTwoColumn({ metrics }: HeroProps) {
             </h1>
             
             <p className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-slate-600">
-              The premium job board for the Maltese market. Get real-time alerts from <span className="text-navy-950 font-bold">{verifiedEmployers} verified employers</span> delivered with zero latency.
+              The premium job board for the Maltese market. Get real-time alerts from <span className="text-navy-950 font-bold">{publicMetricsEnabled ? `${verifiedEmployers} verified employers` : "Verified Employers"}</span> delivered with zero latency.
             </p>
             
             <div className="mt-10 flex flex-wrap gap-4">
@@ -99,10 +100,10 @@ export default function HeroTwoColumn({ metrics }: HeroProps) {
                   <Zap className="h-4 w-4 text-gold-400 fill-gold-400" />
                 </div>
                 <div className="text-2xl font-black tabular-nums italic">
-                  &lt; {metrics.alert_delivery_time?.value || "5"} Minutes
+                  {publicMetricsEnabled ? `< ${metrics.alert_delivery_time?.value || "5"} Minutes` : "Real-time Alerts"}
                 </div>
                 <p className="mt-1 text-[10px] font-medium text-navy-300">
-                  Real-time synchronization across Malta network
+                  {publicMetricsEnabled ? "Real-time synchronization across Malta network" : "Instant synchronization for Maltese roles"}
                 </p>
               </div>
             </div>

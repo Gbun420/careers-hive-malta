@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MetricResult } from "@/lib/metrics";
 import { ArrowRight } from "lucide-react";
+import { publicMetricsEnabled } from "@/lib/flags";
 
 type EmployerPricingPathProps = {
   metrics: MetricResult;
@@ -32,20 +33,20 @@ export default function EmployerPricingPath({
               <span className="bg-brand-primary bg-clip-text text-transparent italic">in Days</span>
             </h2>
             <p className="mt-6 text-base opacity-90 font-medium max-w-lg">
-              Join {verifiedCount}+ companies getting 20+ applications per job. Malta&apos;s high-performance recruitment engine.
+              Join {publicMetricsEnabled ? `${verifiedCount}+ companies` : "verified companies"} getting 20+ applications per job. Malta&apos;s high-performance recruitment engine.
             </p>
             
             <div className="mt-10 grid w-full grid-cols-3 gap-8 py-10 border-y border-white/10">
               <div className="flex flex-col gap-2 text-center sm:text-left">
-                <span className="text-lg font-bold text-brand-primary">{placements30d}+</span>
+                <span className="text-lg font-bold text-brand-primary">{publicMetricsEnabled ? `${placements30d}+` : "Trusted"}</span>
                 <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Monthly Placements</span>
               </div>
               <div className="flex flex-col gap-2 text-center sm:text-left border-x border-white/10">
-                <span className="text-lg font-bold text-brand-primary">14 days</span>
+                <span className="text-lg font-bold text-brand-primary">{publicMetricsEnabled ? "14 days" : "Fast"}</span>
                 <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Avg Time-to-Hire</span>
               </div>
               <div className="flex flex-col gap-2 text-center sm:text-left">
-                <span className="text-lg font-bold text-brand-primary">€187</span>
+                <span className="text-lg font-bold text-brand-primary">{publicMetricsEnabled ? "€187" : "Competitive"}</span>
                 <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Cost-per-hire</span>
               </div>
             </div>

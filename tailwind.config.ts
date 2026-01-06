@@ -22,6 +22,7 @@ const config: Config = {
           primary: "#0B5E7F",
           success: "#10B981",
           gold: "#FFB300",
+          accent: "#FF6B35",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -56,9 +57,9 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        'premium': '1rem',
-        '2xl': '1.25rem',
-        '3xl': '1.5rem',
+        'premium': '1.25rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
@@ -69,10 +70,20 @@ const config: Config = {
         'premium': '0 10px 30px -10px rgba(0, 0, 0, 0.1)',
         'premium-hover': '0 20px 40px -15px rgba(0, 0, 0, 0.15)',
         'gold-glow': '0 0 20px -5px rgba(255, 179, 0, 0.3)',
+        'sun-glow': '0 10px 25px rgba(255, 179, 0, 0.3)',
         'cta': '0 4px 12px rgba(11, 94, 127, 0.25)',
+        'cta-hover': '0 8px 24px rgba(11, 94, 127, 0.35)',
+      },
+      backgroundImage: {
+        'brand-gradient': 'linear-gradient(135deg, #0B5E7F 0%, #10B981 100%)',
+        'accent-gradient': 'linear-gradient(135deg, #FF6B35 0%, #FF8F00 100%)',
+        'gradient-primary': 'linear-gradient(135deg, #0B5E7F 0%, #10B981 100%)',
+        'gradient-med': 'linear-gradient(135deg, #42A5F5 0%, #1565C0 100%)',
+        'gradient-sun': 'linear-gradient(135deg, #FFB300 0%, #FF8F00 100%)',
       },
       animation: {
-        "fade-in": "fade-in 0.3s ease-out both",
+        "fade-in": "fade-in 0.5s ease-out both",
+        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         "fade-in": {

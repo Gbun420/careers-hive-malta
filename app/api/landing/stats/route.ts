@@ -1,10 +1,19 @@
 import { NextResponse } from "next/server";
 import { fetchDynamicMetrics } from "@/lib/metrics";
+import { publicMetricsEnabled } from "@/lib/flags";
 
 export const runtime = "nodejs"; // fetchDynamicMetrics uses unstable_cache which might prefer nodejs in some envs
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  if (!publicMetricsEnabled) {
+    return NextResponse.json({
+      totalJobs: "Live Feed",
+      verifiedEmployers: "Active",
+      activeJobseekers: "Verified",
+    });
+  }
+
   try {
     const metrics = await fetchDynamicMetrics({
       queries: ['active_job_seekers', 'total_job_postings', 'verified_employers'],

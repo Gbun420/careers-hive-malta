@@ -1,28 +1,32 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type ButtonVariant = "default" | "outline" | "ghost" | "secondary" | "success";
+type ButtonVariant = "default" | "outline" | "ghost" | "secondary" | "destructive" | "premium";
 
-type ButtonSize = "default" | "lg" | "sm";
+type ButtonSize = "default" | "lg" | "sm" | "icon";
 
 const baseClasses =
-  "btn inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 btn-ripple";
+  "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-gradient-primary text-white shadow-md hover:translate-y-[-2px] hover:shadow-lg",
+    "bg-primary text-primary-foreground hover:bg-primary/90 shadow-cta",
   secondary:
-    "bg-gradient-secondary text-white shadow-md hover:translate-y-[-2px] hover:shadow-lg",
+    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   outline:
-    "border-2 border-brand-primary bg-transparent text-brand-primaryDark hover:bg-brand-primary/10 hover:translate-y-[-2px]",
-  ghost: "hover:bg-brand-primary/10 text-brand-primaryDark",
-  success: "bg-gradient-success text-white shadow-md hover:translate-y-[-2px] hover:shadow-lg",
+    "border-2 border-primary bg-transparent text-primary hover:bg-primary/5",
+  ghost: "hover:bg-accent hover:text-accent-foreground",
+  destructive:
+    "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+  premium: 
+    "bg-brand-gradient text-white shadow-cta hover:shadow-cta-hover hover:-translate-y-0.5",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  default: "h-12 px-8 text-sm",
-  lg: "h-16 px-10 text-base font-bold",
+  default: "h-11 px-6 text-sm",
+  lg: "h-14 px-8 text-base",
   sm: "h-9 px-4 text-xs",
+  icon: "h-10 w-10",
 };
 
 export interface ButtonProps
@@ -51,7 +55,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       baseClasses,
       variantClasses[variant],
       sizeClasses[size],
-      loading && "btn-loading",
       className
     );
 
@@ -71,7 +74,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || props.disabled}
         {...props}
       >
-        {children}
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            {children}
+          </span>
+        ) : (
+          children
+        )}
       </button>
     );
   }

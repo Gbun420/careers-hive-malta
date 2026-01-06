@@ -44,6 +44,11 @@ export default async function PricingPage() {
 
   const featuredAdoption = metrics.featured_adoption_rate?.value;
   const avgApps = metrics.avg_applications_per_job?.value;
+  
+  // High-conversion pricing logic: ensure we never show a "0" or empty price
+  const displayPrice = billingConfigured && featuredPriceLabel && featuredPriceLabel !== "0" && featuredPriceLabel !== "€0"
+    ? featuredPriceLabel 
+    : "€49";
 
   return (
     <PageShell>
@@ -57,7 +62,7 @@ export default async function PricingPage() {
             subtitle={`Start with a free listing, then boost priority roles to the top of the feed and search results for ${featuredDurationDays} days.`}
             align="center"
           />
-          {featuredAdoption && Number(featuredAdoption) !== 0 && (
+          {featuredAdoption && Number(featuredAdoption) > 0 && (
             <p className="text-sm font-medium text-brand-primary">
               {featuredAdoption}% of employers upgrade to featured placement for maximum visibility.
             </p>
@@ -97,9 +102,7 @@ export default async function PricingPage() {
             </div>
             <h3 className="text-xl font-black text-slate-950">Featured Upgrade</h3>
             <p className="mt-2 text-sm text-slate-700 font-medium leading-relaxed">
-              {billingConfigured && featuredPriceLabel
-                ? `Only ${featuredPriceLabel} per post`
-                : "Unlock premium placement for your urgent roles."}
+              Only {displayPrice} per post
             </p>
             <ul className="mt-8 space-y-4 text-sm text-slate-700 flex-1">
               <li className="flex items-start gap-3">
@@ -114,7 +117,7 @@ export default async function PricingPage() {
                 <span className="text-brand-success font-black">✓</span>
                 Distinctive Featured badge
               </li>
-              {avgApps && (
+              {avgApps && Number(avgApps) > 0 && (
                 <li className="flex items-start gap-3 font-bold text-brand-secondary">
                   <span className="text-brand-success font-black">✓</span>
                   Avg. {avgApps} candidates per post
@@ -122,21 +125,15 @@ export default async function PricingPage() {
               )}
             </ul>
             <div className="mt-8">
-              {billingConfigured ? (
-                <Button asChild size="lg" className="w-full rounded-2xl shadow-cta">
-                  <Link href="/signup?role=employer">Feature a Job</Link>
-                </Button>
-              ) : (
-                <Button size="lg" disabled className="w-full rounded-2xl">
-                  Contact Sales
-                </Button>
-              )}
+              <Button asChild size="lg" className="w-full rounded-2xl shadow-cta">
+                <Link href="/signup?role=employer">Feature a Job</Link>
+              </Button>
             </div>
-            {showPlaceholderWarning ? (
+            {showPlaceholderWarning && (
               <p className="mt-4 text-center text-[10px] text-brand-primary font-black uppercase tracking-widest">
                 Stripe Sandbox Active
               </p>
-            ) : null}
+            )}
           </div>
 
           {/* Pro Plan */}
@@ -187,11 +184,11 @@ export default async function PricingPage() {
           </div>
         </section>
       </div>
-      {showBillingStatus ? (
+      {showBillingStatus && (
         <footer className="mt-20 pt-10 border-t border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
           Engine: production-ready · Billing: {billingConfigured ? "sync" : "pending"} · Last Update: {new Date().toLocaleDateString()}
         </footer>
-      ) : null}
+      )}
     </PageShell>
   );
 }

@@ -5,6 +5,7 @@ import { ShieldCheck, Zap, Users, BarChart3, Check } from "lucide-react";
 import Link from "next/link";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { publicMetricsEnabled } from "@/lib/flags";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export default async function EmployerLandingPage() {
               Hire Malta&apos;s Best Talent <span className="text-brand-primary">in Days.</span>
             </h1>
             <p className="mt-10 text-xl font-medium text-slate-500 leading-relaxed max-w-2xl">
-              Join {metrics.verified_employers?.value || "342"}+ verified Maltese brands hiring top-tier professionals. Post your first role for free.
+              Join {publicMetricsEnabled ? `${metrics.verified_employers?.value || "342"}+ verified Maltese brands` : "verified Maltese brands"} hiring top-tier professionals. Post your first role for free.
             </p>
             <div className="mt-12 flex flex-wrap justify-center gap-4">
               <Button asChild size="lg" className="rounded-2xl h-16 px-10 shadow-cta">
@@ -47,14 +48,14 @@ export default async function EmployerLandingPage() {
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primaryDark">
                 <Zap className="h-7 w-7" />
               </div>
-              <div className="text-5xl font-black tracking-tightest text-slate-950 italic">14 Days</div>
+              <div className="text-5xl font-black tracking-tightest text-slate-950 italic">{publicMetricsEnabled ? "14 Days" : "Fast"}</div>
               <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Average Time-to-Hire</p>
             </div>
             <div className="text-center space-y-4 border-x border-slate-100">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-success/10 text-brand-success">
                 <Users className="h-7 w-7" />
               </div>
-              <div className="text-5xl font-black tracking-tightest text-slate-950 italic">{metrics.avg_applications_per_job?.value || "18"}</div>
+              <div className="text-5xl font-black tracking-tightest text-slate-950 italic">{publicMetricsEnabled ? (metrics.avg_applications_per_job?.value || "18") : "High"}</div>
               <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Applicants Per Role</p>
             </div>
             <div className="text-center space-y-4">
@@ -77,7 +78,7 @@ export default async function EmployerLandingPage() {
               />
               <ul className="mt-12 space-y-8">
                 {[
-                  "Direct access to 5,000+ Maltese professionals",
+                  `Direct access to ${publicMetricsEnabled ? "5,000+" : "thousands of"} Maltese professionals`,
                   "Advanced Applicant Tracking (ATS) dashboard",
                   "One-click verification for immediate credibility",
                   "Featured placements for high-priority hiring"
@@ -112,12 +113,12 @@ export default async function EmployerLandingPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-12">
                     <div>
-                      <p className="text-5xl font-black tracking-tightest">{metrics.placements_30day?.value || "24"}</p>
+                      <p className="text-5xl font-black tracking-tightest">{publicMetricsEnabled ? (metrics.placements_30day?.value || "24") : "Synced"}</p>
                       <p className="text-[10px] font-black uppercase tracking-widest text-navy-400 mt-2">Placements (30d)</p>
                     </div>
                     <div>
-                      <p className="text-5xl font-black tracking-tightest">€185</p>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-navy-400 mt-2">Avg Cost-per-Hire</p>
+                      <p className="text-5xl font-black tracking-tightest">{publicMetricsEnabled ? "€185" : "Elite"}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-navy-400 mt-2">{publicMetricsEnabled ? "Avg Cost-per-Hire" : "Talent Network"}</p>
                     </div>
                   </div>
                 </div>
