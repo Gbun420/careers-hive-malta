@@ -61,33 +61,31 @@ export default function EmployerPricingPath({
           </div>
 
           <div className="flex flex-col gap-6 lg:items-end">
-            <div className="flex flex-wrap items-center gap-4 justify-center lg:justify-end">
-              {/* Glassmorphism Tier Cards */}
-              <div className="group w-44 flex flex-col items-center gap-4 p-8 rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10">
-                <Badge className="bg-white/20 text-white border-none text-[10px]">FREE</Badge>
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 lg:auto-rows-fr place-items-stretch">
+              {/* Free Tier Card */}
+              <div className="group h-[160px] w-full sm:w-[240px] lg:w-[260px] flex flex-col items-center justify-center gap-4 p-6 rounded-[2rem] bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10 lg:col-span-1">
+                <Badge className="bg-white/20 text-white border-none text-[10px] font-black uppercase tracking-widest">FREE</Badge>
                 <div className="text-center">
-                  <h4 className="font-bold text-sm">1 Job Post</h4>
-                  <p className="text-[10px] font-medium opacity-60 uppercase mt-1">30 days live</p>
+                  <h4 className="font-bold text-base text-white">1 Job Post</h4>
+                  <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mt-1">30 days live</p>
                 </div>
               </div>
               
-              <div className="hidden sm:block text-white/20 text-xl">→</div>
-
-              <div className="group w-48 flex flex-col items-center gap-4 p-8 rounded-[2.5rem] bg-primary/10 backdrop-blur-md border-2 border-primary/50 transition-all duration-300 scale-105 shadow-2xl shadow-black/20">
-                <Badge className="bg-primary text-primary-foreground border-none shadow-sm text-[10px]">€49</Badge>
+              {/* Featured Tier Card */}
+              <div className="group h-[160px] w-full sm:w-[240px] lg:w-[260px] flex flex-col items-center justify-center gap-4 p-6 rounded-[2rem] bg-primary/10 backdrop-blur-md border-2 border-primary/50 transition-all duration-300 hover:bg-primary/20 shadow-xl shadow-black/20 lg:col-span-1">
+                <Badge className="bg-primary text-primary-foreground border-none shadow-sm text-[10px] font-black uppercase tracking-widest">€49</Badge>
                 <div className="text-center">
-                  <h4 className="font-bold text-sm">Featured 7 days</h4>
-                  <p className="text-[10px] font-black text-primary uppercase mt-1">3x more views</p>
+                  <h4 className="font-bold text-base text-white">Featured 7 days</h4>
+                  <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">3x more views</p>
                 </div>
               </div>
 
-              <div className="hidden sm:block text-white/20 text-xl">→</div>
-
-              <div className="group w-44 flex flex-col items-center gap-4 p-8 rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10">
-                <Badge className="bg-brand-secondaryLight/30 text-white border-none text-[10px]">€299/mo</Badge>
+              {/* Professional Tier Card */}
+              <div className="group h-[160px] w-full sm:w-[240px] lg:w-[260px] flex flex-col items-center justify-center gap-4 p-6 rounded-[2rem] bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10 sm:col-span-2 lg:col-span-2 justify-self-center">
+                <Badge className="bg-white/20 text-white border-none text-[10px] font-black uppercase tracking-widest">€299/mo</Badge>
                 <div className="text-center">
-                  <h4 className="font-bold text-sm">Professional</h4>
-                  <p className="text-[10px] font-medium opacity-60 uppercase mt-1">Unlimited posts</p>
+                  <h4 className="font-bold text-base text-white">Professional</h4>
+                  <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mt-1">Unlimited posts</p>
                 </div>
               </div>
             </div>
