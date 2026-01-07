@@ -50,7 +50,7 @@ export default async function AdminDashboard() {
             </p>
           </Link>
           <Link
-            href="/admin/audit"
+            href="/admin/audit-logs"
             className="tech-card rounded-xl group"
           >
             <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">Audit logs</p>
