@@ -4,6 +4,7 @@ import { fetchMatchingJobs } from "@/lib/alerts/matcher";
 import { sendDigestEmail } from "@/lib/email/sender";
 import { generateUnsubscribeToken } from "@/lib/alerts/tokens";
 import { trackEvent } from "@/lib/analytics";
+import { SITE_URL } from "@/lib/site/url";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     let sentCount = 0;
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
+    const baseUrl = SITE_URL;
 
     for (const alert of alerts) {
       // Check frequency (daily cron)

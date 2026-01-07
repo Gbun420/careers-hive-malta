@@ -4,6 +4,7 @@ import { XMLParser } from "fast-xml-parser";
 import { createHash } from "crypto";
 import { publishIndexingNotification } from "@/lib/google/indexing";
 import { trackEvent } from "@/lib/analytics";
+import { SITE_URL } from "@/lib/site/url";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
   }
 
   const startTime = Date.now();
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
+  const baseUrl = SITE_URL;
 
   try {
     // 1. Fetch enabled sources

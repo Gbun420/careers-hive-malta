@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { SITE_URL } from "@/lib/site/url";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
+  const baseUrl = SITE_URL;
 
   const content = `User-agent: *
 Allow: /

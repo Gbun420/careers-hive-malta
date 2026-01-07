@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/next";
 import SiteFooter from "@/components/nav/site-footer";
 import SiteHeader from "@/components/nav/site-header";
 import PerformanceAnimator from "@/components/ui/performance-animator";
+import { LinkDebugger } from "@/components/common/LinkDebugger";
 
 import { BRAND_NAME } from "@/lib/brand";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased font-sans">
+        <LinkDebugger />
         <PerformanceAnimator />
         <LocalBusinessSchema />
         <div className="flex min-h-screen flex-col">

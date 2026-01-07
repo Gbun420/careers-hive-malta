@@ -57,7 +57,7 @@ export default function ApplicationDetailHeader({
           </Badge>
         </div>
         <p className="text-sm font-medium text-slate-500">
-          Applying for <Link href={`/jobs/${jobId}`} className="text-brand font-bold hover:underline">{jobTitle}</Link>
+          Applying for <Link href={`/job/${jobId}`} className="text-brand font-bold hover:underline">{jobTitle}</Link>
         </p>
       </div>
 

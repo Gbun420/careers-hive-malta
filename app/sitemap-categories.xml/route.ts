@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { jobBoardConfig } from "@/lib/site-config";
+import { SITE_URL } from "@/lib/site/url";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
+  const baseUrl = SITE_URL;
 
   const categories = jobBoardConfig.industries;
   const locations = jobBoardConfig.locations;

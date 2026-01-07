@@ -149,7 +149,7 @@ export default function AdminReportsList() {
                         <p className="text-xs font-bold text-brand-600 uppercase tracking-widest">{report.job?.employer?.full_name}</p>
                       </div>
                       <Link 
-                        href={`/jobs/${report.job_id}`}
+                        href={`/job/${report.job_id}`}
                         className="h-10 px-4 rounded-xl border border-slate-200 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-colors"
                       >
                         View Job <ExternalLink className="h-3 w-3" />

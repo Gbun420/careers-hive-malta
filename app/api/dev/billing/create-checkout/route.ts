@@ -6,6 +6,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { createFeaturedCheckoutSession } from "@/lib/billing/checkout";
 import { isStripeConfigured } from "@/lib/billing/stripe";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
+import { SITE_URL } from "@/lib/site/url";
 
 
 const BodySchema = z.object({
@@ -73,8 +74,7 @@ export async function POST(request: Request) {
 
   const origin =
     request.headers.get("origin") ??
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "http://localhost:3000";
+    SITE_URL;
 
   const result = await createFeaturedCheckoutSession({
     employerId: job.employer_id,

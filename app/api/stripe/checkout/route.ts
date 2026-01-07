@@ -4,6 +4,7 @@ import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { createCheckoutSession, CheckoutProduct } from "@/lib/billing/checkout";
+import { SITE_URL } from "@/lib/site/url";
 
 export const runtime = "nodejs";
 
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
   }
 
   // 4. Create Session
-  const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const origin = request.headers.get("origin") || SITE_URL;
   
   const result = await createCheckoutSession({
     companyId,
