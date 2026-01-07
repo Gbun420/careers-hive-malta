@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
   const mine = searchParams.get("mine") === "true";
   const query = searchParams.get("q");
   const location = searchParams.get("location");
+  const category = searchParams.get("category");
   const salaryMin = searchParams.get("salary_min");
   const verifiedOnly = searchParams.get("verified_only") === "true";
 
@@ -87,6 +88,10 @@ export async function GET(request: NextRequest) {
 
   if (location) {
     dbQuery = dbQuery.ilike("location", `%${location}%`);
+  }
+  
+  if (category) {
+    dbQuery = dbQuery.ilike("industry", `%${category}%`);
   }
   
   if (query) {

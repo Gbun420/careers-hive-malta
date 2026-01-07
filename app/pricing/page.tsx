@@ -1,198 +1,179 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import { Button } from "@/components/ui/button";
-import {
-  getFeaturedDurationDays,
-  getFeaturedPriceLabel,
-  getStripeFeaturedPriceId,
-  isStripeConfigured,
-} from "@/lib/billing/stripe";
+"use client";
+
+import { useEffect, useState } from "react";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Check, Zap, Building2, Briefcase, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { createBrowserClient } from "@/lib/supabase/browser";
 import CheckoutButton from "@/components/billing/CheckoutButton";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+export default function PricingPage() {
+  const [user, setUser] = useState<any>(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const supabase = createBrowserClient();
 
-export const metadata: Metadata = {
-  title: "Pricing | Careers.mt",
-  description:
-    "Flexible pricing for hiring in Malta. Post jobs for free or feature urgent roles.",
-  ...(siteUrl
-    ? {
-        alternates: {
-          canonical: `${siteUrl}/pricing`,
-        },
-      }
-    : {}),
-};
+  useEffect(() => {
+    if (!supabase) {
+      setLoadingAuth(false);
+      return;
+    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoadingAuth(false);
+    });
+  }, [supabase]);
 
-export default async function PricingPage() {
-  const billingConfigured = isStripeConfigured();
-  const featuredDurationDays = getFeaturedDurationDays();
-  const featuredPriceLabel = getFeaturedPriceLabel();
-  const showBillingStatus = process.env.NODE_ENV !== "production";
-  const featuredPriceId = getStripeFeaturedPriceId();
-  const showPlaceholderWarning =
-    showBillingStatus &&
-    typeof featuredPriceId === "string" &&
-    featuredPriceId.includes("placeholder");
-
-  const supabase = createRouteHandlerClient();
-  const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
-  const companyId = user?.id;
-
-  // High-conversion pricing logic: ensure we never show a "0" or empty price
-  const displayPrice = billingConfigured && featuredPriceLabel && featuredPriceLabel !== "0" && featuredPriceLabel !== "€0"
-    ? featuredPriceLabel 
-    : "€49";
+  const plans = [
+    {
+      name: "Starter",
+      price: "Free",
+      description: "Perfect for testing the platform or occasional hiring.",
+      features: [
+        "1 Standard Job Posting",
+        "Basic Applicant Tracker",
+        "Community Support",
+        "Standard Visibility",
+      ],
+      cta: "Get Started",
+      href: "/signup?role=employer",
+      highlight: false,
+    },
+    {
+      name: "Professional",
+      price: "€9.99",
+      period: "/month",
+      description: "Unlimited hiring with priority support and tools.",
+      features: [
+        "Unlimited Job Postings",
+        "Full ATS Integration",
+        "Priority Search Placement",
+        "Applicant Matching (AI)",
+        "Premium Support",
+      ],
+      cta: "Go Professional",
+      product: "PRO_SUB" as const,
+      highlight: true,
+    },
+    {
+      name: "Single Post",
+      price: "€4.99",
+      period: "/post",
+      description: "One-time premium listing for specific urgent roles.",
+      features: [
+        "7 Days Featured Status",
+        "Instant Email Alerts",
+        "Social Media Promotion",
+        "Malta-wide Coverage",
+      ],
+      cta: "Post Now",
+      product: "JOB_POST" as const,
+      highlight: false,
+    },
+  ];
 
   return (
     <PageShell>
-      <div className="flex flex-col gap-10">
-        <header className="space-y-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-            Pricing
-          </p>
-          <SectionHeading 
-            title="Plans for hiring faster in Malta" 
-            subtitle={`Start with a free listing, then boost priority roles to the top of the feed and search results for ${featuredDurationDays} days.`}
-            align="center"
+      <div className="max-w-6xl mx-auto space-y-16">
+        <header className="text-center space-y-4">
+          <Badge variant="verified" className="px-4 py-1 text-xs uppercase font-black tracking-widest">Pricing for Employers</Badge>
+          <SectionHeading
+            title="Accelerate your hiring in Malta"
+            subtitle="Choose the plan that fits your growth. From single urgent roles to scaling your entire team."
           />
-          <p className="text-sm font-medium text-brand">
-            Trusted by verified Maltese brands for high-performance recruitment.
-          </p>
         </header>
 
-        <section className="grid gap-6 lg:grid-cols-3">
-          {/* Free Plan */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm flex flex-col">
-            <h3 className="text-xl font-black text-slate-950">Free Post</h3>
-            <p className="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
-              Publish a job to the public feed with standard visibility.
+        <div className="grid gap-8 md:grid-cols-3">
+          {plans.map((plan) => (
+            <Card
+              key={plan.name}
+              className={`relative flex flex-col rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl ${
+                plan.highlight
+                  ? "border-brand shadow-premium scale-105 z-10"
+                  : "border-slate-100 hover:border-brand/20"
+              }`}
+            >
+              {plan.highlight && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-cta">
+                  Most Popular
+                </div>
+              )}
+              <CardHeader className="p-8 pb-4">
+                <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tightest">
+                  {plan.name}
+                </CardTitle>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-brand">{plan.price}</span>
+                  {plan.period && (
+                    <span className="text-sm font-bold text-slate-400">{plan.period}</span>
+                  )}
+                </div>
+                <p className="mt-4 text-sm font-medium text-slate-500 leading-relaxed italic">
+                  {plan.description}
+                </p>
+              </CardHeader>
+              <CardContent className="p-8 pt-0 flex-1 flex flex-col">
+                <div className="space-y-4 mb-8 flex-1">
+                  {plan.features.map((feature) => (
+                    <div key={feature} className="flex items-start gap-3">
+                      <div className="h-5 w-5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="h-3 w-3 text-emerald-600" />
+                      </div>
+                      <span className="text-sm font-bold text-slate-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {!loadingAuth ? (
+                  plan.product && user ? (
+                    <CheckoutButton 
+                      product={plan.product} 
+                      companyId={user.id}
+                      className="w-full rounded-2xl h-14 font-black uppercase tracking-widest text-xs border-none bg-brand text-white shadow-cta"
+                    >
+                      {plan.cta} <ArrowRight className="h-4 w-4 ml-2" />
+                    </CheckoutButton>
+                  ) : (
+                    <Button
+                      asChild
+                      className={`w-full rounded-2xl h-14 font-black uppercase tracking-widest text-xs border-none ${
+                        plan.highlight
+                          ? "bg-brand text-white shadow-cta"
+                          : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                      }`}
+                    >
+                      <Link href={user ? "/employer/jobs/new" : "/signup?role=employer"} className="gap-2">
+                        {plan.cta}
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )
+                ) : (
+                  <Button disabled className="w-full rounded-2xl h-14 bg-slate-50 text-slate-300">
+                    Checking Access...
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <footer className="bg-slate-50 rounded-[3rem] p-12 text-center border border-slate-100">
+          <div className="max-w-2xl mx-auto space-y-6">
+            <Building2 className="h-12 w-12 text-brand mx-auto opacity-50" />
+            <h3 className="text-2xl font-black text-slate-900 uppercase">Enterprise Solutions</h3>
+            <p className="text-slate-500 font-medium">
+              Hiring more than 50 people per year? Get a custom quote with unlimited featured slots, multi-user accounts, and dedicated account management.
             </p>
-            <ul className="mt-8 space-y-4 text-sm text-slate-600 flex-1">
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Visible on the Malta job feed
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Included in alert matching
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Report + moderation coverage
-              </li>
-            </ul>
-            <Button asChild size="lg" variant="outline" className="mt-8 w-full rounded-2xl border-brand/20 text-brand hover:bg-brand/5" aria-label="Post a job for free">
-              <Link href={companyId ? "/employer/jobs/new" : "/signup?role=employer"}>Post for Free</Link>
+            <Button variant="outline" size="lg" className="rounded-2xl border-brand text-brand font-black uppercase tracking-widest px-10">
+              Contact Sales
             </Button>
           </div>
-
-          {/* Featured Plan */}
-          <div className="rounded-3xl border-2 border-brand bg-brand/5 p-8 shadow-premium flex flex-col relative overflow-hidden scale-105 z-10">
-            <div className="absolute top-0 right-0 bg-brand text-white text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest">
-              Most Popular
-            </div>
-            <h3 className="text-xl font-black text-slate-950">Featured Upgrade</h3>
-            <p className="mt-2 text-sm text-slate-700 font-medium leading-relaxed">
-              Only {displayPrice} per post
-            </p>
-            <ul className="mt-8 space-y-4 text-sm text-slate-700 flex-1">
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Top placement for {featuredDurationDays} days
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Appears first in search results
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Distinctive Featured badge
-              </li>
-              <li className="flex items-start gap-3 font-bold text-brand">
-                <span className="text-emerald-600 font-black">✓</span>
-                Verified trust signal
-              </li>
-            </ul>
-            <div className="mt-8">
-              <Button asChild size="lg" className="w-full rounded-2xl shadow-cta bg-brand text-white border-none" aria-label="Feature a job upgrade">
-                <Link href={companyId ? "/employer/jobs" : "/signup?role=employer"}>Feature a Job</Link>
-              </Button>
-            </div>
-            {showPlaceholderWarning && (
-              <p className="mt-4 text-center text-[10px] text-brand font-black uppercase tracking-widest">
-                Stripe Sandbox Active
-              </p>
-            )}
-          </div>
-
-          {/* Pro Plan */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm flex flex-col">
-            <h3 className="text-xl font-black text-slate-950">Professional</h3>
-            <p className="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
-              Unlimited posting and team-wide hiring tools.
-            </p>
-            <ul className="mt-8 space-y-4 text-sm text-slate-600 flex-1">
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Unlimited job postings
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Advanced ROI analytics
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Team hiring dashboard
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 font-black">✓</span>
-                Priority employer support
-              </li>
-            </ul>
-            {companyId ? (
-              <CheckoutButton
-                companyId={companyId}
-                product="PRO_SUB"
-                size="lg"
-                className="mt-8 w-full rounded-2xl bg-slate-900 text-white hover:bg-slate-800 border-none shadow-cta"
-              >
-                Go Pro
-              </CheckoutButton>
-            ) : (
-              <Button asChild size="lg" className="mt-8 w-full rounded-2xl bg-slate-900 text-white hover:bg-slate-800" variant="outline">
-                <Link href="/signup?role=employer">Join Professional</Link>
-              </Button>
-            )}
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="mt-32 max-w-3xl mx-auto w-full">
-          <SectionHeading title="Frequently Asked Questions" align="center" />
-          <div className="grid gap-4 mt-12">
-            {[
-              { q: "How long does a featured post last?", a: `Featured posts stay at the top of the feed for ${featuredDurationDays} days, after which they revert to standard listings.` },
-              { q: "Do you offer bulk discounts?", a: "Yes, our Professional plan is designed for companies with high-volume hiring needs. Contact us for custom enterprise pricing." },
-              { q: "Is verification mandatory?", a: "Verification is recommended to build trust with candidates, but you can post roles immediately after signing up." },
-              { q: "What is the average time-to-hire?", a: "Most verified employers on Careers.mt fill their roles within 14-21 days." }
-            ].map((faq, i) => (
-              <div key={i} className="rounded-[2rem] border border-slate-200 bg-white p-8">
-                <h4 className="font-black text-slate-950 mb-3 tracking-tight">{faq.q}</h4>
-                <p className="text-sm text-slate-500 font-medium leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-      {showBillingStatus && (
-        <footer className="mt-20 pt-10 border-t border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
-          Engine: production-ready · Billing: {billingConfigured ? "sync" : "pending"} · Last Update: {new Date().toLocaleDateString()}
         </footer>
-      )}
+      </div>
     </PageShell>
   );
 }

@@ -60,6 +60,12 @@ export default function OnboardingWizard({
     setLoading(true);
     setError(null);
 
+    if (!supabase) {
+      setError("Account creation is currently unavailable. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
