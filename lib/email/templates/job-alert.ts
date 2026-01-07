@@ -6,7 +6,7 @@ type JobAlertTemplateProps = {
 };
 
 export function renderJobAlertEmail({ job, baseUrl }: JobAlertTemplateProps) {
-  const jobUrl = `${baseUrl}/jobs/${job.id}`;
+  const jobUrl = `${baseUrl}/job/${job.id}`;
   const manageUrl = `${baseUrl}/jobseeker/alerts`;
 
   return {
@@ -37,7 +37,7 @@ export function renderDigestEmail({ baseUrl, jobs, frequency, unsubscribeUrl }: 
   const items = jobs
     .map(
       (job) =>
-        `<li><a href="${baseUrl}/jobs/${job.id}">${job.title}</a> · ${
+        `<li><a href="${baseUrl}/job/${job.id}">${job.title}</a> · ${
           job.location ?? "Remote/On-site"
         }</li>`
     )

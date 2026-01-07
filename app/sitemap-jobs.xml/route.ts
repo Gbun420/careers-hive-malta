@@ -24,7 +24,7 @@ export async function GET() {
     .map(
       (job) => `
   <url>
-    <loc>${baseUrl}/jobs/${job.id}</loc>
+    <loc>${baseUrl}/job/${job.id}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>`

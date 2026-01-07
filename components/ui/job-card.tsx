@@ -30,7 +30,7 @@ export function JobCard({
 }: JobCardProps) {
   return (
     <Link 
-      href={`/jobs/${id}`}
+      href={`/job/${id}`}
       className={cn(
         "group relative flex flex-col gap-4 rounded-xl border bg-card p-6 transition-all duration-300",
         isFeatured 

@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
   const job = data as Job;
 
   if (job.status === "active") {
-    publishIndexingNotification(`${baseUrl}/jobs/${job.id}`, "URL_UPDATED", job.id);
+    publishIndexingNotification(`${baseUrl}/job/${job.id}`, "URL_UPDATED", job.id);
   }
 
   // Log audit event

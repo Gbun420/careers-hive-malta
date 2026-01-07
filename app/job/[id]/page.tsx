@@ -64,7 +64,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: {
-      canonical: `${SITE_URL}/jobs/${id}`,
+      canonical: `${SITE_URL}/job/${id}`,
     },
   };
 }

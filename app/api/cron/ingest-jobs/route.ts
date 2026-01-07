@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
                   .eq("id", existingJob.id);
                 if (!updateError) {
                   updated++;
-                  publishIndexingNotification(`${baseUrl}/jobs/${existingJob.id}`, "URL_UPDATED", existingJob.id);
+                  publishIndexingNotification(`${baseUrl}/job/${existingJob.id}`, "URL_UPDATED", existingJob.id);
                 }
               } else {
                 skipped++;
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
                 .single();
               if (!insertError && newJob) {
                 inserted++;
-                publishIndexingNotification(`${baseUrl}/jobs/${newJob.id}`, "URL_UPDATED", newJob.id);
+                publishIndexingNotification(`${baseUrl}/job/${newJob.id}`, "URL_UPDATED", newJob.id);
               }
             }
           }

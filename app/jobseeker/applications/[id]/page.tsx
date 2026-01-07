@@ -296,7 +296,7 @@ export default function JobseekerApplicationDetailPage({ params }: { params: Pro
                 </div>
 
                 <Button asChild variant="outline" className="w-full mt-8 rounded-xl border-slate-200 font-bold gap-2">
-                  <Link href={`/jobs/${app.job.id}`}>
+                  <Link href={`/job/${app.job.id}`}>
                     View Original Post
                     <ExternalLink className="h-3.5 w-3.5" />
                   </Link>
