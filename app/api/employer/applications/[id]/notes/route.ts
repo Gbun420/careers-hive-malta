@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
+import { z } from "zod";
 
 export const runtime = "nodejs";
+
+const NoteSchema = z.object({
+  body: z.string().min(2).max(2000),
+  pinned: z.boolean().optional(),
+});
 
 export async function GET(
   request: NextRequest,
@@ -17,8 +23,12 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("application_notes")
-    .select("*")
+    .select(`
+      *,
+      author:profiles!author_user_id(full_name)
+    `)
     .eq("application_id", id)
+    .order("pinned", { ascending: false })
     .order("created_at", { ascending: false });
 
   if (error) return jsonError("DB_ERROR", error.message, 500);
@@ -38,17 +48,22 @@ export async function POST(
   if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
 
   try {
-    const { body } = await request.json();
-    if (!body) return jsonError("INVALID_INPUT", "Note content required", 400);
+    const payload = await request.json();
+    const parsed = NoteSchema.safeParse(payload);
+    if (!parsed.success) return jsonError("INVALID_INPUT", parsed.error.errors[0].message, 400);
 
     const { data, error } = await supabase
       .from("application_notes")
       .insert({
         application_id: id,
         author_user_id: user.id,
-        body
+        body: parsed.data.body,
+        pinned: parsed.data.pinned || false,
       })
-      .select()
+      .select(`
+        *,
+        author:profiles!author_user_id(full_name)
+      `)
       .single();
 
     if (error) return jsonError("DB_ERROR", error.message, 500);

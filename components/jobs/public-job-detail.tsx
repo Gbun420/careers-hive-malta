@@ -8,7 +8,7 @@ import ReportJobDialog from "@/components/jobs/report-job-dialog";
 import { formatSalary } from "@/lib/jobs/format";
 import { Badge } from "@/components/ui/badge";
 import ApplyButton from "./apply-button";
-import { MapPin, Euro, Calendar, Share2 } from "lucide-react";
+import { MapPin, Euro, Calendar, Share2, ExternalLink } from "lucide-react";
 
 type ApiError = {
   error?: {
@@ -129,7 +129,23 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
           </div>
 
           <div className="flex flex-col gap-4 sm:w-full lg:w-auto">
-            <ApplyButton jobId={job.id} jobTitle={job.title} />
+            {job.is_aggregated && job.apply_url ? (
+              <Button asChild size="lg" className="rounded-xl px-10 bg-brand text-white border-none shadow-cta h-12 gap-2">
+                <a href={job.apply_url} target="_blank" rel="noopener noreferrer">
+                  Apply on company site
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+            ) : (
+              <ApplyButton jobId={job.id} jobTitle={job.title} />
+            )}
+            
+            {job.is_aggregated && (
+              <p className="text-[10px] text-slate-400 font-medium italic text-center">
+                This role is listed from an external source.
+              </p>
+            )}
+
             <div className="flex items-center justify-between gap-4 pt-4 border-t border-border">
               <ReportJobDialog jobId={job.id} />
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground gap-2">

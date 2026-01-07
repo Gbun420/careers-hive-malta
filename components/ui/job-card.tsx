@@ -12,6 +12,7 @@ type JobCardProps = {
   createdAt: string;
   isFeatured?: boolean;
   isVerified?: boolean;
+  isAggregated?: boolean;
   matchScore?: number;
 };
 
@@ -24,6 +25,7 @@ export function JobCard({
   createdAt,
   isFeatured,
   isVerified,
+  isAggregated,
   matchScore
 }: JobCardProps) {
   return (
@@ -47,6 +49,11 @@ export function JobCard({
             {isVerified && (
               <Badge variant="verified">
                 Verified
+              </Badge>
+            )}
+            {isAggregated && (
+              <Badge variant="default" className="bg-slate-100 text-slate-500 border-none">
+                Aggregated
               </Badge>
             )}
             {matchScore && matchScore >= 50 && (

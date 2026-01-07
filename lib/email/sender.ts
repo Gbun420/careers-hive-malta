@@ -28,7 +28,7 @@ export function isEmailConfigured() {
   return Boolean(resendApiKey);
 }
 
-async function sendEmail(to: string, subject: string, html: string): Promise<EmailSendResult> {
+export async function sendEmail(to: string, subject: string, html: string): Promise<EmailSendResult> {
   if (!resendApiKey) {
     return {
       ok: false,

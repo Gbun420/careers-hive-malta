@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { NativeSelect as Select } from "@/components/ui/select";
 import { siteConfig } from "@/lib/site-config";
 import { trackEvent } from "@/lib/analytics";
 import { Check, ChevronRight, Sparkles, Bell, ShieldCheck } from "lucide-react";
@@ -180,14 +181,13 @@ export default function OnboardingWizard({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">Preferred Location</Label>
-                <select 
+                <Select 
                   id="location" 
                   value={location} 
                   onChange={e => setLocation(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium text-foreground focus:border-brand focus:outline-none transition-all appearance-none"
                 >
                   {siteConfig.locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
-                </select>
+                </Select>
               </div>
             </div>
             <Button onClick={handleStep2} disabled={loading || !fullName} className="w-full bg-brand hover:opacity-90 text-white rounded-2xl h-14 font-black border-none">

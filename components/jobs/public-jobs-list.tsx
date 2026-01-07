@@ -227,6 +227,7 @@ export default function PublicJobsList({ initialData = [], initialMeta }: Public
                 createdAt={job.created_at}
                 isFeatured={job.is_featured}
                 isVerified={job.employer_verified}
+                isAggregated={job.is_aggregated}
               />
             ))}
           </div>

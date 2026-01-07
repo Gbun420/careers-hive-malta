@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import { NativeSelect as Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Trash2, Brain, Sparkles, ShieldCheck, Loader2 } from "lucide-react";
 

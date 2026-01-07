@@ -19,6 +19,8 @@ export const JobSchema = z.object({
   employer_verified: z.boolean().optional(),
   featured_until: z.string().nullable().optional(),
   is_featured: z.boolean().optional(),
+  is_aggregated: z.boolean().optional(),
+  apply_url: z.string().nullable().optional(),
   application_count: z.number().optional(),
   status: z.enum(["draft", "active", "closed", "filled"]).default("draft"),
 });
