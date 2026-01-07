@@ -1,44 +1,36 @@
-import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth/admin-guard";
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
-import { createServiceRoleClient } from "@/lib/supabase/server";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const status = searchParams.get("status");
 
-  const auth = await requireAdmin();
-  if (!auth.supabase || !auth.user) {
-    return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase } = adminAuth;
+
+  try {
+    let query = supabase
+      .from("job_reports")
+      .select(`
+        *,
+        job:jobs (id, title, employer:profiles (id, full_name, headline))
+      `)
+      .order("created_at", { ascending: false });
+
+    if (status) {
+      query = query.eq("status", status.toLowerCase());
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    return NextResponse.json({ data });
+  } catch (err: any) {
+    return jsonError("DB_ERROR", err.message, 500);
   }
-
-  const { data, error } = await auth.supabase
-    .from("job_reports")
-    .select(
-      "id, job_id, reporter_id, status, reason, details, resolution_notes, created_at, reviewed_at, reviewer_id"
-    )
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    return jsonError("DB_ERROR", error.message, 500);
-  }
-
-  let enriched = data ?? [];
-  const service = createServiceRoleClient();
-  if (service && enriched.length > 0) {
-    const jobIds = Array.from(new Set(enriched.map((row) => row.job_id)));
-    const { data: jobs } = await service
-      .from("jobs")
-      .select("id, title")
-      .in("id", jobIds);
-
-    const jobMap = new Map((jobs ?? []).map((job) => [job.id, job.title]));
-    enriched = enriched.map((row) => ({
-      ...row,
-      job_title: jobMap.get(row.job_id) ?? null,
-    }));
-  }
-
-  return NextResponse.json({ data: enriched });
 }

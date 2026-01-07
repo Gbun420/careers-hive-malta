@@ -1,23 +1,25 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth/admin-guard";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
-import { ReportUpdateSchema } from "@/lib/trust/schema";
 import { logAudit } from "@/lib/audit/log";
-
+import { z } from "zod";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type RouteParams = {
-  params: Promise<{ id: string }>;
-};
+const ReportActionSchema = z.object({
+  action: z.enum(["RESOLVE", "DISMISS", "TAKEDOWN"]),
+  notes: z.string().optional(),
+});
 
-export async function PATCH(request: Request, { params }: RouteParams) {
+export async function PATCH(
+  request: Request, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
-  const auth = await requireAdmin();
-  if (!auth.supabase || !auth.user) {
-    return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase, user: adminUser } = adminAuth;
 
   let payload: unknown;
   try {
@@ -26,39 +28,56 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
   }
 
-  const parsed = ReportUpdateSchema.safeParse(payload);
+  const parsed = ReportActionSchema.safeParse(payload);
   if (!parsed.success) {
     return jsonError("BAD_REQUEST", parsed.error.errors[0]?.message, 400);
   }
 
-  const { data, error } = await auth.supabase
+  const { action, notes } = parsed.data;
+
+  // 1. Get the report to find the job_id
+  const { data: report, error: fetchError } = await supabase
     .from("job_reports")
-    .update({
-      status: parsed.data.status,
-      resolution_notes: parsed.data.resolution_notes ?? null,
-      reviewed_at: new Date().toISOString(),
-      reviewer_id: auth.user.id,
-    })
+    .select("job_id")
     .eq("id", id)
-    .select(
-      "id, job_id, reporter_id, status, reason, details, resolution_notes, created_at, reviewed_at, reviewer_id"
-    )
     .single();
 
-  if (error || !data) {
-    return jsonError("NOT_FOUND", "Report not found.", 404);
+  if (fetchError || !report) return jsonError("NOT_FOUND", "Report not found", 404);
+
+  const status = action === "DISMISS" ? "dismissed" : "resolved";
+
+  // 2. Update the report
+  const { data, error } = await supabase
+    .from("job_reports")
+    .update({
+      status,
+      resolution_notes: notes,
+      reviewed_at: new Date().toISOString(),
+      reviewer_id: adminUser.id,
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) return jsonError("DB_ERROR", error.message, 500);
+
+  // 3. If action is TAKEDOWN, unpublish the job
+  if (action === "TAKEDOWN") {
+    const { error: jobError } = await supabase
+      .from("jobs")
+      .update({ is_active: false })
+      .eq("id", report.job_id);
+    
+    if (jobError) return jsonError("DB_ERROR", `Failed to takedown job: ${jobError.message}`, 500);
   }
 
   await logAudit({
-    actorId: auth.user.id,
-    action: `report_${data.status}`,
+    actorId: adminUser.id,
+    actorEmail: adminUser.email || "",
+    action: `job_report_${action.toLowerCase()}`,
     entityType: "job_report",
-    entityId: data.id,
-    meta: {
-      job_id: data.job_id,
-      status: data.status,
-      resolution_notes: data.resolution_notes,
-    },
+    entityId: id,
+    metadata: { notes, action, job_id: report.job_id },
   });
 
   return NextResponse.json({ data });

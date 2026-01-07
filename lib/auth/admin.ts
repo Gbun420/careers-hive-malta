@@ -6,20 +6,36 @@ const adminAllowlist = rawAllowlist
   .map((value) => value.trim().toLowerCase())
   .filter(Boolean);
 
+/**
+ * Checks if an email is eligible to sign up as an admin.
+ * Requires ALLOW_ADMIN_SIGNUP=true and the email to be in the ADMIN_ALLOWLIST.
+ */
+export function canSignupAsAdmin(email: string): boolean {
+  return allowAdminSignup && adminAllowlist.includes(email.toLowerCase());
+}
+
+/**
+ * Checks if an email is allowed to access admin features.
+ * Only requires the email to be in the ADMIN_ALLOWLIST.
+ */
+export function canAccessAdmin(email: string): boolean {
+  return adminAllowlist.includes(email.toLowerCase());
+}
+
+/** @deprecated Use canSignupAsAdmin or canAccessAdmin */
 export function isAdminSignupEnabled(): boolean {
   return allowAdminSignup;
 }
 
+/** @deprecated Use canAccessAdmin */
 export function getAdminAllowlist(): string[] {
   return adminAllowlist;
 }
 
+/** @deprecated Use canAccessAdmin */
 export function isAdminAllowedEmail(email?: string | null): boolean {
-  if (!allowAdminSignup) {
-    return false;
-  }
   if (!email) {
     return false;
   }
-  return adminAllowlist.includes(email.toLowerCase());
+  return canAccessAdmin(email);
 }

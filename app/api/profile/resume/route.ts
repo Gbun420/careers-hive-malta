@@ -38,10 +38,11 @@ export async function POST(request: Request) {
   // Log the parsing event
   await logAudit({
     actorId: authData.user.id,
+    actorEmail: authData.user.email || "",
     action: "resume_parsed",
     entityType: "resume",
     entityId: authData.user.id, // Using user_id as a proxy for the resume entity for now
-    meta: {
+    metadata: {
       skills_count: parsedData.skills.length,
       has_experience: !!parsedData.experienceYears,
     },
