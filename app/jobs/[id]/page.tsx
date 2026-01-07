@@ -245,19 +245,12 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
                 
 
                 <div className="grid gap-10 lg:grid-cols-[1fr_350px] items-start">
-
                   <PublicJobDetail id={id} />
-
                   {isJobseeker && (
-
                     <div className="lg:sticky lg:top-24">
-
                       <SecondMePanel jobId={id} isEnabled={secondMeEnabled} />
-
                     </div>
-
                   )}
-
                 </div>
 
               </div>
