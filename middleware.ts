@@ -34,6 +34,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Normalize the legacy /Careers.mt path (case-insensitive) to home
+  if (pathname.toLowerCase() === "/careers.mt") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url, 308);
+  }
+
   const missing = getMissingSupabaseEnv();
   
   // Block setup in production if configured

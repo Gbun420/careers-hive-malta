@@ -15,6 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
+import { SafeExternalLink } from "@/components/common/SafeExternalLink";
 
 type PendingEmployer = {
   id: string;
@@ -152,12 +153,12 @@ export default function AdminVerificationsList() {
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
                   <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Quick Links</p>
                   <div className="flex flex-col gap-1">
-                    <a href={`https://www.google.com/search?q=${encodeURIComponent(employer.full_name + ' Malta')}`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-slate-600 hover:text-brand flex items-center gap-1">
+                    <SafeExternalLink href={`https://www.google.com/search?q=${encodeURIComponent(employer.full_name + ' Malta')}`} className="text-[10px] font-bold text-slate-600 hover:text-brand flex items-center gap-1">
                       Search Google <ExternalLink className="h-2 w-2" />
-                    </a>
-                    <a href={`https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(employer.full_name)}`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-slate-600 hover:text-brand flex items-center gap-1">
+                    </SafeExternalLink>
+                    <SafeExternalLink href={`https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(employer.full_name)}`} className="text-[10px] font-bold text-slate-600 hover:text-brand flex items-center gap-1">
                       Search LinkedIn <ExternalLink className="h-2 w-2" />
-                    </a>
+                    </SafeExternalLink>
                   </div>
                 </div>
               </div>
