@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { createStripeClient, getStripeWebhookSecret } from "@/lib/billing/stripe";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import Stripe from "stripe";
+import { publishIndexingNotification } from "@/lib/google/indexing";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
   if (!stripe || !signature || !webhookSecret) {
     return new Response("Webhook configuration missing", { status: 500 });
   }
+
+  const baseUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
 
   let event: Stripe.Event;
 
@@ -112,6 +115,7 @@ export async function POST(request: Request) {
             // Also auto-activate the job if jobId provided
             if (jobId) {
               await supabase.from("jobs").update({ is_active: true, status: "active" }).eq("id", jobId);
+              publishIndexingNotification(`${baseUrl}/jobs/${jobId}`, "URL_UPDATED", jobId);
             }
           } else if (product === "FEATURED_ADDON") {
             const featuredUntil = new Date();

@@ -11,9 +11,12 @@ import { matchJobToSearch } from "@/lib/alerts/match";
 import { SavedSearchCriteria } from "@/lib/alerts/criteria";
 import { logAudit } from "@/lib/audit/log";
 import { getCompanyEntitlements } from "@/lib/billing/entitlements";
+import { publishIndexingNotification } from "@/lib/google/indexing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const baseUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
 
 export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient();
@@ -261,6 +264,10 @@ export async function POST(request: NextRequest) {
   }
 
   const job = data as Job;
+
+  if (job.status === "active") {
+    publishIndexingNotification(`${baseUrl}/jobs/${job.id}`, "URL_UPDATED", job.id);
+  }
 
   // Log audit event
   try {

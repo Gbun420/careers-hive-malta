@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { XMLParser } from "fast-xml-parser";
 import { createHash } from "crypto";
+import { publishIndexingNotification } from "@/lib/google/indexing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,6 +17,8 @@ export async function POST(request: NextRequest) {
   if (!supabase) {
     return new Response("Supabase not configured", { status: 500 });
   }
+
+  const baseUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
 
   // 1. Fetch enabled sources
   const { data: sources, error: sourcesError } = await supabase
@@ -108,18 +111,26 @@ export async function POST(request: NextRequest) {
                 .from("jobs")
                 .update(jobPayload)
                 .eq("id", existingJob.id);
-              if (!updateError) updated++;
+              if (!updateError) {
+                updated++;
+                publishIndexingNotification(`${baseUrl}/jobs/${existingJob.id}`, "URL_UPDATED", existingJob.id);
+              }
             } else {
               skipped++;
             }
           } else {
-            const { error: insertError } = await supabase
+            const { data: newJob, error: insertError } = await supabase
               .from("jobs")
               .insert({
                 ...jobPayload,
                 created_at: new Date().toISOString(),
-              });
-            if (!insertError) inserted++;
+              })
+              .select("id")
+              .single();
+            if (!insertError && newJob) {
+              inserted++;
+              publishIndexingNotification(`${baseUrl}/jobs/${newJob.id}`, "URL_UPDATED", newJob.id);
+            }
           }
         }
       }

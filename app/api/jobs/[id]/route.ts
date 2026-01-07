@@ -7,10 +7,13 @@ import { removeJobs, upsertJobs } from "@/lib/search/meili";
 import type { Job } from "@/lib/jobs/schema";
 import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
+import { publishIndexingNotification } from "@/lib/google/indexing";
 
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const baseUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -122,6 +125,12 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   const [withFeatured] = await attachFeaturedStatus([data as Job]);
   const [enriched] = await attachEmployerVerified([withFeatured ?? data]);
 
+  if (data.is_active) {
+    publishIndexingNotification(`${baseUrl}/jobs/${id}`, "URL_UPDATED", id);
+  } else {
+    publishIndexingNotification(`${baseUrl}/jobs/${id}`, "URL_DELETED", id);
+  }
+
   try {
     await upsertJobs([(enriched ?? withFeatured ?? data) as Job]);
   } catch (indexError) {
@@ -159,6 +168,8 @@ export async function DELETE(_: Request, { params }: RouteParams) {
   if (error || !data) {
     return jsonError("NOT_FOUND", "Job not found.", 404);
   }
+
+  publishIndexingNotification(`${baseUrl}/jobs/${id}`, "URL_DELETED", id);
 
   try {
     await removeJobs([id]);

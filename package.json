@@ -24,6 +24,7 @@
     "@vercel/analytics": "^1.6.1",
     "date-fns": "^4.1.0",
     "fast-xml-parser": "^5.3.3",
+    "google-auth-library": "^10.5.0",
     "lucide-react": "^0.562.0",
     "meilisearch": "^0.54.0",
     "next": "^15.5.9",
