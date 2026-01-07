@@ -11,12 +11,12 @@ echo "🚀 Starting Admin Portal Smoke Test against: $BASE_URL"
 
 # Get the final HTTP status code after following all redirects
 final_code() {
-  curl -sS -o /dev/null -w "% {http_code}" -L "$1"
+  curl -sS -o /dev/null -w "%{http_code}" -L "$1"
 }
 
 # Get the first HTTP status code without following redirects
 first_code() {
-  curl -sS -o /dev/null -w "% {http_code}" -I "$1"
+  curl -sS -o /dev/null -w "%{http_code}" -I "$1"
 }
 
 # Get the value of the 'Location' header from the first response
@@ -32,8 +32,8 @@ show_chain() {
 # --- 1. Uptime Check (/api/health) ---
 echo "--- Checking /api/health ---"
 status=$(final_code "$BASE_URL/api/health")
-body=$(curl -s "$BASE_URL/api/health")
-if [ "$status" == "200" ] && [[ "$body" == *"ok":true* ]]; then
+body=$(curl -sL "$BASE_URL/api/health")
+if [ "$status" == "200" ] && [[ "$body" == *"ok\":true"* ]]; then
   echo "✅ /api/health: 200 (OK: true)"
 else
   echo "❌ /api/health: $status (FAILED - Body: $body)"
@@ -93,6 +93,19 @@ if [[ "$status" =~ ^3[0-9]{2}$ ]]; then
   echo "✅ /admin/dashboard: $status -> $loc (Redirected as expected)"
 else
   echo "❌ /admin/dashboard: $status (FAILED - expected 3xx redirect)"
+fi
+
+# --- 5. Cron Kill Switch Check (Anonymous) ---
+echo "--- Checking Cron Kill Switch (Anonymous) ---"
+# If CRON_ENABLED is not "true" in prod, this returns 204.
+# Use POST as handlers require it.
+status=$(curl -sS -o /dev/null -w "%{http_code}" -L -X POST "$BASE_URL/api/cron/ingest-jobs")
+if [ "$status" == "204" ]; then
+  echo "✅ /api/cron/ingest-jobs: 204 (Cron disabled as expected)"
+elif [ "$status" == "401" ]; then
+  echo "✅ /api/cron/ingest-jobs: 401 (Unauthorized, but cron is likely ENABLED)"
+else
+  echo "❌ /api/cron/ingest-jobs: $status (FAILED - expected 204 or 401)"
 fi
 
 echo "🏁 Smoke test complete."
