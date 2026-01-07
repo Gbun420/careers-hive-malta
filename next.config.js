@@ -13,6 +13,8 @@ const nextConfig = {
     return [
       { source: "/Careers.mt", destination: "/", permanent: true },
       { source: "/careers.mt", destination: "/", permanent: true },
+      { source: "/Careers.mt/", destination: "/", permanent: true },
+      { source: "/careers.mt/", destination: "/", permanent: true },
     ];
   },
   async headers() {

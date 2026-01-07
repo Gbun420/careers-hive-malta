@@ -12,6 +12,14 @@ const TARGET_BLANK_REGEX = /target\s*=\s*['"{]_blank['"}]/g;
 // Matches: href={... ?? ""} or href={... || ""} or href={... ?? ''}
 const RISKY_HREF_REGEX = /href\s*=\s*\{[^}]*(\?\?|||)\s*['"]['"]\s*\}/g;
 
+// 3. Forbidden direct window.open usage
+// Matches: window.open(
+const WINDOW_OPEN_REGEX = /window\.open\s*\(/g;
+
+// 4. Forbidden optional chaining in href (potential undefined)
+// Matches: href={...?.}
+const OPTIONAL_CHAIN_HREF_REGEX = /href\s*=\s*\{[^}]*\?\.[^}]*\}/g;
+
 let hasError = false;
 
 function scanDirectory(dir) {
@@ -52,6 +60,26 @@ function checkFile(filePath, fileName) {
       console.error(`❌ Risky href fallback (empty string) found in: ${filePath}:${index + 1}`);
       console.error(`   Line: ${line.trim()}`);
       console.error(`   -> Use null/undefined fallback or conditional rendering.`);
+      hasError = true;
+    }
+
+    // Rule 3: No direct window.open (unless guarded - hard to check regex, so forbid all except specific files if needed)
+    // We allow it in this script itself if it were client side, but this is node.
+    // We'll forbid it generally.
+    if (WINDOW_OPEN_REGEX.test(line)) {
+       console.error(`❌ Direct window.open usage found in: ${filePath}:${index + 1}`);
+       console.error(`   Line: ${line.trim()}`);
+       console.error(`   -> Ensure it is guarded against empty/null URLs.`);
+       // We mark error, but maybe we should allow it if it looks guarded?
+       // For now, strict.
+       hasError = true;
+    }
+
+    // Rule 4: No optional chaining in href
+    if (OPTIONAL_CHAIN_HREF_REGEX.test(line)) {
+      console.error(`❌ Optional chaining in href found in: ${filePath}:${index + 1}`);
+      console.error(`   Line: ${line.trim()}`);
+      console.error(`   -> This can result in undefined href. Handle null/undefined explicitly.`);
       hasError = true;
     }
   });
