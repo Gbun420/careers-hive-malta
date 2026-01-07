@@ -2,21 +2,14 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // --- Lightweight Helpers (No Supabase Imports) ---
 
+const ASSET_EXT = /\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|css|js|map|woff2?|ttf|eot)$/i;
+
 function getMissingSupabaseEnv(): string[] {
   const requiredEnv = [
     "NEXT_PUBLIC_SUPABASE_URL",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   ];
   return requiredEnv.filter((key) => !process.env[key]);
-}
-
-function isStaticAsset(pathname: string): boolean {
-  return (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon") ||
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml"
-  );
 }
 
 function getRoleFromPath(pathname: string): string | null {
@@ -28,13 +21,21 @@ function getRoleFromPath(pathname: string): string | null {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const lowerPath = pathname.toLowerCase();
 
-  // 1. Absolute early return for APIs and Assets
-  if (pathname.startsWith("/api") || isStaticAsset(pathname)) {
+  // 1. Legacy path normalization FIRST (handles dot-paths like /Careers.mt)
+  if (lowerPath === "/careers.mt" || lowerPath === "/careers.mt/") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url, 308);
+  }
+
+  // 2. Absolute early return for APIs and real static assets
+  if (pathname.startsWith("/api") || pathname.startsWith("/_next") || ASSET_EXT.test(pathname)) {
     return NextResponse.next();
   }
 
-  // 2. Production Canonical Host Redirect
+  // 3. Production Canonical Host Redirect
   if (process.env.VERCEL_ENV === "production") {
     let siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     // Handle empty string or missing protocol
@@ -58,14 +59,6 @@ export async function middleware(request: NextRequest) {
       // If URL parsing fails, skip redirect to prevent 500 error
       console.error("Failed to parse canonical URL:", siteUrl);
     }
-  }
-
-  // Normalize the legacy /Careers.mt path (case-insensitive) to home
-  const lowerPath = pathname.toLowerCase();
-  if (lowerPath === "/careers.mt" || lowerPath === "/careers.mt/") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url, 308);
   }
 
   const missing = getMissingSupabaseEnv();
@@ -115,5 +108,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)"],
+  matcher: [
+    "/Careers.mt",
+    "/careers.mt",
+    "/((?!api/|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)",
+  ],
 };
