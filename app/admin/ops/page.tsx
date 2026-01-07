@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import AdminSignOutButton from "@/components/admin/sign-out-button";
 import OpsChecklist from "@/components/admin/ops-checklist";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminOpsPage() {
   await requireAdminPage();
 

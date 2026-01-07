@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { PageShell } from "@/components/ui/page-shell";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminReportsPage() {
   await requireAdminPage();
 
