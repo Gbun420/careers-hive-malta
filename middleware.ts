@@ -34,6 +34,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // 2. Production Canonical Host Redirect
+  if (process.env.VERCEL_ENV === "production") {
+    const canonicalUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://careers-hive-malta-prod.vercel.app");
+    const canonicalHost = canonicalUrl.host;
+    const requestHost = request.headers.get("host");
+
+    if (requestHost && requestHost !== canonicalHost) {
+      const url = request.nextUrl.clone();
+      url.protocol = "https:";
+      url.host = canonicalHost;
+      url.port = ""; // Ensure standard port
+      return NextResponse.redirect(url, 308);
+    }
+  }
+
   // Normalize the legacy /Careers.mt path (case-insensitive) to home
   if (pathname.toLowerCase() === "/careers.mt") {
     const url = request.nextUrl.clone();
