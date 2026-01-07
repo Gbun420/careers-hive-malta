@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     title: `${BRAND_NAME} - Malta Job Board`,
     description: "Find verified jobs in Malta with instant alerts",
   },
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
