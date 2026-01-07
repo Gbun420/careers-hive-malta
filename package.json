@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "validate:links": "node scripts/validate-no-about-blank.js",
+    "validate:links": "node scripts/validate-links.js",
     "review": "npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
