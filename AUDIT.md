@@ -1,7 +1,7 @@
-# Audit Report: Careers Hive Malta - Production Launch
+# Audit Report: Careers.mt - Production Launch
 
 ## Overview
-This audit confirms the technical and operational readiness of the **Careers Hive Malta** application for production deployment.
+This audit confirms the technical and operational readiness of the **Careers.mt** application for production deployment.
 
 ## Deployment Status
 - **Environment**: Vercel Production

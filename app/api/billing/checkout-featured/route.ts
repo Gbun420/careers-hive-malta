@@ -9,7 +9,7 @@ import {
 import { createFeaturedCheckoutSession } from "@/lib/billing/checkout";
 import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const BodySchema = z.object({
   job_id: z.string().min(1, "Job is required."),

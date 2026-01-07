@@ -4,7 +4,7 @@ import { jsonError } from "@/lib/api/errors";
 import { getUserRole } from "@/lib/auth/roles";
 import { SavedSearchCreateSchema } from "@/lib/alerts/criteria";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
@@ -24,21 +24,33 @@ export async function GET() {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "jobseeker") {
-    return jsonError("FORBIDDEN", "Jobseeker access required.", 403);
+  if (role !== "jobseeker" && role !== "admin") {
+    return jsonError("FORBIDDEN", "Jobseeker or Admin access required.", 403);
   }
 
+  // Reading from job_alerts table (JBoard parity)
   const { data, error } = await supabase
-    .from("saved_searches")
-    .select("id, created_at, frequency, search_criteria")
-    .eq("jobseeker_id", authData.user.id)
+    .from("job_alerts")
+    .select("id, created_at, frequency, filters, query")
+    .eq("user_id", authData.user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  return NextResponse.json({ data });
+  // Map back to expected UI format
+  const mappedData = data?.map((alert) => ({
+    id: alert.id,
+    created_at: alert.created_at,
+    frequency: alert.frequency.toLowerCase(),
+    search_criteria: {
+      keywords: alert.query,
+      ...alert.filters,
+    },
+  }));
+
+  return NextResponse.json({ data: mappedData });
 }
 
 export async function POST(request: Request) {
@@ -57,8 +69,8 @@ export async function POST(request: Request) {
   }
 
   const role = getUserRole(authData.user);
-  if (role !== "jobseeker") {
-    return jsonError("FORBIDDEN", "Jobseeker access required.", 403);
+  if (role !== "jobseeker" && role !== "admin") {
+    return jsonError("FORBIDDEN", "Jobseeker or Admin access required.", 403);
   }
 
   let payload: unknown;
@@ -73,19 +85,40 @@ export async function POST(request: Request) {
     return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
   }
 
+  // Map to job_alerts
+  const query = parsed.data.search_criteria.keywords;
+  const { keywords, ...filters } = parsed.data.search_criteria; // Extract keywords to store separately
+  
+  // Map frequency: UI supports instant, daily, weekly. DB supports DAILY, WEEKLY.
+  // We'll treat 'instant' as 'DAILY' for the cron job, or maybe we need 'INSTANT' support later.
+  // For JBoard parity (Digest), Daily is standard.
+  const frequency = parsed.data.frequency === "weekly" ? "WEEKLY" : "DAILY";
+
   const { data, error } = await supabase
-    .from("saved_searches")
+    .from("job_alerts")
     .insert({
-      jobseeker_id: authData.user.id,
-      frequency: parsed.data.frequency,
-      search_criteria: parsed.data.search_criteria,
+      user_id: authData.user.id,
+      query: query || null,
+      filters: filters,
+      frequency: frequency,
     })
-    .select("id, created_at, frequency, search_criteria")
+    .select("id, created_at, frequency, filters, query")
     .single();
 
   if (error) {
     return jsonError("DB_ERROR", error.message, 500);
   }
 
-  return NextResponse.json({ data }, { status: 201 });
+  // Map back for response
+  const mappedData = {
+    id: data.id,
+    created_at: data.created_at,
+    frequency: data.frequency.toLowerCase(),
+    search_criteria: {
+      keywords: data.query,
+      ...data.filters,
+    },
+  };
+
+  return NextResponse.json({ data: mappedData }, { status: 201 });
 }

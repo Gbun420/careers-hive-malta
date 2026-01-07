@@ -1,4 +1,4 @@
-# Careers Hive Malta - Production Audit Report
+# Careers.mt - Production Audit Report
 **Audit Date**: 2026-01-04
 **Git Commit**: 389b851
 **Audit Type**: Pre-Deployment Heavy Audit

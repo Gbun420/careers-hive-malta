@@ -1,55 +1,64 @@
-import { Bell, Flag, ShieldCheck, Search } from "lucide-react";
+import { ShieldCheck, Zap, TrendingUp, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { BRAND_NAME } from "@/lib/brand";
 
-type TrustStripProps = {
-  showSearch: boolean;
-};
-
-export default function TrustStrip({ showSearch }: TrustStripProps) {
+export default function TrustStrip() {
   const items = [
     {
       label: "Verified employers",
-      detail: "Requests reviewed by the team.",
+      detail: "Every company manually checked for Malta compliance.",
       icon: ShieldCheck,
+      color: "text-brand",
+      bg: "bg-brand/5"
     },
     {
-      label: "Report suspicious jobs",
-      detail: "Built-in moderation pipeline.",
-      icon: Flag,
+      label: "Fast alerts",
+      detail: "Real-time notifications delivered to your device instantly.",
+      icon: Zap,
+      color: "text-brand",
+      bg: "bg-brand/5"
     },
     {
-      label: "Instant / daily / weekly alerts",
-      detail: "Control frequency and noise.",
-      icon: Bell,
+      label: "Fresh roles",
+      detail: "Daily updates ensuring you only see active opportunities.",
+      icon: TrendingUp,
+      color: "text-brand",
+      bg: "bg-brand/5"
+    },
+    {
+      label: "Malta-first focus",
+      detail: "The only high-performance board dedicated to the islands.",
+      icon: MapPin,
+      color: "text-brand",
+      bg: "bg-brand/5"
     },
   ];
 
-  if (showSearch) {
-    items.push({
-      label: "Powered by fast search",
-      detail: "Meilisearch-backed results.",
-      icon: Search,
-    });
-  }
-
   return (
-    <section className="border-y border-slate-200 bg-white/70">
-      <div className="mx-auto grid w-full max-w-6xl gap-4 px-6 py-6 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item) => (
-          <div
-            key={item.label}
-            className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3"
-          >
-            <span className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-teal-50 text-teal-700">
-              <item.icon className="h-4 w-4" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-slate-900">
-                {item.label}
-              </p>
-              <p className="text-xs text-slate-600">{item.detail}</p>
+    <section className="bg-background py-14 md:py-20 border-t border-border">
+      <div className="mx-auto max-w-7xl px-6">
+        <h2 className="text-xl font-bold text-center text-foreground mb-12 tracking-tight">
+          Why Professionals Choose {BRAND_NAME}
+        </h2>
+        
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map((item) => (
+            <div
+              key={item.label}
+              className="group flex flex-col items-center text-center p-8 rounded-2xl bg-muted/30 border border-border transition-all duration-300 hover:border-brand hover:bg-card hover:shadow-lg hover:-translate-y-1"
+            >
+              <div className={cn(
+                "mb-6 flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 shadow-sm",
+                item.bg,
+                item.color
+              )}>
+                <item.icon className="h-8 w-8" />
+              </div>
+              <h3 className="text-base font-bold text-foreground mb-3 leading-tight">{item.label}</h3>
+              <p className="text-xs font-medium text-muted-foreground leading-relaxed">{item.detail}</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

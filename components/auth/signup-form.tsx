@@ -11,6 +11,7 @@ import {
   roles,
   type UserRole,
 } from "@/lib/auth/roles";
+import { trackEvent } from "@/lib/analytics";
 
 type SignupFormProps = {
   allowAdminSignup: boolean;
@@ -86,6 +87,7 @@ export default function SignupForm({
         return;
       }
 
+      trackEvent('signup_initiated', { role });
       setMessage("Check your email to confirm your account.");
     } catch (err) {
       console.error("Signup form error:", err);
@@ -97,85 +99,86 @@ export default function SignupForm({
 
   if (!supabase) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-16">
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
+      <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-16 text-center">
+        <h1 className="font-display text-3xl font-black text-foreground">
           Supabase setup required
         </h1>
-        <p className="mt-3 text-slate-600">
+        <p className="mt-3 text-muted-foreground">
           Configure your environment variables before signing up.
         </p>
-        <Link
-          href="/setup"
-          className="mt-6 inline-flex w-fit rounded-full border border-slate-300 px-5 py-2 text-sm font-medium text-slate-700"
-        >
-          Go to setup
-        </Link>
+        <div className="mt-8 flex justify-center">
+          <Button asChild variant="outline" className="rounded-xl">
+            <Link href="/setup">Go to setup</Link>
+          </Button>
+        </div>
       </main>
     );
   }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-16">
-      <h1 className="font-display text-3xl font-semibold text-slate-900">
+      <h1 className="font-display text-4xl font-black text-foreground tracking-tight">
         Create your account
       </h1>
-      <p className="mt-3 text-slate-600">
+      <p className="mt-3 text-lg font-medium text-muted-foreground">
         Choose a role to tailor your experience.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-        <label className="block text-sm font-medium text-slate-700">
+      <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+        <label className="block text-sm font-bold text-foreground uppercase tracking-widest">
           Email
           <input
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none"
+            placeholder="name@example.com"
+            className="mt-2 w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-foreground shadow-sm focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all"
           />
         </label>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-bold text-foreground uppercase tracking-widest">
           Password
           <input
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none"
+            placeholder="••••••••"
+            className="mt-2 w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-foreground shadow-sm focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all"
           />
         </label>
-        <label className="block text-sm font-medium text-slate-700">
-          Role
+        <label className="block text-sm font-bold text-foreground uppercase tracking-widest">
+          Account Type
           <select
             value={role}
             onChange={(event) => setRole(event.target.value as UserRole)}
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none"
+            className="mt-2 w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-foreground shadow-sm focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all appearance-none"
           >
             {roleOptions.map((option) => (
               <option key={option} value={option}>
-                {option}
+                {option.charAt(0).toUpperCase() + option.slice(1)}
               </option>
             ))}
           </select>
         </label>
         {error ? (
-          <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700">
             {error}
           </p>
         ) : null}
         {message ? (
-          <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700">
+          <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">
             {message}
           </p>
         ) : null}
-        <Button type="submit" size="lg" disabled={loading}>
+        <Button type="submit" size="lg" disabled={loading} className="w-full rounded-xl bg-brand hover:opacity-90 shadow-cta transition-all text-white border-none">
           {loading ? "Creating account..." : "Create Account"}
         </Button>
       </form>
 
-      <p className="mt-6 text-sm text-slate-600">
+      <p className="mt-8 text-center text-sm font-medium text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-teal-700 underline">
+        <Link href="/login" className="font-black text-brand hover:opacity-80 transition-colors underline decoration-2 underline-offset-4">
           Sign in
         </Link>
       </p>

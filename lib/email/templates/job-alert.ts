@@ -16,7 +16,7 @@ export function renderJobAlertEmail({ job, baseUrl }: JobAlertTemplateProps) {
         <h2 style="margin: 0 0 12px;">${job.title}</h2>
         <p style="margin: 0 0 8px;">${job.location ?? "Remote/On-site"} · ${job.salary_range ?? "Salary TBD"}</p>
         <p style="margin: 0 0 16px;">${job.description}</p>
-        <a href="${jobUrl}" style="display: inline-block; padding: 10px 16px; background: #0f766e; color: #fff; text-decoration: none; border-radius: 999px;">View job</a>
+        <a href="${jobUrl}" style="display: inline-block; padding: 10px 16px; background: #0d748c; color: #fff; text-decoration: none; border-radius: 999px;">View job</a>
         <p style="margin-top: 16px; font-size: 12px; color: #64748b;">
           Manage alerts: <a href="${manageUrl}">Saved searches</a>
         </p>
@@ -29,9 +29,10 @@ type DigestTemplateProps = {
   baseUrl: string;
   jobs: Job[];
   frequency: "daily" | "weekly";
+  unsubscribeUrl?: string;
 };
 
-export function renderDigestEmail({ baseUrl, jobs, frequency }: DigestTemplateProps) {
+export function renderDigestEmail({ baseUrl, jobs, frequency, unsubscribeUrl }: DigestTemplateProps) {
   const manageUrl = `${baseUrl}/jobseeker/alerts`;
   const items = jobs
     .map(
@@ -52,9 +53,12 @@ export function renderDigestEmail({ baseUrl, jobs, frequency }: DigestTemplatePr
         <ul style="padding-left: 18px; margin: 0 0 16px;">
           ${items}
         </ul>
-        <p style="margin-top: 16px; font-size: 12px; color: #64748b;">
-          Manage alerts: <a href="${manageUrl}">Saved searches</a>
-        </p>
+        <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+          <p>
+            Manage alerts: <a href="${manageUrl}">Saved searches</a>
+            ${unsubscribeUrl ? ` · <a href="${unsubscribeUrl}">Unsubscribe from this alert</a>` : ""}
+          </p>
+        </div>
       </div>
     `,
   };

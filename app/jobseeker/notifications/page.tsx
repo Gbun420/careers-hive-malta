@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/auth/session";
 import { getUserRole } from "@/lib/auth/roles";
 
+export const dynamic = "force-dynamic";
+
 export default async function NotificationsPage() {
   if (!isSupabaseConfigured()) {
     return (

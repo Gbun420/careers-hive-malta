@@ -16,17 +16,19 @@ type DigestPayload = {
   to: string;
   jobs: Job[];
   frequency: "daily" | "weekly";
+  unsubscribeUrl?: string;
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const resendApiKey = process.env.RESEND_API_KEY;
-const resendFrom = process.env.RESEND_FROM || "Careers Hive Malta <onboarding@resend.dev>";
+const resendFrom = process.env.RESEND_FROM || "Careers.mt <onboarding@resend.dev>";
+const recipientOverride = process.env.EMAIL_RECIPIENT_OVERRIDE;
 
 export function isEmailConfigured() {
   return Boolean(resendApiKey);
 }
 
-async function sendEmail(to: string, subject: string, html: string): Promise<EmailSendResult> {
+export async function sendEmail(to: string, subject: string, html: string): Promise<EmailSendResult> {
   if (!resendApiKey) {
     return {
       ok: false,
@@ -34,6 +36,9 @@ async function sendEmail(to: string, subject: string, html: string): Promise<Ema
       message: "Resend is not configured.",
     };
   }
+
+  // Use override if present (for testing with unverified Resend domains)
+  const finalTo = recipientOverride || to;
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -43,8 +48,8 @@ async function sendEmail(to: string, subject: string, html: string): Promise<Ema
     },
     body: JSON.stringify({
       from: resendFrom,
-      to,
-      subject,
+      to: finalTo,
+      subject: recipientOverride ? `[OVERRIDE to ${to}] ${subject}` : subject,
       html,
     }),
   });
@@ -62,10 +67,10 @@ async function sendEmail(to: string, subject: string, html: string): Promise<Ema
 }
 
 export async function sendConfirmationEmail(payload: { to: string; confirmationUrl: string }): Promise<EmailSendResult> {
-  const subject = "Confirm your account - Careers Hive Malta";
+  const subject = "Confirm your account - Careers.mt";
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h1 style="color: #0d748c;">Welcome to Careers Hive Malta!</h1>
+      <h1 style="color: #0d748c;">Welcome to Careers.mt!</h1>
       <p>Please confirm your account to start managing your job alerts and postings.</p>
       <div style="margin: 32px 0;">
         <a href="${payload.confirmationUrl}" style="background-color: #0d748c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 999px; font-weight: bold;">
@@ -77,7 +82,7 @@ export async function sendConfirmationEmail(payload: { to: string; confirmationU
       </p>
       <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
       <p style="color: #94a3b8; font-size: 12px;">
-        Careers Hive Malta
+        Careers.mt
       </p>
     </div>
   `;
@@ -97,6 +102,7 @@ export async function sendDigestEmail(payload: DigestPayload): Promise<EmailSend
     baseUrl,
     jobs: payload.jobs,
     frequency: payload.frequency,
+    unsubscribeUrl: payload.unsubscribeUrl,
   });
   return sendEmail(payload.to, subject, html);
 }

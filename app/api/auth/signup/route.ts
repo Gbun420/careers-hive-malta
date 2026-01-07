@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { sendConfirmationEmail } from "@/lib/email/sender";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
@@ -78,7 +78,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: emailResult.message }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, message: "Verification email sent via Resend" });
+    const override = process.env.EMAIL_RECIPIENT_OVERRIDE;
+    const msg = override 
+      ? `Verification email sent to override address: ${override}` 
+      : "Verification email sent via Resend";
+
+    return NextResponse.json({ ok: true, message: msg });
   } catch (error) {
     console.error("Signup API error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

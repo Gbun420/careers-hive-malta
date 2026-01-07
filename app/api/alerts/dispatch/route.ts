@@ -7,7 +7,7 @@ import { buildRateLimitKey, rateLimit } from "@/lib/ratelimit";
 
 const dispatchSecret = process.env.ALERT_DISPATCH_SECRET;
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
     const { data: jobData, error: jobError } = await supabase
       .from("jobs")
       .select(
-        "id, employer_id, title, description, location, salary_range, created_at, is_active"
+        "id, employer_id, title, description, location, salary_range, created_at, is_active, status"
       )
       .eq("id", notification.job_id)
       .single();

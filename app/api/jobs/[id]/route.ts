@@ -9,7 +9,7 @@ import { attachEmployerVerified } from "@/lib/trust/verification";
 import { attachFeaturedStatus } from "@/lib/billing/featured";
 
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type RouteParams = {
@@ -41,7 +41,7 @@ export async function GET(_: Request, { params }: RouteParams) {
     const { data, error } = await auth.supabase
       .from("jobs")
       .select(
-        "id, employer_id, title, description, location, salary_range, created_at, is_active"
+        "id, employer_id, title, description, location, salary_range, salary_min, salary_max, salary_period, currency, application_method, application_url, application_email, created_at, is_active"
       )
       .eq("id", id)
       .eq("employer_id", authData.user.id)
@@ -57,7 +57,7 @@ export async function GET(_: Request, { params }: RouteParams) {
   const { data, error } = await auth.supabase
     .from("jobs")
     .select(
-      "id, employer_id, title, description, location, salary_range, created_at, is_active"
+      "id, employer_id, title, description, location, salary_range, salary_min, salary_max, salary_period, currency, application_method, application_url, application_email, created_at, is_active"
     )
     .eq("id", id)
     .eq("is_active", true)
@@ -111,7 +111,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     .eq("id", id)
     .eq("employer_id", authData.user.id)
     .select(
-      "id, employer_id, title, description, location, salary_range, created_at, is_active"
+      "id, employer_id, title, description, location, salary_range, salary_min, salary_max, salary_period, currency, application_method, application_url, application_email, created_at, is_active"
     )
     .single();
 

@@ -3,11 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  trackCheckoutCreated,
-  trackCheckoutFailed,
-  trackFeatureClick,
-} from "@/lib/analytics/events";
+import { Sparkles } from "lucide-react";
 
 type ApiError = {
   error?: {
@@ -35,9 +31,9 @@ type CTAError = {
 export default function FeatureCTA({
   jobId,
   billingEnabled,
-  label = "Feature",
+  label = "Boost visibility",
   size = "default",
-  variant = "outline",
+  variant = "default",
   className,
   redirectPath,
 }: FeatureCTAProps) {
@@ -48,12 +44,10 @@ export default function FeatureCTA({
     if (!billingEnabled) {
       const message = "Billing is not configured.";
       setError({ message, actionHref: "/setup", actionLabel: "View setup" });
-      trackCheckoutFailed({ jobId, reason: "STRIPE_NOT_CONFIGURED" });
       return;
     }
 
     setError(null);
-    trackFeatureClick({ jobId, source: "employer_ui" });
     setLoading(true);
 
     try {
@@ -78,38 +72,31 @@ export default function FeatureCTA({
             actionHref: `/login?redirectedFrom=${encodeURIComponent(redirect)}`,
             actionLabel: "Go to login",
           });
-          trackCheckoutFailed({ jobId, reason: "FORBIDDEN" });
           return;
         }
 
         if (code === "NOT_FOUND") {
           setError({ message: "Job not found or not yours." });
-          trackCheckoutFailed({ jobId, reason: "NOT_FOUND" });
           return;
         }
 
         if (code === "STRIPE_NOT_CONFIGURED") {
           setError({ message: "Billing is not configured.", actionHref: "/setup", actionLabel: "View setup" });
-          trackCheckoutFailed({ jobId, reason: "STRIPE_NOT_CONFIGURED" });
           return;
         }
 
         setError({ message: message ?? "Unable to start checkout." });
-        trackCheckoutFailed({ jobId, reason: code ?? "UNKNOWN" });
         return;
       }
 
       if (!payload.url) {
         setError({ message: "Checkout URL missing. Try again." });
-        trackCheckoutFailed({ jobId, reason: "MISSING_URL" });
         return;
       }
 
-      trackCheckoutCreated({ jobId, sessionUrl: payload.url });
       window.location.href = payload.url;
     } catch (err) {
       setError({ message: "Network error. Please retry." });
-      trackCheckoutFailed({ jobId, reason: "NETWORK_ERROR" });
     } finally {
       setLoading(false);
     }
@@ -122,21 +109,26 @@ export default function FeatureCTA({
         variant={variant}
         disabled={!billingEnabled || loading}
         onClick={handleClick}
-        title={!billingEnabled ? "Billing not configured" : undefined}
+        className={
+          variant === "default" 
+            ? "bg-navy-950 hover:bg-navy-800 text-white font-black rounded-2xl gap-2 shadow-lg shadow-navy-950/10"
+            : "border-navy-200 text-navy-950 font-black rounded-2xl gap-2"
+        }
       >
-        {loading ? "Redirecting..." : label}
+        <Sparkles className="h-4 w-4 text-gold-500 fill-gold-500" />
+        {loading ? "Synchronizing..." : label}
       </Button>
       {!billingEnabled ? (
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-3 text-xs font-medium text-slate-500">
           Billing not configured.{" "}
-          <Link href="/setup" className="underline">
+          <Link href="/setup" className="underline font-bold text-navy-950">
             View setup
           </Link>
           .
         </p>
       ) : null}
       {error ? (
-        <p className="mt-2 text-xs text-rose-600">
+        <p className="mt-3 text-xs font-bold text-coral-600">
           {error.message}{" "}
           {error.actionHref ? (
             <Link href={error.actionHref} className="underline">

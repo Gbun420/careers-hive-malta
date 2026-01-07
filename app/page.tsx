@@ -1,28 +1,27 @@
-import SiteHeader from "@/components/nav/site-header";
 import Hero from "@/components/landing/hero";
 import TrustStrip from "@/components/landing/trust-strip";
-import HowItWorks from "@/components/landing/how-it-works";
-import FeatureCards from "@/components/landing/feature-cards";
-import EmployerPath from "@/components/landing/employer-path";
-import { isMeiliConfigured } from "@/lib/search/meili";
-import { isStripeConfigured } from "@/lib/billing/stripe";
+import CategoryGrid from "@/components/landing/category-grid";
+import EmployerPricingPath from "@/components/landing/employer-pricing-path";
+import FeaturedCarousel from "@/components/jobs/featured-carousel";
 
-export default function Home() {
-  const meiliEnabled = isMeiliConfigured();
-  const stripeEnabled = isStripeConfigured();
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
   const employerSignupHref = "/signup?role=employer";
 
   return (
-    <div className="min-h-screen">
-      <SiteHeader />
-      <main className="relative overflow-hidden">
+    <div className="bg-background">
+      <main>
         <Hero employerSignupHref={employerSignupHref} />
-        <TrustStrip showSearch={meiliEnabled} />
-        <FeatureCards featuredEnabled={stripeEnabled} />
-        <HowItWorks />
-        <EmployerPath
-          featuredEnabled={stripeEnabled}
-          employerSignupHref={employerSignupHref}
+        
+        <TrustStrip />
+        
+        <FeaturedCarousel />
+        
+        <CategoryGrid />
+        
+        <EmployerPricingPath 
+          employerSignupHref={employerSignupHref} 
         />
       </main>
     </div>

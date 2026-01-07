@@ -105,64 +105,96 @@ export default function AdminVerificationsList() {
     );
   }
 
-  if (items.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center">
-        <p className="text-sm text-slate-600">No verification requests yet.</p>
-      </div>
-    );
-  }
+  const pendingItems = items.filter((i) => i.status === "pending");
+  const pastItems = items.filter((i) => i.status !== "pending");
 
-  return (
-    <div className="space-y-4">
-      {items.map((item) => (
-        <div
-          key={item.id}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
-        >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-900">
-                Employer ID: {item.employer_id}
+  const VerificationCard = ({ item }: { item: EmployerVerification }) => (
+    <div
+      key={item.id}
+      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+    >
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">
+            Employer ID: {item.employer_id}
+          </p>
+          <p className="mt-1 text-xs text-slate-600">
+            Status: <span className={`font-medium ${
+              item.status === 'approved' ? 'text-emerald-600' : 
+              item.status === 'rejected' ? 'text-rose-600' : 'text-amber-600'
+            }`}>{item.status.toUpperCase()}</span> 
+            {' · '} 
+            Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleString() : "Unknown date"}
+          </p>
+          {item.notes ? (
+              <p className="mt-2 text-xs italic text-slate-500">
+                  User Note: {item.notes}
               </p>
-              <p className="mt-1 text-xs text-slate-600">
-                Status: {item.status} · Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleString() : "Unknown date"}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
+          ) : null}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {item.status === "pending" && (
+            <>
               <Button
                 variant="outline"
-                disabled={item.status !== "pending"}
+                className="hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200"
                 onClick={() => handleStatusChange(item.id, "approved")}
               >
                 Approve
               </Button>
               <Button
                 variant="outline"
-                disabled={item.status !== "pending"}
+                className="hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200"
                 onClick={() => handleStatusChange(item.id, "rejected")}
               >
                 Reject
               </Button>
-            </div>
-          </div>
-          <div className="mt-4 space-y-2">
-            <Label htmlFor={`notes-${item.id}`}>Admin notes</Label>
-            <Textarea
-              id={`notes-${item.id}`}
-              value={notesById[item.id] ?? ""}
-              onChange={(event) =>
-                setNotesById((prev) => ({
-                  ...prev,
-                  [item.id]: event.target.value,
-                }))
-              }
-              rows={3}
-              placeholder="Optional notes for the employer."
-            />
-          </div>
+            </>
+          )}
         </div>
-      ))}
+      </div>
+      <div className="mt-4 space-y-2">
+        <Label htmlFor={`notes-${item.id}`}>Admin notes</Label>
+        <Textarea
+          id={`notes-${item.id}`}
+          value={notesById[item.id] ?? ""}
+          onChange={(event) =>
+            setNotesById((prev) => ({
+              ...prev,
+              [item.id]: event.target.value,
+            }))
+          }
+          rows={2}
+          placeholder="Reason for decision..."
+          className="text-xs"
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-8">
+      <section>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">Pending Requests ({pendingItems.length})</h2>
+        {pendingItems.length === 0 ? (
+           <p className="text-sm text-slate-500 italic">No pending verifications.</p>
+        ) : (
+          <div className="space-y-4">
+            {pendingItems.map(item => <VerificationCard key={item.id} item={item} />)}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">Past Verifications</h2>
+         {pastItems.length === 0 ? (
+           <p className="text-sm text-slate-500 italic">No history available.</p>
+        ) : (
+          <div className="space-y-4 opacity-75">
+            {pastItems.map(item => <VerificationCard key={item.id} item={item} />)}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

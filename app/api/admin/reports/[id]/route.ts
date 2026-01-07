@@ -5,7 +5,7 @@ import { ReportUpdateSchema } from "@/lib/trust/schema";
 import { logAudit } from "@/lib/audit/log";
 
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type RouteParams = {

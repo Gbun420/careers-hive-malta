@@ -1,0 +1,132 @@
+
+> careers-hive-malta@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.9
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (130kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ⚠ Compiled with warnings in 9.7s
+
+./node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+A Node.js API is used (process.versions at line: 39) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+./node_modules/@supabase/realtime-js/dist/module/index.js
+./node_modules/@supabase/supabase-js/dist/index.mjs
+./node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+
+./node_modules/@supabase/supabase-js/dist/index.mjs
+A Node.js API is used (process.version at line: 395) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/supabase-js/dist/index.mjs
+./node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/29) ...
+   Generating static pages (7/29) 
+   Generating static pages (14/29) 
+   Generating static pages (21/29) 
+Supabase service role client not available for metrics
+ ✓ Generating static pages (29/29)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                     Size  First Load JS  Revalidate  Expire
+┌ ƒ /                                        3.55 kB         113 kB
+├ ○ /_not-found                                247 B         102 kB
+├ ○ /admin/audit                             2.16 kB         160 kB
+├ ○ /admin/dashboard                         2.85 kB         161 kB
+├ ƒ /admin/metrics                             247 B         102 kB
+├ ○ /admin/reports                           2.68 kB         160 kB
+├ ○ /admin/verifications                      2.9 kB         161 kB
+├ ƒ /api/admin/audit                           247 B         102 kB
+├ ƒ /api/admin/db/reload-schema                247 B         102 kB
+├ ƒ /api/admin/reports                         247 B         102 kB
+├ ƒ /api/admin/reports/[id]                    247 B         102 kB
+├ ƒ /api/admin/stats                           247 B         102 kB
+├ ƒ /api/admin/verifications                   247 B         102 kB
+├ ƒ /api/admin/verifications/[id]              247 B         102 kB
+├ ƒ /api/alerts/digest                         247 B         102 kB
+├ ƒ /api/alerts/dispatch                       247 B         102 kB
+├ ƒ /api/auth/signup                           247 B         102 kB
+├ ƒ /api/billing/checkout-featured             247 B         102 kB
+├ ƒ /api/billing/webhook                       247 B         102 kB
+├ ƒ /api/dev/auth/login                        247 B         102 kB
+├ ƒ /api/dev/billing/create-checkout           247 B         102 kB
+├ ƒ /api/dev/billing/simulate-webhook          247 B         102 kB
+├ ƒ /api/dev/billing/status                    247 B         102 kB
+├ ƒ /api/dev/billing/validate-price            247 B         102 kB
+├ ƒ /api/dev/db/reload-schema                  247 B         102 kB
+├ ƒ /api/dev/db/verify-job-reports-details     247 B         102 kB
+├ ƒ /api/dev/featured/force                    247 B         102 kB
+├ ƒ /api/dev/stripe/create-featured-session    247 B         102 kB
+├ ƒ /api/dev/test                              247 B         102 kB
+├ ƒ /api/employer/applications                 247 B         102 kB
+├ ƒ /api/employer/applications/[id]            247 B         102 kB
+├ ƒ /api/employer/verification/request         247 B         102 kB
+├ ƒ /api/health/app                            247 B         102 kB
+├ ƒ /api/health/db                             247 B         102 kB
+├ ƒ /api/jobs                                  247 B         102 kB
+├ ƒ /api/jobs/[id]                             247 B         102 kB
+├ ƒ /api/jobs/[id]/apply                       247 B         102 kB
+├ ƒ /api/jobs/[id]/report                      247 B         102 kB
+├ ƒ /api/jobs/featured                         247 B         102 kB
+├ ƒ /api/jobs/matches                          247 B         102 kB
+├ ƒ /api/landing/stats                         247 B         102 kB
+├ ƒ /api/profile                               247 B         102 kB
+├ ƒ /api/profile/resume                        247 B         102 kB
+├ ƒ /api/saved-searches                        247 B         102 kB
+├ ƒ /api/saved-searches/[id]                   247 B         102 kB
+├ ƒ /api/search/reindex                        247 B         102 kB
+├ ƒ /auth/callback                             247 B         102 kB
+├ ○ /blog                                      189 B         106 kB
+├ ○ /blog/it-jobs-malta-guide                  166 B         106 kB
+├ ○ /blog/malta-job-market-2026                189 B         106 kB
+├ ○ /blog/malta-salary-guide-2026              189 B         106 kB
+├ ○ /blog/top-companies-malta-2026             189 B         106 kB
+├ ○ /blog/work-permit-malta-2026               189 B         106 kB
+├ ƒ /employer/analytics                        247 B         102 kB
+├ ○ /employer/dashboard                      3.66 kB         109 kB
+├ ○ /employer/jobs                           4.91 kB         110 kB
+├ ƒ /employer/jobs/[id]/edit                 5.82 kB         124 kB
+├ ○ /employer/jobs/new                        6.6 kB         125 kB
+├ ○ /employer/verification                   4.07 kB         110 kB
+├ ƒ /for-employers                           1.82 kB         111 kB
+├ ○ /jobs                                      128 B         111 kB
+├ ƒ /jobs/[id]                               5.48 kB         124 kB
+├ ƒ /jobs/industry/[industry]                  128 B         111 kB
+├ ƒ /jobs/malta/[location]                     128 B         111 kB
+├ ○ /jobseeker/alerts                        1.97 kB         107 kB
+├ ƒ /jobseeker/alerts/[id]/edit              3.22 kB         122 kB
+├ ○ /jobseeker/alerts/new                    3.13 kB         122 kB
+├ ○ /jobseeker/dashboard                     3.59 kB         109 kB
+├ ƒ /jobseeker/notifications                   189 B         106 kB
+├ ○ /login                                   2.75 kB         161 kB
+├ ○ /pricing                                   189 B         106 kB          1h      1y
+├ ○ /profile                                 2.38 kB         105 kB
+├ ○ /robots.txt                                247 B         102 kB
+├ ○ /settings                                4.38 kB         110 kB
+├ ○ /setup                                     189 B         106 kB
+├ ○ /signup                                  5.83 kB         160 kB
+└ ○ /sitemap.xml                               247 B         102 kB
++ First Load JS shared by all                 102 kB
+  ├ chunks/1255-f6ae109f82fb4bb6.js            46 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js      54.2 kB
+  └ other shared chunks (total)              1.95 kB
+
+
+ƒ Middleware                                 80.3 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
