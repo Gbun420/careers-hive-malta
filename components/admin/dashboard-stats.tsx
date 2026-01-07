@@ -64,7 +64,7 @@ export default function DashboardStats() {
       title: "Pending Verifications",
       value: metrics.pending_employer_verifications,
       icon: ShieldCheck,
-      href: "/admin/verifications",
+      href: "/admin/employers/verifications",
       color: "text-amber-600",
       bg: "bg-amber-50"
     },

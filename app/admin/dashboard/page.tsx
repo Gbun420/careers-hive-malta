@@ -79,7 +79,7 @@ export default async function AdminDashboard() {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Link
-            href="/jobseeker/dashboard"
+            href="/jobseeker/alerts"
             className="tech-card rounded-xl group border-dashed"
           >
             <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
             </p>
           </Link>
           <Link
-            href="/employer/dashboard"
+            href="/employer/jobs"
             className="tech-card rounded-xl group border-dashed"
           >
             <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
