@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
-import { sendEmail } from "@/lib/email/sender"; // Using existing sender utility
+import { sendEmployerMessageEmail } from "@/lib/email/sender";
+import { trackEvent } from "@/lib/analytics";
 
 export const runtime = "nodejs";
+
+const MESSAGING_EMAIL_ENABLED = process.env.MESSAGING_EMAIL_ENABLED === "true";
+const APP_BASE_URL = process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
 
 export async function GET(
   request: NextRequest,
@@ -57,44 +61,72 @@ export async function POST(
 
     if (insertError) return jsonError("DB_ERROR", insertError.message, 500);
 
-    // 2. Fetch candidate email for notification (if sender is employer)
-    if (sender_role === 'EMPLOYER') {
+    // 2. Candidate Email Notification Logic
+    if (sender_role === 'EMPLOYER' && MESSAGING_EMAIL_ENABLED) {
       const serviceSupabase = createServiceRoleClient();
       if (serviceSupabase) {
-                  const { data: appData } = await serviceSupabase
-                  .from("applications")
-                  .select("user_id, job:jobs(title)")
-                  .eq("id", id)
-                  .single();
-                
-                if (appData) {
-                  const { data: userData } = await serviceSupabase.auth.admin.getUserById(appData.user_id);
-                  const candidateEmail = userData.user?.email;
-                  const jobTitle = (appData.job as any)?.title || "your application";
+        // Fetch application, candidate, and job details
+        const { data: appData } = await serviceSupabase
+          .from("applications")
+          .select(`
+            user_id,
+            job:jobs(title),
+            candidate:profiles!user_id(full_name)
+          `)
+          .eq("id", id)
+          .single();
         
-                  if (candidateEmail) {
-                    const emailResult = await sendEmail(
-                      candidateEmail,
-                      `New message regarding ${jobTitle}`,
-                      `<p>You have a new message from the employer.</p><p><strong>Message:</strong></p><blockquote>${body}</blockquote><p><a href="${process.env.NEXT_PUBLIC_SITE_URL}/jobseeker/notifications">View and reply here</a></p>`
-                    );
-            if (emailResult.ok) {
-              // 3. Update status to 'delivered'
-              await supabase
-                .from("application_messages")
-                .update({ status: 'delivered', delivered_at: new Date().toISOString() })
-                .eq("id", message.id);
-              
-              message.status = 'delivered';
-              message.delivered_at = new Date().toISOString();
-            } else {
-              // Update status to 'failed'
-              await supabase
-                .from("application_messages")
-                .update({ status: 'failed' })
-                .eq("id", message.id);
-              
-              message.status = 'failed';
+        if (appData) {
+          const { data: userData } = await serviceSupabase.auth.admin.getUserById(appData.user_id);
+          const candidateEmail = userData.user?.email;
+          const candidateName = (appData.candidate as any)?.full_name;
+          const jobTitle = (appData.job as any)?.title || "your application";
+
+          if (candidateEmail) {
+            // A) Create delivery row first (idempotency)
+            const { error: deliveryError } = await serviceSupabase
+              .from("message_email_deliveries")
+              .insert({
+                message_id: message.id,
+                recipient_user_id: appData.user_id,
+                recipient_email: candidateEmail,
+                status: 'PENDING'
+              });
+
+            if (!deliveryError) {
+              // B) Send email
+              const emailResult = await sendEmployerMessageEmail({
+                to: candidateEmail,
+                candidateName,
+                employerName: user.user_metadata?.full_name || "Employer",
+                jobTitle,
+                messageBody: body,
+                ctaUrl: `${APP_BASE_URL}/jobseeker/applications/${id}?focus=messages`
+              });
+
+              if (emailResult.ok) {
+                // C) Update delivery row and message status
+                await Promise.all([
+                  serviceSupabase
+                    .from("message_email_deliveries")
+                    .update({ status: 'SENT', resend_id: emailResult.id, sent_at: new Date().toISOString() })
+                    .eq("message_id", message.id),
+                  supabase
+                    .from("application_messages")
+                    .update({ status: 'delivered', delivered_at: new Date().toISOString() })
+                    .eq("id", message.id)
+                ]);
+                
+                trackEvent('employer_message_email_sent' as any, { applicationId: id, messageId: message.id });
+              } else {
+                // D) Update delivery row on failure
+                await serviceSupabase
+                  .from("message_email_deliveries")
+                  .update({ status: 'FAILED', error: emailResult.message })
+                  .eq("message_id", message.id);
+                
+                trackEvent('employer_message_email_failed' as any, { applicationId: id, messageId: message.id, error: emailResult.message });
+              }
             }
           }
         }

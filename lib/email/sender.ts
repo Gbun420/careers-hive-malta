@@ -1,10 +1,11 @@
 import "server-only";
 
 import { renderDigestEmail, renderJobAlertEmail } from "@/lib/email/templates/job-alert";
+import { renderEmployerMessageEmail } from "@/lib/email/templates/employer-message";
 import type { Job } from "@/lib/jobs/schema";
 
 export type EmailSendResult =
-  | { ok: true }
+  | { ok: true; id?: string }
   | { ok: false; code: "EMAIL_NOT_CONFIGURED" | "EMAIL_FAILED"; message: string };
 
 type JobAlertPayload = {
@@ -17,6 +18,16 @@ type DigestPayload = {
   jobs: Job[];
   frequency: "daily" | "weekly";
   unsubscribeUrl?: string;
+};
+
+type EmployerMessagePayload = {
+  to: string;
+  candidateName?: string | null;
+  employerName: string;
+  companyName?: string | null;
+  jobTitle: string;
+  messageBody: string;
+  ctaUrl: string;
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -54,16 +65,17 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
     }),
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    const errorText = await response.text();
     return {
       ok: false,
       code: "EMAIL_FAILED",
-      message: errorText || "Failed to send email.",
+      message: data.message || "Failed to send email.",
     };
   }
 
-  return { ok: true };
+  return { ok: true, id: data.id };
 }
 
 export async function sendConfirmationEmail(payload: { to: string; confirmationUrl: string }): Promise<EmailSendResult> {
@@ -106,3 +118,9 @@ export async function sendDigestEmail(payload: DigestPayload): Promise<EmailSend
   });
   return sendEmail(payload.to, subject, html);
 }
+
+export async function sendEmployerMessageEmail(payload: EmployerMessagePayload): Promise<EmailSendResult> {
+  const { subject, html } = renderEmployerMessageEmail(payload);
+  return sendEmail(payload.to, subject, html);
+}
+
