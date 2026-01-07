@@ -16,7 +16,7 @@ import { publishIndexingNotification } from "@/lib/google/indexing";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const baseUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
 
 export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient();

@@ -11,12 +11,12 @@ echo "🚀 Starting Admin Portal Smoke Test against: $BASE_URL"
 
 # Get the final HTTP status code after following all redirects
 final_code() {
-  curl -sS -o /dev/null -w "%{http_code}" -L "$1"
+  curl -sS -o /dev/null -w "% {http_code}" -L "$1"
 }
 
 # Get the first HTTP status code without following redirects
 first_code() {
-  curl -sS -o /dev/null -w "%{http_code}" -I "$1"
+  curl -sS -o /dev/null -w "% {http_code}" -I "$1"
 }
 
 # Get the value of the 'Location' header from the first response
@@ -29,22 +29,32 @@ show_chain() {
   curl -sSIL "$1" | sed -n '1,20p'
 }
 
-# --- 1. Public Pages (Expected FINAL 200) ---
+# --- 1. Uptime Check (/api/health) ---
+echo "--- Checking /api/health ---"
+status=$(final_code "$BASE_URL/api/health")
+body=$(curl -s "$BASE_URL/api/health")
+if [ "$status" == "200" ] && [[ "$body" == *"ok":true* ]]; then
+  echo "✅ /api/health: 200 (OK: true)"
+else
+  echo "❌ /api/health: $status (FAILED - Body: $body)"
+fi
+
+# --- 2. Public Pages (Expected FINAL 200) ---
 echo "--- Checking public pages (following redirects) ---"
-for path in "/pricing" "/robots.txt" "/sitemap.xml" "/api/health"; do
+for path in "/pricing" "/robots.txt" "/sitemap.xml"; do
   status=$(final_code "$BASE_URL$path")
   if [ "$status" == "200" ]; then
     echo "✅ $path: $status (FINAL)"
   else
     echo "❌ $path: $status (FAILED - expected 200 FINAL)"
-    if [ "$path" == "/pricing" ] || [ "$path" == "/api/health" ]; then
-      echo "Redirect chain/Response for $path:"
+    if [ "$path" == "/pricing" ]; then
+      echo "Redirect chain for $path:"
       show_chain "$BASE_URL$path"
     fi
   fi
 done
 
-# --- 2. Admin API Protection (Anonymous) ---
+# --- 3. Admin API Protection (Anonymous) ---
 echo "--- Checking Admin API protection (Anonymous) ---"
 # We expect 401 or 403. We allow 3xx only if it's NOT to /login (e.g. slash normalization)
 # but the FINAL status must be 401/403.
@@ -74,7 +84,7 @@ else
   fi
 fi
 
-# --- 3. Admin Page Protection (Anonymous) ---
+# --- 4. Admin Page Protection (Anonymous) ---
 echo "--- Checking Admin Page protection (Anonymous) ---"
 # Pages SHOULD redirect to /login
 status=$(first_code "$BASE_URL/admin/dashboard")

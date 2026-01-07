@@ -1,22 +1,34 @@
-import { BRAND_NAME, BRAND_TAGLINE_SHORT } from "./brand";
+import { SITE_URL } from "@/lib/site/url";
 
 export const siteConfig = {
-  name: BRAND_NAME,
-  shortName: BRAND_NAME,
-  description: BRAND_TAGLINE_SHORT,
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app",
-  logo: "/logo-careers-mt.svg",
-  social: {
-    twitter: "@careersmt",
-    linkedin: "company/careers-mt"
+  name: "Careers.mt",
+  description: "The premium hub for Malta careers. Find verified jobs in tech, finance, and more.",
+  url: SITE_URL,
+  ogImage: "/brand/og-image.png",
+  links: {
+    twitter: "https://twitter.com/careersmt",
+    github: "https://github.com/careers-mt",
   },
-  locations: [
-    "Valletta", "Sliema", "St. Julians", "Birkirkara", "Mosta", 
-    "Qormi", "Zabbar", "Naxxar", "San Gwann", "Gzira", 
-    "Msida", "Swieqi", "Mellieha", "St. Pauls Bay", "Gozo", "Remote"
-  ],
+};
+
+export const jobBoardConfig = {
   industries: [
-    "IT & Tech", "iGaming", "Finance", "Marketing", "Hospitality", 
-    "Healthcare", "Legal", "Construction", "Education", "Retail"
-  ]
+    "Technology",
+    "Finance",
+    "iGaming",
+    "Hospitality",
+    "Legal",
+    "Marketing",
+    "Healthcare",
+    "Construction",
+  ],
+  locations: [
+    "Sliema",
+    "St. Julians",
+    "Valletta",
+    "Birkirkara",
+    "Mosta",
+    "Gozo",
+    "Remote",
+  ],
 };

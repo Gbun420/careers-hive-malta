@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect as Select } from "@/components/ui/select";
-import { siteConfig } from "@/lib/site-config";
+import { jobBoardConfig } from "@/lib/site-config";
 import { trackEvent } from "@/lib/analytics";
 import { Check, ChevronRight, Sparkles, Bell, ShieldCheck } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
@@ -192,7 +192,7 @@ export default function OnboardingWizard({
                   value={location} 
                   onChange={e => setLocation(e.target.value)}
                 >
-                  {siteConfig.locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+                  {jobBoardConfig.locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
                 </Select>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function OnboardingWizard({
             </div>
             
             <div className="grid grid-cols-2 gap-3">
-              {siteConfig.industries.map(ind => (
+              {jobBoardConfig.industries.map(ind => (
                 <button
                   key={ind}
                   onClick={() => {

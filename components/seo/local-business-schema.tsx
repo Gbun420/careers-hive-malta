@@ -23,8 +23,8 @@ export default function LocalBusinessSchema() {
       "name": "Malta"
     },
     "sameAs": [
-      `https://www.linkedin.com/${siteConfig.social.linkedin}`,
-      "https://x.com/careersmt"
+      "https://www.linkedin.com/company/careers-mt",
+      siteConfig.links.twitter
     ]
   };
 

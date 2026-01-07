@@ -6,20 +6,15 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Briefcase } from "lucide-react";
 import { getJobs } from "@/lib/jobs/get-jobs";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+import { SITE_URL } from "@/lib/site/url";
 
 export const metadata: Metadata = {
   title: "Latest jobs in Malta | Careers.mt",
   description:
     "Discover new jobs in Malta with instant alerts and verified employers.",
-  ...(siteUrl
-    ? {
-        alternates: {
-          canonical: `${siteUrl}/jobs`,
-        },
-      }
-    : {}),
+  alternates: {
+    canonical: `${SITE_URL}/jobs`,
+  },
 };
 
 export default async function JobsPage() {

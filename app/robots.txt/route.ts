@@ -1,23 +1,19 @@
-// app/robots.txt/route.ts
-export const runtime = "nodejs";
+import { NextResponse } from "next/server";
+
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
 
-  const robots = `User-agent: *
+  const content = `User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /employer/
-Disallow: /jobseeker/
-Disallow: /setup/
 
-Sitemap: ${baseUrl}/sitemap.xml`;
+Sitemap: ${baseUrl}/sitemap.xml
+`;
 
-  return new Response(robots, {
+  return new NextResponse(content, {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      "Content-Type": "text/plain",
     },
   });
 }

@@ -1,137 +1,135 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
+import { getUserRole } from "@/lib/auth/roles";
 import { sendEmail } from "@/lib/email/sender";
-import { rateLimit, buildRateLimitKey } from "@/lib/ratelimit";
+import { trackEvent } from "@/lib/analytics";
+import { absUrl, SITE_URL } from "@/lib/site/url";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-type Params = { params: Promise<{ id: string }> };
+const baseUrl = SITE_URL;
 
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
   const supabase = createRouteHandlerClient();
-  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured.", 503);
+  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData.user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
 
-  // Fetch detail with messages
-  // Note: RLS ensures user only sees their own application and its messages
-  const { data, error } = await supabase
+  const role = getUserRole(authData.user);
+  if (role !== "jobseeker" && role !== "admin") return jsonError("FORBIDDEN", "Access restricted.", 403);
+
+  const { data: application, error: appError } = await supabase
     .from("applications")
     .select(`
       *,
-      job:jobs(
+      job:jobs (
         id,
         title,
-        location,
-        company_name,
-        company_id,
-        description
+        employer:profiles!jobs_employer_id_fkey (id, full_name, headline)
       ),
-      messages:application_messages(*)
+      messages:application_messages (*)
     `)
     .eq("id", id)
-    .eq("user_id", user.id)
     .single();
 
-  if (error) {
-    console.error("Fetch application detail error:", error);
-    return jsonError("NOT_FOUND", "Application not found or unauthorized.", 404);
+  if (appError || !application) return jsonError("NOT_FOUND", "Application not found.", 404);
+
+  // Security: Check if it's the seeker's own application
+  if (role === "jobseeker" && application.candidate_id !== authData.user.id) {
+    return jsonError("FORBIDDEN", "Access restricted.", 403);
   }
 
-  // Sort messages ascending
-  if (data.messages) {
-    data.messages.sort((a: any, b: any) => 
-      new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    );
-  }
-
-  return NextResponse.json({ data });
+  return NextResponse.json({ data: application });
 }
 
-export async function POST(request: NextRequest, { params }: Params) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
   const supabase = createRouteHandlerClient();
-  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured.", 503);
+  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData.user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
 
-  // 0. Rate Limiting
-  const limitKey = buildRateLimitKey(request, "jobseeker_message", user.id);
-  const { ok } = await rateLimit(limitKey, { windowMs: 60 * 1000, max: 10 });
-  if (!ok) {
-    return jsonError("RATE_LIMIT_EXCEEDED", "Too many messages. Please wait a minute.", 429);
-  }
+  const role = getUserRole(authData.user);
+  if (role !== "jobseeker") return jsonError("FORBIDDEN", "Only jobseekers can send messages.", 403);
 
   try {
-    const { body } = await request.json();
-    if (!body || body.trim().length < 2) {
-      return jsonError("INVALID_INPUT", "Message too short.", 400);
+    const { content } = await request.json();
+    if (!content) return jsonError("INVALID_INPUT", "Message content is required.", 400);
+
+    // Rate limiting check
+    const { count: recentMessages } = await supabase
+      .from("application_messages")
+      .select("*", { count: "exact", head: true })
+      .eq("sender_id", authData.user.id)
+      .gt("created_at", new Date(Date.now() - 60 * 1000).toISOString());
+
+    if (recentMessages && recentMessages >= 10) {
+      return jsonError("RATE_LIMIT_EXCEEDED", "Too many messages. Please wait a minute.", 429);
     }
 
-    // 1. Verify ownership
-    const { data: app, error: appError } = await supabase
+    // Get application and employer email
+    const { data: application, error: appError } = await supabase
       .from("applications")
-      .select("id, job_id, user_id")
+      .select(`
+        *,
+        job:jobs (title, employer_id),
+        candidate:profiles!applications_candidate_id_fkey (full_name)
+      `)
       .eq("id", id)
-      .eq("user_id", user.id)
       .single();
 
-    if (appError || !app) {
-      return jsonError("FORBIDDEN", "Unauthorized.", 403);
+    if (appError || !application) return jsonError("NOT_FOUND", "Application not found.", 404);
+
+    if (application.candidate_id !== authData.user.id) {
+      return jsonError("FORBIDDEN", "Access restricted.", 403);
     }
 
-    // 2. Insert message
+    // Get employer email
+    const { data: userData } = await supabase.auth.admin.getUserById(application.job.employer_id);
+    const employerEmail = userData?.user?.email;
+
     const { data: message, error: msgError } = await supabase
       .from("application_messages")
       .insert({
         application_id: id,
-        sender_role: 'CANDIDATE',
-        sender_id: user.id,
-        body: body.trim(),
-        status: 'sent'
+        sender_id: authData.user.id,
+        content
       })
       .select()
       .single();
 
-    if (msgError) return jsonError("DB_ERROR", msgError.message, 500);
+    if (msgError) throw msgError;
 
-    // 3. Optional: Notify employer via email (Mirror logic)
-    const serviceSupabase = createServiceRoleClient();
-    if (serviceSupabase) {
-      const { data: job } = await serviceSupabase
-        .from("jobs")
-        .select("title, employer_id, profiles!employer_id(full_name)")
-        .eq("id", app.job_id)
-        .single();
-      
-      if (job) {
-        const { data: employerUser } = await serviceSupabase.auth.admin.getUserById(job.employer_id);
-        const employerEmail = employerUser.user?.email;
-
-        if (employerEmail) {
-          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers.mt";
-          await sendEmail(
-            employerEmail,
-            `New reply from candidate for ${job.title}`,
-            `
-              <p>You have received a new message from a candidate.</p>
-              <p><strong>Message:</strong></p>
-              <blockquote style="font-style: italic; border-left: 4px solid #0d748c; padding-left: 16px;">
-                "${body}"
-              </blockquote>
-              <p><a href="${baseUrl}/employer/applications/${id}">View in Dashboard</a></p>
-            `
-          );
-        }
-      }
+    if (employerEmail) {
+      await sendEmail(
+        employerEmail,
+        `New message from ${application.candidate.full_name} for your job: ${application.job.title}`,
+        `
+          <p>Hi,</p>
+          <p>You have received a new message from a candidate regarding your job <strong>${application.job.title}</strong>.</p>
+          <div style="padding: 16px; background: #f8fafc; border-radius: 8px; margin: 16px 0; border: 1px solid #e2e8f0;">
+            ${content}
+          </div>
+          <p><a href="${absUrl(`/employer/applications/${id}`)}" style="display: inline-block; padding: 12px 24px; background: #0ea5e9; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">View Application & Reply</a></p>
+        `
+      );
     }
 
-    return NextResponse.json({ data: message }, { status: 201 });
+    trackEvent('jobseeker_message_sent' as any, { application_id: id });
+
+    return NextResponse.json({ data: message });
   } catch (err: any) {
-    return jsonError("BAD_REQUEST", err.message || "Invalid JSON", 400);
+    return jsonError("DB_ERROR", err.message, 500);
   }
 }

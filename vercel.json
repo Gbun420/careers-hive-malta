@@ -1,5 +1,12 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next"
+  "crons": [
+    {
+      "path": "/api/cron/ingest-jobs",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/cron/send-alerts",
+      "schedule": "0 7 * * *"
+    }
+  ]
 }

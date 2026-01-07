@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { siteConfig } from "@/lib/site-config";
+import { jobBoardConfig } from "@/lib/site-config";
 import { JobCreateSchema, type JobCreate } from "@/lib/jobs/schema";
 import { JobCard } from "@/components/ui/job-card";
 import { Check, ChevronRight, Briefcase, MapPin, Euro, Eye, Sparkles, Send, Loader2 } from "lucide-react";
@@ -67,11 +67,7 @@ export default function JobPostingWizard() {
       const data = await response.json();
       
       if (response.status === 402) {
-        // Payment required - Job was NOT created yet in this flow or it was?
-        // Actually our API returns 402 if entitlement check fails.
-        // Let's assume the job was created as draft? No, the API returned 402 BEFORE insert.
-        // Wait, I should probably insert as draft first then show paywall.
-        // Refinement: let's try to save as draft first if publish fails.
+        // Payment required - saving as draft
         const draftPayload = { ...validated, status: "draft" };
         const draftRes = await fetch("/api/jobs", {
           method: "POST",
@@ -137,7 +133,7 @@ export default function JobPostingWizard() {
                     onChange={e => updateField('location', e.target.value)}
                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-navy-950"
                   >
-                    {siteConfig.locations.map(l => <option key={l} value={l}>{l}</option>)}
+                    {jobBoardConfig.locations.map(l => <option key={l} value={l}>{l}</option>)}
                   </select>
                 </div>
               </div>
