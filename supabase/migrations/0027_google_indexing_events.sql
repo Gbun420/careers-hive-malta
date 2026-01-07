@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.google_indexing_events (
 -- Note: Supabase/Postgres date_trunc('day', created_at) isn't directly usable in UNIQUE constraints 
 -- unless it's a generated column or an expression index.
 CREATE UNIQUE INDEX IF NOT EXISTS google_indexing_events_url_type_day_idx 
-ON public.google_indexing_events (url, type, (date_trunc('day', created_at)));
+ON public.google_indexing_events (url, type, (date_trunc('day', created_at AT TIME ZONE 'UTC')));
 
 ALTER TABLE public.google_indexing_events ENABLE ROW LEVEL SECURITY;
 

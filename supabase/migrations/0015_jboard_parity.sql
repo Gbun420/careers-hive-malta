@@ -78,6 +78,9 @@ create table if not exists public.applications (
   unique(job_id, user_id)
 );
 
+-- Ensure employer_id exists if table was created by 0014
+alter table public.applications add column if not exists employer_id uuid references public.profiles(id) on delete set null;
+
 -- application_notes
 create table if not exists public.application_notes (
   id uuid primary key default uuid_generate_v4(),

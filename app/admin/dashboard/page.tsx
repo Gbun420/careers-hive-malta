@@ -4,6 +4,8 @@ import DashboardStats from "@/components/admin/dashboard-stats";
 import ReloadSchemaButton from "@/components/admin/reload-schema-button";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 type InternalHref = `/${string}`;
 
 interface DashboardLink {
