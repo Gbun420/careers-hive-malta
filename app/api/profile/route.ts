@@ -54,6 +54,8 @@ export async function GET() {
       },
     });
   }
+
+  return NextResponse.json({ data: profile });
 }
 
 export async function PATCH(request: Request) {
@@ -100,10 +102,11 @@ export async function PATCH(request: Request) {
   // Log the profile update
   await logAudit({
     actorId: authData.user.id,
+    actorEmail: authData.user.email || "",
     action: "profile_updated",
     entityType: "profile",
     entityId: profile.id,
-    meta: {
+    metadata: {
       updated_fields: Object.keys(parsed.data),
     },
   });

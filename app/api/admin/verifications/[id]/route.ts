@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth/admin-guard";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
 import { VerificationUpdateSchema } from "@/lib/trust/schema";
 import { logAudit } from "@/lib/audit/log";
@@ -18,10 +18,9 @@ type RouteParams = {
 
 export async function PATCH(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const auth = await requireAdmin();
-  if (!auth.supabase || !auth.user) {
-    return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase, user: adminUser } = adminAuth;
 
   let payload: unknown;
   try {
@@ -35,13 +34,13 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
   }
 
-  const { data, error } = await auth.supabase
+  const { data, error } = await supabase
     .from("employer_verifications")
     .update({
       status: parsed.data.status,
       notes: parsed.data.notes ?? null,
       reviewed_at: new Date().toISOString(),
-      reviewer_id: auth.user.id,
+      reviewer_id: adminUser.id,
     })
     .eq("id", id)
     .select("id, employer_id, status, notes, submitted_at, reviewed_at, reviewer_id")
@@ -52,11 +51,12 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   }
 
   await logAudit({
-    actorId: auth.user.id,
+    actorId: adminUser.id,
+    actorEmail: adminUser.email || "",
     action: `verification_${data.status}`,
     entityType: "employer_verification",
     entityId: data.id,
-    meta: {
+    metadata: {
       employer_id: data.employer_id,
       status: data.status,
       notes: data.notes,

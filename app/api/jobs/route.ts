@@ -137,131 +137,56 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-
   const supabase = createRouteHandlerClient();
-
   if (!supabase) {
-
     return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-
   }
-
-
 
   const { data: authData, error: authError } = await supabase.auth.getUser();
-
   if (authError || !authData.user) {
-
     return jsonError("UNAUTHORIZED", "Authentication required.", 401);
-
   }
-
-
 
   const role = getUserRole(authData.user);
-
   if (role !== "employer" && role !== "admin") {
-
     return jsonError("FORBIDDEN", "Employer or Admin access required.", 403);
-
   }
-
-
 
   let payload: any;
-
   try {
-
     payload = await request.json();
-
-  }
-
-  catch (error) {
-
+  } catch (error) {
     return jsonError("BAD_REQUEST", "Invalid JSON body.", 400);
-
   }
-
-
 
   const parsed = JobCreateSchema.safeParse(payload);
-
   if (!parsed.success) {
-
     return jsonError("INVALID_INPUT", parsed.error.errors[0]?.message, 400);
-
   }
 
-
-
-    // Entitlement Check: if trying to publish immediately
-
-
-
-    let finalStatus: "draft" | "active" = "draft";
-
-
-
-    if (parsed.data.status === "active") {
-
-
-
-      const entitlement = await getCompanyEntitlements(authData.user.id);
-
-
-
-      if (entitlement.canPublish) {
-
-
-
-        finalStatus = "active";
-
-
-
-      } else {
-
-
-
-        return jsonError("INVALID_INPUT", "Payment required to publish an active role. Saved as draft.", 402, {
-
-
-
-          reason: "ENTITLEMENT_REQUIRED"
-
-
-
-        });
-
-
-
-      }
-
-
-
+  // Entitlement Check: if trying to publish immediately
+  let finalStatus: "draft" | "active" = "draft";
+  if (parsed.data.status === "active") {
+    const entitlement = await getCompanyEntitlements(authData.user.id);
+    if (entitlement.canPublish) {
+      finalStatus = "active";
+    } else {
+      return jsonError("INVALID_INPUT", "Payment required to publish an active role. Saved as draft.", 402, {
+        reason: "ENTITLEMENT_REQUIRED"
+      });
     }
-
-
+  }
 
   const normalized = normalizeJobPayload(parsed.data);
-
   const { data, error } = await supabase
-
     .from("jobs")
-
     .insert({
-
         ...normalized,
-
         employer_id: authData.user.id,
-
         status: finalStatus,
-
         is_active: finalStatus === "active"
-
     })
-
     .select()
-
     .single();
 
   if (error || !data) {
@@ -278,10 +203,11 @@ export async function POST(request: NextRequest) {
   try {
     await logAudit({
       actorId: authData.user.id,
+      actorEmail: authData.user.email || "",
       action: "job_created",
       entityType: "job",
       entityId: job.id,
-      meta: {
+      metadata: {
         title: job.title,
         location: job.location,
       },

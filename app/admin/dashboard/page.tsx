@@ -1,9 +1,12 @@
-import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth/requireAdmin";
 import AdminSignOutButton from "@/components/admin/sign-out-button";
 import DashboardStats from "@/components/admin/dashboard-stats";
 import ReloadSchemaButton from "@/components/admin/reload-schema-button";
+import Link from "next/link";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  await requireAdminPage();
+
   return (
     <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-12 px-6 py-16">
       <header className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-8">
@@ -38,7 +41,7 @@ export default function AdminDashboard() {
             </p>
           </Link>
           <Link
-            href="/admin/verifications"
+            href="/admin/employers/verifications"
             className="tech-card rounded-xl group"
           >
             <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">Employer verifications</p>
@@ -67,15 +70,6 @@ export default function AdminDashboard() {
               Commercial readiness gate.
             </p>
           </Link>
-          <Link
-            href="/settings"
-            className="tech-card rounded-xl group"
-          >
-            <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">Account settings</p>
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Profile configuration.
-            </p>
-          </Link>
         </div>
       </section>
 
@@ -85,7 +79,7 @@ export default function AdminDashboard() {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Link
-            href="/jobseeker/dashboard"
+            href="/jobseeker/alerts"
             className="tech-card rounded-xl group border-dashed"
           >
             <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
@@ -96,7 +90,7 @@ export default function AdminDashboard() {
             </p>
           </Link>
           <Link
-            href="/employer/dashboard"
+            href="/employer/jobs"
             className="tech-card rounded-xl group border-dashed"
           >
             <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">

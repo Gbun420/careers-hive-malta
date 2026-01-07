@@ -1,29 +1,42 @@
-import "server-only";
-import { createServiceRoleClient, createRouteHandlerClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/server";
 
-export type AuditLogPayload = {
+type AuditLogParams = {
   actorId: string;
+  actorEmail?: string | null;
   action: string;
   entityType: string;
   entityId: string;
-  meta?: Record<string, unknown> | null;
+  metadata?: Record<string, any>;
 };
 
-export async function logAudit(payload: AuditLogPayload): Promise<void> {
-  const supabase = createServiceRoleClient() ?? createRouteHandlerClient();
+/**
+ * Logs an administrative action to the audit_logs table.
+ * Uses the service role client to bypass RLS.
+ */
+export async function logAudit({
+  actorId,
+  actorEmail = null,
+  action,
+  entityType,
+  entityId,
+  metadata = {},
+}: AuditLogParams) {
+  const supabase = createServiceRoleClient();
   if (!supabase) {
+    console.error("Failed to create service role client for audit logging");
     return;
   }
 
-  try {
-    await supabase.from("audit_logs").insert({
-      actor_id: payload.actorId,
-      action: payload.action,
-      entity_type: payload.entityType,
-      entity_id: payload.entityId,
-      meta: payload.meta ?? {},
-    });
-  } catch (error) {
-    // Audit logging should not block admin actions.
+  const { error } = await supabase.from("audit_logs").insert({
+    actor_id: actorId,
+    actor_email: actorEmail,
+    action,
+    entity_type: entityType,
+    entity_id: entityId,
+    meta: metadata,
+  });
+
+  if (error) {
+    console.error("Failed to insert audit log:", error.message);
   }
 }

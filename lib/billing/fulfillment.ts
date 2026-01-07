@@ -210,7 +210,7 @@ export async function fulfillFeaturedCheckoutSession(
     action: "featured_purchased",
     entityType: "job",
     entityId: jobId,
-    meta: {
+    metadata: {
       purchase_type: "featured",
       checkout_session_id: session.id,
     },

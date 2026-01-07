@@ -1,40 +1,29 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { isSupabaseConfigured } from "@/lib/auth/session";
-import AdminAuditList from "@/components/admin/audit-list";
+import { requireAdminPage } from "@/lib/auth/requireAdmin";
 import AdminSignOutButton from "@/components/admin/sign-out-button";
+import AdminAuditList from "@/components/admin/audit-list";
+import { Badge } from "@/components/ui/badge";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { PageShell } from "@/components/ui/page-shell";
 
-export default function AdminAuditPage() {
-  if (!isSupabaseConfigured()) {
-    return (
-      <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-16">
-        <h1 className="font-display text-3xl font-semibold text-slate-900">
-          Audit logs unavailable
-        </h1>
-        <p className="mt-3 text-slate-600">
-          Connect Supabase to view platform audit logs.
-        </p>
-        <Button asChild className="mt-6 w-fit">
-          <Link href="/setup">Go to setup</Link>
-        </Button>
-      </main>
-    );
-  }
+export default async function AdminAuditPage() {
+  await requireAdminPage();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-6 py-16">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-slate-900">
-            Audit logs
-          </h1>
-          <p className="mt-2 text-slate-600">
-            Track system changes and administrative actions.
-          </p>
-        </div>
-        <AdminSignOutButton />
-      </header>
-      <AdminAuditList />
-    </main>
+    <PageShell>
+      <div className="max-w-6xl mx-auto space-y-12">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="space-y-2">
+            <Badge variant="default" className="px-4 py-1 text-xs uppercase font-black tracking-widest text-slate-600 border-slate-200">System Logs</Badge>
+            <SectionHeading 
+              title="Platform Audit Trail" 
+              subtitle="Comprehensive log of all administrative actions and critical system changes."
+            />
+          </div>
+          <AdminSignOutButton />
+        </header>
+
+        <AdminAuditList />
+      </div>
+    </PageShell>
   );
 }
