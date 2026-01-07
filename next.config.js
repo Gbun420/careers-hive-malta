@@ -9,6 +9,12 @@ const nextConfig = {
   },
   // Add trailing slash for better compatibility
   trailingSlash: true,
+  async redirects() {
+    return [
+      { source: "/Careers.mt", destination: "/", permanent: true },
+      { source: "/careers.mt", destination: "/", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

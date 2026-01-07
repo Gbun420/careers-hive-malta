@@ -4,8 +4,61 @@ import DashboardStats from "@/components/admin/dashboard-stats";
 import ReloadSchemaButton from "@/components/admin/reload-schema-button";
 import Link from "next/link";
 
+type InternalHref = `/${string}`;
+
+interface DashboardLink {
+  title: string;
+  description: string;
+  href: InternalHref;
+  className?: string;
+  badge?: boolean;
+}
+
 export default async function AdminDashboard() {
   await requireAdminPage();
+
+  const coreOperations: DashboardLink[] = [
+    {
+      title: "Job reports",
+      description: "Moderate platform content.",
+      href: "/admin/reports",
+    },
+    {
+      title: "Employer verifications",
+      description: "Manage trust signals.",
+      href: "/admin/employers/verifications",
+    },
+    {
+      title: "Audit logs",
+      description: "Track system state.",
+      href: "/admin/audit-logs",
+    },
+    {
+      title: "Account settings",
+      description: "Profile configuration.",
+      href: "/settings",
+    },
+    {
+      title: "Launch Control",
+      description: "Commercial readiness gate.",
+      href: "/admin/ops",
+      className: "border-brand/20 bg-brand/5 shadow-sm",
+      badge: true,
+    },
+  ];
+
+  const userFlowPreviews: DashboardLink[] = [
+    {
+      title: "Jobseeker View →",
+      description: "Alert management and saved searches.",
+      href: "/jobseeker/alerts",
+    },
+    {
+      title: "Employer View →",
+      description: "Job posting and verification flows.",
+      href: "/employer/jobs",
+    },
+  ];
 
   return (
     <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-12 px-6 py-16">
@@ -31,45 +84,23 @@ export default async function AdminDashboard() {
           Core Operations
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Link
-            href="/admin/reports"
-            className="tech-card rounded-xl group"
-          >
-            <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">Job reports</p>
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Moderate platform content.
-            </p>
-          </Link>
-          <Link
-            href="/admin/employers/verifications"
-            className="tech-card rounded-xl group"
-          >
-            <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">Employer verifications</p>
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Manage trust signals.
-            </p>
-          </Link>
-          <Link
-            href="/admin/audit-logs"
-            className="tech-card rounded-xl group"
-          >
-            <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">Audit logs</p>
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Track system state.
-            </p>
-          </Link>
-          <Link
-            href="/admin/ops"
-            className="tech-card rounded-xl group border-brand/20 bg-brand/5 shadow-sm"
-          >
-            <p className="text-[11px] font-black text-brand-700 group-hover:text-brand transition-colors uppercase tracking-widest flex items-center gap-2">
-              Launch Control
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />
-            </p>
-            <p className="mt-3 text-xs font-medium text-brand-600/80">
-              Commercial readiness gate.
-            </p>
-          </Link>
+          {coreOperations.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`tech-card rounded-xl group ${link.className || ""}`}
+            >
+              <p className={`text-[11px] font-black uppercase tracking-widest flex items-center gap-2 ${
+                link.badge ? "text-brand-700 group-hover:text-brand" : "text-slate-950 group-hover:text-brand-600"
+              } transition-colors`}>
+                {link.title}
+                {link.badge && <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />}
+              </p>
+              <p className={`mt-3 text-xs font-medium ${link.badge ? "text-brand-600/80" : "text-slate-500"}`}>
+                {link.description}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -78,28 +109,20 @@ export default async function AdminDashboard() {
           User Flow Previews
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Link
-            href="/jobseeker/alerts"
-            className="tech-card rounded-xl group border-dashed"
-          >
-            <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
-              Jobseeker View →
-            </p>
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Alert management and saved searches.
-            </p>
-          </Link>
-          <Link
-            href="/employer/jobs"
-            className="tech-card rounded-xl group border-dashed"
-          >
-            <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
-              Employer View →
-            </p>
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Job posting and verification flows.
-            </p>
-          </Link>
+          {userFlowPreviews.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="tech-card rounded-xl group border-dashed"
+            >
+              <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
+                {link.title}
+              </p>
+              <p className="mt-3 text-xs font-medium text-slate-500">
+                {link.description}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
     </main>
