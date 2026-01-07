@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 type Profile = {
   id: string;
@@ -153,7 +154,7 @@ export default function ProfilePage() {
           Profile changes are logged and can be reviewed by administrators in the audit logs.
         </p>
         <Button variant="outline" className="mt-2" asChild>
-          <a href="/admin/audit" target="_blank">View Audit Logs</a>
+          <Link href="/admin/audit-logs">View Audit Logs</Link>
         </Button>
       </div>
     </main>

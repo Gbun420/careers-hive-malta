@@ -150,7 +150,6 @@ export default function AdminReportsList() {
                       </div>
                       <Link 
                         href={`/jobs/${report.job_id}`}
-                        target="_blank"
                         className="h-10 px-4 rounded-xl border border-slate-200 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-colors"
                       >
                         View Job <ExternalLink className="h-3 w-3" />

@@ -9,6 +9,13 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
+  // 1. Kill Switch Check
+  if (process.env.CRON_ENABLED !== "true") {
+    trackEvent('cron_skipped' as any, { job: 'alerts_dispatch', reason: 'disabled' });
+    return new NextResponse(null, { status: 204 });
+  }
+
+  // 2. Secret Validation
   const authHeader = request.headers.get("x-cron-secret");
   if (!process.env.CRON_SECRET || authHeader !== process.env.CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -36,7 +43,7 @@ export async function POST(request: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://careers-hive-malta-prod.vercel.app";
 
     for (const alert of alerts) {
-      // Check frequency (simplified: this cron runs daily)
+      // Check frequency (daily cron)
       if (alert.frequency === "WEEKLY") {
           const isMonday = new Date().getDay() === 1;
           if (!isMonday) continue;
