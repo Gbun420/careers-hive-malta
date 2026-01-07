@@ -1,6 +1,7 @@
 import "server-only";
 import Stripe from "stripe";
 import type { ErrorCode } from "@/lib/api/errors";
+import { SITE_URL } from "@/lib/site/url";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -13,8 +14,8 @@ const featuredPriceLabel =
   process.env.FEATURED_PRICE_LABEL ?? process.env.STRIPE_FEATURED_PRICE_LABEL;
 
 export const stripeConfig = {
-  successUrl: process.env.STRIPE_SUCCESS_URL || `${process.env.NEXT_PUBLIC_SITE_URL}/employer/billing/success`,
-  cancelUrl: process.env.STRIPE_CANCEL_URL || `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
+  successUrl: process.env.STRIPE_SUCCESS_URL || `${SITE_URL}/employer/billing/success`,
+  cancelUrl: process.env.STRIPE_CANCEL_URL || `${SITE_URL}/pricing`,
   taxEnabled: process.env.STRIPE_TAX_ENABLED === "true",
 };
 
