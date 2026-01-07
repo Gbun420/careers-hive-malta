@@ -1,26 +1,14 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
-import { getUserRole } from "@/lib/auth/roles";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const supabase = createRouteHandlerClient();
-  if (!supabase) {
-    return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
-
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError || !authData.user) {
-    return jsonError("UNAUTHORIZED", "Authentication required.", 401);
-  }
-
-  const role = getUserRole(authData.user);
-  if (role !== "admin") {
-    return jsonError("FORBIDDEN", "Admin access required.", 403);
-  }
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase } = adminAuth;
 
   // Parallelize queries for performance
   const [

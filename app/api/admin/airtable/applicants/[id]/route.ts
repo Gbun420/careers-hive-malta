@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth/admin-guard";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { updateApplicant, ApplicantFields } from "@/lib/airtable";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error } = await requireAdmin();
-  if (error) return error;
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
 
   const { id } = await params;
 

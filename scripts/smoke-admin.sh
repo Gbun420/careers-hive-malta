@@ -31,14 +31,14 @@ show_chain() {
 
 # --- 1. Public Pages (Expected FINAL 200) ---
 echo "--- Checking public pages (following redirects) ---"
-for path in "/pricing" "/robots.txt" "/sitemap.xml"; do
+for path in "/pricing" "/robots.txt" "/sitemap.xml" "/api/health"; do
   status=$(final_code "$BASE_URL$path")
   if [ "$status" == "200" ]; then
     echo "✅ $path: $status (FINAL)"
   else
     echo "❌ $path: $status (FAILED - expected 200 FINAL)"
-    if [ "$path" == "/pricing" ]; then
-      echo "Redirect chain for $path:"
+    if [ "$path" == "/pricing" ] || [ "$path" == "/api/health" ]; then
+      echo "Redirect chain/Response for $path:"
       show_chain "$BASE_URL$path"
     fi
   fi

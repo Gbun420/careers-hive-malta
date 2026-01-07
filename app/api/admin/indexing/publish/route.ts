@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
-import { getUserRole } from "@/lib/auth/roles";
-import { publishIndexingNotification, IndexingNotificationType } from "@/lib/google/indexing";
+import { publishIndexingNotification } from "@/lib/google/indexing";
 import { z } from "zod";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const BodySchema = z.object({
   url: z.string().url(),
@@ -13,22 +13,8 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const supabase = createRouteHandlerClient();
-  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured", 503);
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
-
-  // Check admin role
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return jsonError("FORBIDDEN", "Admin access required", 403);
-  }
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
 
   try {
     const body = await request.json();

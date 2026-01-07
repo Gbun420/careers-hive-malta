@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth/admin-guard";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase } = adminAuth;
 
-  const auth = await requireAdmin();
-  if (!auth.supabase || !auth.user) {
-    return auth.error ?? jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-  }
-
-  const { data, error } = await auth.supabase
+  const { data, error } = await supabase
     .from("employer_verifications")
     .select("id, employer_id, status, notes, submitted_at, reviewed_at, reviewer_id")
     .order("submitted_at", { ascending: false });

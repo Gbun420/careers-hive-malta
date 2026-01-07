@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth/admin-guard";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { listApplicants, listInterviewingApplicants, getInterviewersMap } from "@/lib/airtable";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
-  const { error } = await requireAdmin();
-  if (error) return error;
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
 
   const { searchParams } = new URL(request.url);
   const mode = searchParams.get("mode");

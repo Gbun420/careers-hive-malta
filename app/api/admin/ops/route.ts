@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { requireAdminApi } from "@/lib/auth/requireAdmin";
 import { jsonError } from "@/lib/api/errors";
-import { getUserRole } from "@/lib/auth/roles";
 import { z } from "zod";
 
 export const runtime = "nodejs";
@@ -14,14 +13,9 @@ const UpdateCheckSchema = z.object({
 });
 
 export async function GET() {
-  const supabase = createRouteHandlerClient();
-  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError || !authData.user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
-
-  const role = getUserRole(authData.user);
-  if (role !== "admin") return jsonError("FORBIDDEN", "Admin access required.", 403);
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase } = adminAuth;
 
   const { data, error } = await supabase
     .from("ops_checks")
@@ -35,14 +29,9 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
-  const supabase = createRouteHandlerClient();
-  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
-
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError || !authData.user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
-
-  const role = getUserRole(authData.user);
-  if (role !== "admin") return jsonError("FORBIDDEN", "Admin access required.", 403);
+  const adminAuth = await requireAdminApi();
+  if ("error" in adminAuth) return adminAuth.error;
+  const { supabase, user: adminUser } = adminAuth;
 
   try {
     const body = await request.json();
@@ -57,7 +46,7 @@ export async function PATCH(request: NextRequest) {
         status,
         notes,
         last_checked_at: new Date().toISOString(),
-        last_checked_by: authData.user.id,
+        last_checked_by: adminUser.id,
         updated_at: new Date().toISOString()
       })
       .eq("id", id)
