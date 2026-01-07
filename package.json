@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run validate:links && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "validate:links": "node scripts/validate-no-about-blank.js",
     "review": "npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
