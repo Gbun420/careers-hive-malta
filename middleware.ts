@@ -29,7 +29,8 @@ function getRoleFromPath(pathname: string): string | null {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (isStaticAsset(pathname) || pathname.startsWith("/api")) {
+  // 1. Absolute early return for APIs and Assets
+  if (pathname.startsWith("/api") || isStaticAsset(pathname)) {
     return NextResponse.next();
   }
 
@@ -80,5 +81,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)"],
 };
