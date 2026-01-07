@@ -36,21 +36,33 @@ export async function middleware(request: NextRequest) {
 
   // 2. Production Canonical Host Redirect
   if (process.env.VERCEL_ENV === "production") {
-    const canonicalUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://careers-hive-malta-prod.vercel.app");
-    const canonicalHost = canonicalUrl.host;
-    const requestHost = request.headers.get("host");
+    let siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    // Handle empty string or missing protocol
+    if (!siteUrl || !siteUrl.startsWith("http")) {
+      siteUrl = "https://careers-hive-malta-prod.vercel.app";
+    }
 
-    if (requestHost && requestHost !== canonicalHost) {
-      const url = request.nextUrl.clone();
-      url.protocol = "https:";
-      url.host = canonicalHost;
-      url.port = ""; // Ensure standard port
-      return NextResponse.redirect(url, 308);
+    try {
+      const canonicalUrl = new URL(siteUrl);
+      const canonicalHost = canonicalUrl.host;
+      const requestHost = request.headers.get("host");
+
+      if (requestHost && requestHost !== canonicalHost) {
+        const url = request.nextUrl.clone();
+        url.protocol = "https:";
+        url.host = canonicalHost;
+        url.port = ""; // Ensure standard port
+        return NextResponse.redirect(url, 308);
+      }
+    } catch (e) {
+      // If URL parsing fails, skip redirect to prevent 500 error
+      console.error("Failed to parse canonical URL:", siteUrl);
     }
   }
 
   // Normalize the legacy /Careers.mt path (case-insensitive) to home
-  if (pathname.toLowerCase() === "/careers.mt") {
+  const lowerPath = pathname.toLowerCase();
+  if (lowerPath === "/careers.mt" || lowerPath === "/careers.mt/") {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url, 308);
