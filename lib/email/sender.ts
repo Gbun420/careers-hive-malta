@@ -3,6 +3,7 @@ import "server-only";
 import { renderDigestEmail, renderJobAlertEmail } from "@/lib/email/templates/job-alert";
 import { renderEmployerMessageEmail } from "@/lib/email/templates/employer-message";
 import type { Job } from "@/lib/jobs/schema";
+import { SITE_URL } from "@/lib/site/url";
 
 export type EmailSendResult =
   | { ok: true; id?: string }
@@ -30,7 +31,7 @@ type EmployerMessagePayload = {
   ctaUrl: string;
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const baseUrl = SITE_URL;
 const resendApiKey = process.env.RESEND_API_KEY;
 const resendFrom = process.env.RESEND_FROM || "Careers.mt <onboarding@resend.dev>";
 const recipientOverride = process.env.EMAIL_RECIPIENT_OVERRIDE;
