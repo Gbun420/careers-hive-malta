@@ -9,6 +9,7 @@ import { formatSalary } from "@/lib/jobs/format";
 import { Badge } from "@/components/ui/badge";
 import ApplyButton from "./apply-button";
 import { MapPin, Euro, Calendar, Share2, ExternalLink } from "lucide-react";
+import { SafeExternalLink } from "@/components/common/SafeExternalLink";
 
 type ApiError = {
   error?: {
@@ -131,10 +132,10 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
           <div className="flex flex-col gap-4 sm:w-full lg:w-auto">
             {job.is_aggregated && job.apply_url ? (
               <Button asChild size="lg" className="rounded-xl px-10 bg-brand text-white border-none shadow-cta h-12 gap-2">
-                <a href={job.apply_url} target="_blank" rel="noopener noreferrer">
+                <SafeExternalLink href={job.apply_url}>
                   Apply on company site
                   <ExternalLink className="h-4 w-4" />
-                </a>
+                </SafeExternalLink>
               </Button>
             ) : (
               <ApplyButton jobId={job.id} jobTitle={job.title} />

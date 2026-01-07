@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
+import { SafeExternalLink } from "@/components/common/SafeExternalLink";
 
 // New Refined Components
 import ApplicationDetailHeader from "@/components/employer/ApplicationDetailHeader";
@@ -251,10 +252,10 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ id
                     </div>
                     {app.candidate.cv_file_path ? (
                       <Button asChild className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white border-none shadow-lg shadow-indigo-600/10 gap-2 font-black uppercase tracking-widest text-[10px]">
-                        <a href={app.candidate.cv_file_path} target="_blank" rel="noopener noreferrer">
+                        <SafeExternalLink href={app.candidate.cv_file_path}>
                           <Download className="h-3.5 w-3.5" />
                           Download PDF
-                        </a>
+                        </SafeExternalLink>
                       </Button>
                     ) : (
                       <div className="p-4 rounded-xl bg-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest text-center">

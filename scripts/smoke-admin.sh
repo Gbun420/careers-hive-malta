@@ -41,13 +41,13 @@ fi
 
 # --- 2. Public Pages (Expected FINAL 200) ---
 echo "--- Checking public pages (following redirects) ---"
-for path in "/pricing" "/robots.txt" "/sitemap.xml"; do
+for path in "/pricing" "/robots.txt" "/sitemap.xml" "/Careers.mt" "/careers.mt"; do
   status=$(final_code "$BASE_URL$path")
   if [ "$status" == "200" ]; then
     echo "✅ $path: $status (FINAL)"
   else
     echo "❌ $path: $status (FAILED - expected 200 FINAL)"
-    if [ "$path" == "/pricing" ]; then
+    if [ "$path" == "/pricing" ] || [ "$path" == "/Careers.mt" ]; then
       echo "Redirect chain for $path:"
       show_chain "$BASE_URL$path"
     fi
