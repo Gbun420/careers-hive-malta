@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { z } from "zod";
+import { rateLimit, buildRateLimitKey } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   }
 
   const userId = authData.user.id;
+
+  // 0. Rate Limiting
+  const limitKey = buildRateLimitKey(request, "job_application", userId);
+  const { ok } = await rateLimit(limitKey, { windowMs: 60 * 60 * 1000, max: 20 });
+  if (!ok) {
+    return jsonError("RATE_LIMIT_EXCEEDED", "Hourly application limit reached. Quality over quantity!", 429);
+  }
 
   let body: any;
   try {

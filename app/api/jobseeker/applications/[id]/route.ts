@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { sendEmail } from "@/lib/email/sender";
+import { rateLimit, buildRateLimitKey } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -10,7 +11,7 @@ type Params = { params: Promise<{ id: string }> };
 export async function GET(request: NextRequest, { params }: Params) {
   const { id } = await params;
   const supabase = createRouteHandlerClient();
-  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase is not configured.", 503);
+  if (!supabase) return jsonError("SUPABASE_NOT_CONFIGURED", "Supabase not configured.", 503);
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
@@ -57,6 +58,13 @@ export async function POST(request: NextRequest, { params }: Params) {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
+
+  // 0. Rate Limiting
+  const limitKey = buildRateLimitKey(request, "jobseeker_message", user.id);
+  const { ok } = await rateLimit(limitKey, { windowMs: 60 * 1000, max: 10 });
+  if (!ok) {
+    return jsonError("RATE_LIMIT_EXCEEDED", "Too many messages. Please wait a minute.", 429);
+  }
 
   try {
     const { body } = await request.json();

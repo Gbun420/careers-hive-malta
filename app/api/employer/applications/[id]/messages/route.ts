@@ -3,6 +3,7 @@ import { createRouteHandlerClient, createServiceRoleClient } from "@/lib/supabas
 import { jsonError } from "@/lib/api/errors";
 import { sendEmployerMessageEmail } from "@/lib/email/sender";
 import { trackEvent } from "@/lib/analytics";
+import { rateLimit, buildRateLimitKey } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -41,6 +42,13 @@ export async function POST(
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
+
+  // 0. Rate Limiting
+  const limitKey = buildRateLimitKey(request, "employer_message", user.id);
+  const { ok, remaining } = await rateLimit(limitKey, { windowMs: 60 * 1000, max: 10 });
+  if (!ok) {
+    return jsonError("RATE_LIMIT_EXCEEDED", "Too many messages. Please wait a minute.", 429);
+  }
 
   try {
     const { body, sender_role } = await request.json();

@@ -3,6 +3,7 @@ import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { jsonError } from "@/lib/api/errors";
 import { CreateJobAlertSchema } from "@/lib/alerts/types";
 import { trackEvent } from "@/lib/analytics";
+import { rateLimit, buildRateLimitKey } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -30,6 +31,13 @@ export async function POST(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
+
+  // 0. Rate Limiting
+  const limitKey = buildRateLimitKey(request, "alert_creation", user.id);
+  const { ok } = await rateLimit(limitKey, { windowMs: 24 * 60 * 60 * 1000, max: 10 });
+  if (!ok) {
+    return jsonError("RATE_LIMIT_EXCEEDED", "Daily alert limit reached.", 429);
+  }
 
   try {
     const body = await request.json();

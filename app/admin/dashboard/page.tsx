@@ -56,6 +56,18 @@ export default function AdminDashboard() {
             </p>
           </Link>
           <Link
+            href="/admin/ops"
+            className="tech-card rounded-xl group border-brand/20 bg-brand/5 shadow-sm"
+          >
+            <p className="text-[11px] font-black text-brand-700 group-hover:text-brand transition-colors uppercase tracking-widest flex items-center gap-2">
+              Launch Control
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />
+            </p>
+            <p className="mt-3 text-xs font-medium text-brand-600/80">
+              Commercial readiness gate.
+            </p>
+          </Link>
+          <Link
             href="/settings"
             className="tech-card rounded-xl group"
           >
