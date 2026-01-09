@@ -3,6 +3,7 @@ import AdminSignOutButton from "@/components/admin/sign-out-button";
 import DashboardStats from "@/components/admin/dashboard-stats";
 import ReloadSchemaButton from "@/components/admin/reload-schema-button";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -63,11 +64,11 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-12 px-6 py-16">
+    <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-12 px-6 py-16 animate-fade-up">
       <header className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-8">
         <div>
           <h1 className="text-4xl font-black tracking-tightest text-slate-950 uppercase">
-            Admin command.
+            Admin <span className="gradient-text">Command</span>.
           </h1>
           <p className="mt-3 text-lg font-medium text-slate-500">
             Global system monitoring and moderation.
@@ -78,7 +79,7 @@ export default async function AdminDashboard() {
           <AdminSignOutButton />
         </div>
       </header>
-      
+
       <DashboardStats />
 
       <section className="space-y-6">
@@ -90,15 +91,22 @@ export default async function AdminDashboard() {
             <Link
               key={link.href}
               href={link.href}
-              className={`tech-card rounded-xl group ${link.className || ""}`}
+              className={cn(
+                "glass-card hover-lift rounded-2xl group border-border/40 p-6",
+                link.className
+              )}
             >
-              <p className={`text-[11px] font-black uppercase tracking-widest flex items-center gap-2 ${
-                link.badge ? "text-brand-700 group-hover:text-brand" : "text-slate-950 group-hover:text-brand-600"
-              } transition-colors`}>
+              <p className={cn(
+                "text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors",
+                link.badge ? "text-brand group-hover:text-brand-accent" : "text-slate-950 group-hover:text-brand"
+              )}>
                 {link.title}
-                {link.badge && <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse" />}
+                {link.badge && <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />}
               </p>
-              <p className={`mt-3 text-xs font-medium ${link.badge ? "text-brand-600/80" : "text-slate-500"}`}>
+              <p className={cn(
+                "mt-3 text-xs font-medium leading-relaxed",
+                link.badge ? "text-brand/70" : "text-slate-500"
+              )}>
                 {link.description}
               </p>
             </Link>
@@ -110,17 +118,17 @@ export default async function AdminDashboard() {
         <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
           User Flow Previews
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2">
           {userFlowPreviews.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="tech-card rounded-xl group border-dashed"
+              className="glass-card hover-lift rounded-[2rem] group border-dashed p-8"
             >
-              <p className="text-[11px] font-black text-slate-950 group-hover:text-brand-600 transition-colors uppercase tracking-widest">
+              <p className="text-[11px] font-black text-slate-950 group-hover:text-brand transition-colors uppercase tracking-widest">
                 {link.title}
               </p>
-              <p className="mt-3 text-xs font-medium text-slate-500">
+              <p className="mt-3 text-sm font-medium text-slate-500 leading-relaxed">
                 {link.description}
               </p>
             </Link>

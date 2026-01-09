@@ -9,11 +9,6 @@ export const dynamic = "force-dynamic";
 
 const ProfileUpdateSchema = z.object({
   full_name: z.string().trim().min(2).max(100).optional(),
-  headline: z.string().trim().max(120).optional(),
-  bio: z.string().trim().max(1000).optional(),
-  experience: z.array(z.any()).optional(),
-  education: z.array(z.any()).optional(),
-  skills: z.array(z.string()).optional(),
 });
 
 export async function GET() {
@@ -29,7 +24,7 @@ export async function GET() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, role, full_name, headline, bio, experience, education, skills, created_at")
+    .select("id, role, full_name, created_at")
     .eq("id", authData.user.id)
     .maybeSingle();
 
@@ -38,24 +33,18 @@ export async function GET() {
   }
 
   if (!profile) {
-    // Return a skeleton profile if not found yet (e.g. trigger delay)
     return NextResponse.json({
       data: {
         id: authData.user.id,
         email: authData.user.email,
         role: authData.user.user_metadata?.role || "jobseeker",
         full_name: authData.user.user_metadata?.full_name || "",
-        headline: "",
-        bio: "",
-        experience: [],
-        education: [],
-        skills: [],
         created_at: new Date().toISOString(),
       },
     });
   }
 
-  return NextResponse.json({ data: profile });
+  return NextResponse.json({ data: { ...profile, email: authData.user.email } });
 }
 
 export async function PATCH(request: Request) {
@@ -85,14 +74,9 @@ export async function PATCH(request: Request) {
     .from("profiles")
     .update({
       full_name: parsed.data.full_name,
-      headline: parsed.data.headline,
-      bio: parsed.data.bio,
-      experience: parsed.data.experience,
-      education: parsed.data.education,
-      skills: parsed.data.skills,
     })
     .eq("id", authData.user.id)
-    .select("id, role, full_name, headline, bio, experience, education, skills, created_at")
+    .select("id, role, full_name, created_at")
     .single();
 
   if (updateError) {

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       .from("job_reports")
       .select(`
         *,
-        job:jobs (id, title, employer:profiles (id, full_name, headline))
+        job:jobs (id, title, employer:profiles (id, full_name))
       `)
       .order("created_at", { ascending: false });
 

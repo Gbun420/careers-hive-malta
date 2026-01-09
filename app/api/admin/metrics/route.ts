@@ -17,7 +17,8 @@ export async function GET() {
       { count: totalUsers }
     ] = await Promise.all([
       supabase.from("jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
-      supabase.from("profiles").select("*", { count: "exact", head: true }).eq("verification_status", "pending").eq("role", "employer"),
+      // Note: verification_status column missing in prod, counting all employer profiles for now
+      supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "employer"),
       supabase.from("job_reports").select("*", { count: "exact", head: true }).in("status", ["new", "reviewing"]),
       supabase.from("profiles").select("*", { count: "exact", head: true })
     ]);

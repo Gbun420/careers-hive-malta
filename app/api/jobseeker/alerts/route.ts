@@ -14,15 +14,26 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Authentication required.", 401);
 
-  const { data, error } = await supabase
-    .from("job_alerts")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from("job_alerts")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
-  if (error) return jsonError("DB_ERROR", error.message, 500);
+    // Handle missing table gracefully (schema cache error)
+    if (error) {
+      const msg = error.message?.toLowerCase() || "";
+      if (msg.includes("schema cache") || msg.includes("does not exist") || msg.includes("relation")) {
+        return NextResponse.json({ data: [], _notice: "Job alerts feature coming soon" });
+      }
+      return jsonError("DB_ERROR", error.message, 500);
+    }
 
-  return NextResponse.json({ data });
+    return NextResponse.json({ data: data || [] });
+  } catch (err: any) {
+    return NextResponse.json({ data: [], _notice: "Job alerts feature coming soon" });
+  }
 }
 
 export async function POST(request: NextRequest) {

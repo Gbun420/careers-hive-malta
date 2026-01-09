@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { 
-  Briefcase, 
-  ShieldCheck, 
-  AlertOctagon, 
+import {
+  Briefcase,
+  ShieldCheck,
+  AlertOctagon,
   Users,
   ArrowRight
 } from "lucide-react";
@@ -87,24 +87,26 @@ export default function DashboardStats() {
   ];
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map(card => (
-        <Link 
+        <Link
           key={card.title}
           href={card.href}
-          className="group tech-card rounded-[2rem] p-6 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="group glass-card hover-glow rounded-[2rem] p-6 transition-all hover:scale-[1.02] active:scale-[0.98] border-border/50"
         >
           <div className="flex items-start justify-between">
-            <div className={`rounded-2xl p-3 ${card.bg} ${card.color}`}>
+            <div className={`rounded-2xl p-3 ${card.bg} ${card.color} shadow-sm group-hover:shadow-md transition-all`}>
               <card.icon className="h-6 w-6" />
             </div>
-            <ArrowRight className="h-4 w-4 text-slate-300 transition-transform group-hover:translate-x-1 group-hover:text-slate-400" />
+            <div className="rounded-xl bg-slate-50 p-2 text-slate-300 transition-all group-hover:bg-brand group-hover:text-white">
+              <ArrowRight className="h-4 w-4" />
+            </div>
           </div>
-          <div className="mt-4">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <div className="mt-6">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
               {card.title}
             </p>
-            <p className="mt-1 text-3xl font-black text-slate-950">
+            <p className="mt-1 text-3xl font-black text-slate-950 tracking-tightest">
               {card.value}
             </p>
           </div>

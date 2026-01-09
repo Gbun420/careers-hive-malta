@@ -19,7 +19,7 @@ export default function SiteHeader() {
 
   useEffect(() => {
     if (!supabase) return;
-    
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -57,7 +57,7 @@ export default function SiteHeader() {
               Verified
             </span>
           </div>
-          
+
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navItems.map((item) => (
               <Link
@@ -82,15 +82,15 @@ export default function SiteHeader() {
           <div className="hidden sm:flex items-center gap-2 lg:gap-4">
             {user ? (
               <>
-                <Link 
-                  href={role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}
+                <Link
+                  href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}
                   className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-brand transition-colors px-3 py-2 rounded-lg"
                 >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
                 </Link>
                 {role === 'jobseeker' && (
-                  <Link 
+                  <Link
                     href="/jobseeker/applications"
                     className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-brand transition-colors px-3 py-2 rounded-lg"
                   >
@@ -98,7 +98,7 @@ export default function SiteHeader() {
                     My Applications
                   </Link>
                 )}
-                <Link 
+                <Link
                   href="/profile"
                   className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-brand/10 hover:text-brand transition-all"
                 >
@@ -116,8 +116,8 @@ export default function SiteHeader() {
               </>
             )}
           </div>
-          
-          <button 
+
+          <button
             className="lg:hidden p-2 text-muted-foreground hover:text-brand transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? "Close mobile menu" : "Open mobile menu"}
@@ -149,7 +149,7 @@ export default function SiteHeader() {
               {user ? (
                 <>
                   <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl font-bold border-border" onClick={() => setIsMenuOpen(false)}>
-                    <Link href={role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}>Dashboard</Link>
+                    <Link href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}>Dashboard</Link>
                   </Button>
                   {role === 'jobseeker' && (
                     <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl font-bold border-border" onClick={() => setIsMenuOpen(false)}>
