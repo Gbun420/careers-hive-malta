@@ -25,15 +25,18 @@ export async function GET(
       *,
       employer:profiles!jobs_employer_id_fkey (
         id,
-        full_name,
-        headline,
-        verification_status
+        full_name
+
       )
     `)
     .eq("id", id)
     .single();
 
-  if (error || !data) return jsonError("NOT_FOUND", "Job not found.", 404);
+  if (error || !data) {
+    if (error) console.error("Job detail error:", error);
+    if (!data) console.error("Job details empty for ID:", id);
+    return jsonError("NOT_FOUND", "Job not found.", 404);
+  }
 
   const [withFeatured] = await attachFeaturedStatus([data as Job]);
   const [enriched] = await attachEmployerVerified([withFeatured || data as Job]);

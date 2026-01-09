@@ -54,24 +54,24 @@ export async function GET(request: NextRequest) {
       .eq("employer_id", authData.user.id)
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
-    
+
     if (error) {
-         return jsonError("DB_ERROR", error.message, 500);
+      return jsonError("DB_ERROR", error.message, 500);
     }
 
     const jobs = data || [];
     const withFeatured = await attachFeaturedStatus(jobs as Job[]);
     const enriched = await attachEmployerVerified(withFeatured);
-    
-    return NextResponse.json({ 
-        data: enriched, 
-        meta: { 
-            total: count || 0,
-            limit,
-            page: pageParam,
-            has_more: count ? (offset + jobs.length < count) : false,
-            billing_enabled: false 
-        } 
+
+    return NextResponse.json({
+      data: enriched,
+      meta: {
+        total: count || 0,
+        limit,
+        page: pageParam,
+        has_more: count ? (offset + jobs.length < count) : false,
+        billing_enabled: false
+      }
     });
   }
 
@@ -84,17 +84,16 @@ export async function GET(request: NextRequest) {
   let dbQuery = supabase
     .from("jobs")
     .select("*", { count: "exact" })
-    .eq("is_active", true)
-    .eq("status", "active");
+    .eq("is_active", true);
 
   if (location) {
     dbQuery = dbQuery.ilike("location", `%${location}%`);
   }
-  
+
   if (category) {
     dbQuery = dbQuery.ilike("industry", `%${category}%`);
   }
-  
+
   if (query) {
     dbQuery = dbQuery.ilike("title", `%${query}%`);
   }
@@ -107,9 +106,9 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
-    if (error) {
-         return jsonError("DB_ERROR", error.message, 500);
-    }
+  if (error) {
+    return jsonError("DB_ERROR", error.message, 500);
+  }
 
   const jobs = data || [];
   let withFeatured = await attachFeaturedStatus(jobs as Job[]);
@@ -121,19 +120,19 @@ export async function GET(request: NextRequest) {
 
   const sorted = sortFeaturedJobs(enriched);
 
-  return NextResponse.json({ 
+  return NextResponse.json({
     data: sorted,
     meta: {
-        total: count || 0,
-        limit,
-        page: pageParam,
-        has_more: count ? (offset + jobs.length < count) : false
+      total: count || 0,
+      limit,
+      page: pageParam,
+      has_more: count ? (offset + jobs.length < count) : false
     },
     source: "db"
   }, {
-      headers: { 
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
-      }
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+    }
   });
 }
 
@@ -182,10 +181,10 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase
     .from("jobs")
     .insert({
-        ...normalized,
-        employer_id: authData.user.id,
-        status: finalStatus,
-        is_active: finalStatus === "active"
+      ...normalized,
+      employer_id: authData.user.id,
+      status: finalStatus,
+      is_active: finalStatus === "active"
     })
     .select()
     .single();
