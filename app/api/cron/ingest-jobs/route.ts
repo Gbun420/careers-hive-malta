@@ -10,16 +10,16 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
-  // 1. Kill Switch Check
-  if (process.env.CRON_ENABLED !== "true") {
-    trackEvent('cron_skipped' as any, { job: 'job_ingestion', reason: 'disabled' });
-    return new NextResponse(null, { status: 204 });
-  }
-
-  // 2. Secret Validation
+  // 1. Secret Validation
   const authHeader = request.headers.get("x-cron-secret");
   if (!process.env.CRON_SECRET || authHeader !== process.env.CRON_SECRET) {
     return new Response("Unauthorized", { status: 401 });
+  }
+
+  // 2. Kill Switch Check
+  if (process.env.CRON_ENABLED !== "true") {
+    trackEvent('cron_skipped' as any, { job: 'job_ingestion', reason: 'disabled' });
+    return new NextResponse(null, { status: 204 });
   }
 
   const supabase = createServiceRoleClient();
