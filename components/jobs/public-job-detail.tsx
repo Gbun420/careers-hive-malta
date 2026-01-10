@@ -43,6 +43,15 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
         }
 
         setJob(payload.data ?? null);
+        
+        // Track View
+        if (payload.data) {
+          fetch(`/api/jobs/${id}/track`, {
+            method: "POST",
+            body: JSON.stringify({ type: "view" }),
+          }).catch(() => {}); // Fire and forget
+        }
+
       } catch (err) {
         setError({
           error: {
@@ -56,6 +65,13 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
 
     void loadJob();
   }, [id]);
+
+  const handleExternalApply = () => {
+    fetch(`/api/jobs/${id}/track`, {
+      method: "POST",
+      body: JSON.stringify({ type: "click" }),
+    }).catch(() => {});
+  };
 
   if (loading) {
     return (
@@ -131,7 +147,7 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
 
           <div className="flex flex-col gap-4 sm:w-full lg:w-auto">
             {job.is_aggregated && job.apply_url ? (
-              <Button asChild size="lg" className="rounded-xl px-10 bg-brand text-white border-none shadow-cta h-12 gap-2">
+              <Button asChild size="lg" className="rounded-xl px-10 bg-brand text-white border-none shadow-cta h-12 gap-2" onClick={handleExternalApply}>
                 <SafeExternalLink href={job.apply_url}>
                   Apply on company site
                   <ExternalLink className="h-4 w-4" />
