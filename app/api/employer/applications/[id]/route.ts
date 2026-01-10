@@ -15,25 +15,35 @@ export async function GET(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return jsonError("UNAUTHORIZED", "Auth required", 401);
 
-  const { data, error } = await supabase
-    .from("applications")
-    .select(`
-      *,
-      job:jobs(id, title, location),
-      candidate:profiles!user_id(id, full_name, headline, skills, bio, cv_file_path)
-    `)
-    .eq("id", id)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from("applications")
+      .select(`
+        *,
+        job:jobs(id, title, location),
+        candidate:profiles!user_id(id, full_name, headline, skills, bio, cv_file_path)
+      `)
+      .eq("id", id)
+      .single();
 
-  if (error) return jsonError("DB_ERROR", error.message, 500);
-  if (!data) return jsonError("NOT_FOUND", "Application not found", 404);
+    if (error) {
+      const msg = error.message?.toLowerCase() || "";
+      if (msg.includes("schema cache") || msg.includes("does not exist") || msg.includes("relation")) {
+        return jsonError("NOT_FOUND", "Applications feature coming soon", 404);
+      }
+      return jsonError("DB_ERROR", error.message, 500);
+    }
+    if (!data) return jsonError("NOT_FOUND", "Application not found", 404);
 
-  // Ownership Check: ensure employer owns the job
-  if (data.employer_id !== user.id && data.job?.employer_id !== user.id) {
+    // Ownership Check: ensure employer owns the job
+    if (data.employer_id !== user.id && data.job?.employer_id !== user.id) {
       return jsonError("FORBIDDEN", "Unauthorized access", 403);
-  }
+    }
 
-  return NextResponse.json({ data });
+    return NextResponse.json({ data });
+  } catch (err: any) {
+    return jsonError("NOT_FOUND", "Applications feature coming soon", 404);
+  }
 }
 
 export async function PATCH(
@@ -62,7 +72,13 @@ export async function PATCH(
       .update({ status, updated_at: new Date().toISOString() })
       .eq("id", id);
 
-    if (error) return jsonError("DB_ERROR", error.message, 500);
+    if (error) {
+      const msg = error.message?.toLowerCase() || "";
+      if (msg.includes("schema cache") || msg.includes("does not exist") || msg.includes("relation")) {
+        return jsonError("NOT_FOUND", "Applications feature coming soon", 404);
+      }
+      return jsonError("DB_ERROR", error.message, 500);
+    }
 
     return NextResponse.json({ success: true });
   } catch {

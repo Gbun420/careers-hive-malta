@@ -9,6 +9,7 @@ export function getSafeSiteUrl() {
 }
 
 export const SITE_URL = getSafeSiteUrl();
+export const SITE_NAME = "Careers.mt";
 
 /**
  * Generates an absolute URL for a given path.

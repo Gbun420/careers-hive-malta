@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { fulfillFeaturedCheckoutSession } from "@/lib/billing/fulfillment";
+import { fulfillFeaturedCheckoutSession, fulfillSubscription, handleSubscriptionDeleted } from "@/lib/billing/fulfillment";
 import { SITE_URL } from "@/lib/site/url";
 
 export const runtime = "nodejs";
@@ -37,15 +37,34 @@ export async function POST(request: NextRequest) {
   }
 
   // Handle the event
+  console.log(`[Stripe Webhook] Processing event: ${event.type} (${event.id})`);
+
   switch (event.type) {
-    case "checkout.session.completed":
-      const session = event.data.object as Stripe.Checkout.Session;
+    case "checkout.session.completed": {
+      const session = event.data.object as any;
       if (session.payment_status === "paid") {
-        await fulfillFeaturedCheckoutSession(session);
+        const result = await fulfillFeaturedCheckoutSession(session);
+        if (!result.ok) {
+          console.error("[Stripe Webhook] Featured fulfillment failed:", result.error);
+          return new Response(`Fulfillment Error: ${result.error.message}`, { status: 500 });
+        }
       }
       break;
+    }
+    case "invoice.payment_succeeded": {
+      const invoice = event.data.object as any;
+      if (invoice.subscription) {
+        await fulfillSubscription(invoice.subscription as string, stripe);
+      }
+      break;
+    }
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as any;
+      await handleSubscriptionDeleted(subscription.id);
+      break;
+    }
     default:
-      // Unhandled event type
+    // Unhandled event type
   }
 
   return NextResponse.json({ received: true });

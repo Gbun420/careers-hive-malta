@@ -64,11 +64,13 @@ export async function middleware(request: NextRequest) {
   const isLocal = request.headers.get("host")?.includes("localhost") || request.headers.get("host")?.includes("127.0.0.1");
 
   const missing = getMissingSupabaseEnv();
-  
-  // Block setup in production if configured
+
+  /* Removed production block for setup to allow viewing Stripe/Meili status */
+  /*
   if (!isLocal && process.env.NODE_ENV === "production" && missing.length === 0 && (pathname === "/setup" || pathname.startsWith("/setup/"))) {
     return NextResponse.redirect(new URL("/", request.url));
   }
+  */
 
   // Only force /setup if NOT local
   if (!isLocal && missing.length > 0) {

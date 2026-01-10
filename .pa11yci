@@ -1,0 +1,10 @@
+{
+  "defaults": { "standard": "WCAG2AA", "runners": ["htmlcs", "axe"] },
+  "urls":
+    [
+      "https://careers-hive-malta-prod.vercel.app",
+      "https://careers-hive-malta-prod.vercel.app/jobs",
+      "https://careers-hive-malta-prod.vercel.app/login",
+      "https://careers-hive-malta-prod.vercel.app/signup"
+    ]
+}

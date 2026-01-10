@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { JobCard } from "@/components/ui/job-card";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function RecommendedJobs() {
@@ -29,9 +29,9 @@ export default function RecommendedJobs() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className="p-8 space-y-6">
         {[1, 2].map((i) => (
-          <div key={i} className="h-40 w-full animate-pulse rounded-2xl bg-slate-100" />
+          <div key={i} className="h-44 w-full animate-pulse rounded-[2rem] bg-slate-100/50 outline outline-1 outline-slate-200/50" />
         ))}
       </div>
     );
@@ -39,41 +39,49 @@ export default function RecommendedJobs() {
 
   if (jobs.length === 0) {
     return (
-      <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-8 text-center">
-        <p className="text-sm font-bold text-navy-950">No personalized matches yet.</p>
-        <p className="mt-2 text-xs text-slate-500">Update your profile skills to see roles that match your expertise.</p>
-        <Link href="/profile" className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-coral-500 hover:text-coral-600">
-          Complete Profile <ArrowRight className="h-3 w-3" />
+      <div className="p-16 text-center flex flex-col items-center gap-6">
+        <div className="h-20 w-20 flex items-center justify-center rounded-full bg-slate-50 text-slate-300">
+          <Search className="h-8 w-8" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-lg font-black text-slate-950 uppercase tracking-tight">No matches yet.</h3>
+          <p className="text-sm text-slate-500 max-w-xs mx-auto">
+            Update your professional skills and headline to unlock AI-powered job recommendations.
+          </p>
+        </div>
+        <Link
+          href="/profile"
+          className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-brand/20 hover:bg-brand/90 hover-lift transition-all"
+        >
+          Optimize Profile <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-navy-950">
-          <Sparkles className="h-4 w-4 text-gold-500 fill-gold-500" />
-          <h3 className="text-sm font-black uppercase tracking-widest">Recommended for You</h3>
+    <div className="flex flex-col h-full bg-white/30 backdrop-blur-xl">
+      <div className="p-8 space-y-8 bg-white/40">
+        <div className="grid gap-6">
+          {jobs.map((job) => (
+            <JobCard
+              key={job.id}
+              id={job.id}
+              title={job.title}
+              employerName="Verified Partner"
+              location={job.location || "Malta"}
+              createdAt={job.created_at}
+              isFeatured={job.is_featured}
+              matchScore={job.matchScore}
+            />
+          ))}
         </div>
-        <Link href="/jobs" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-navy-950 transition-colors">
-          View All Feed
-        </Link>
-      </div>
 
-      <div className="grid gap-4">
-        {jobs.map((job) => (
-          <JobCard
-            key={job.id}
-            id={job.id}
-            title={job.title}
-            employerName="Verified Brand" // Simplifying for dashboard view
-            location={job.location || "Malta"}
-            createdAt={job.created_at}
-            isFeatured={job.is_featured}
-            matchScore={job.matchScore}
-          />
-        ))}
+        <div className="pt-4 border-t border-slate-200/50 text-center">
+          <Link href="/jobs" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-brand transition-colors">
+            Explore 50+ More Maltese Roles →
+          </Link>
+        </div>
       </div>
     </div>
   );

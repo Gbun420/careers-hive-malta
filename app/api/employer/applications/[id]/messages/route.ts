@@ -30,14 +30,25 @@ export async function POST(
     if (!content) return jsonError("INVALID_INPUT", "Message content is required.", 400);
 
     // Rate limiting check
-    const { count: recentMessages } = await supabase
-      .from("application_messages")
-      .select("*", { count: "exact", head: true })
-      .eq("sender_id", authData.user.id)
-      .gt("created_at", new Date(Date.now() - 60 * 1000).toISOString());
+    try {
+      const { count: recentMessages, error: rateError } = await supabase
+        .from("application_messages")
+        .select("*", { count: "exact", head: true })
+        .eq("sender_id", authData.user.id)
+        .gt("created_at", new Date(Date.now() - 60 * 1000).toISOString());
 
-    if (recentMessages && recentMessages >= 10) {
-      return jsonError("RATE_LIMIT_EXCEEDED", "Too many messages. Please wait a minute.", 429);
+      if (rateError) {
+        const msg = rateError.message?.toLowerCase() || "";
+        if (msg.includes("schema cache") || msg.includes("does not exist") || msg.includes("relation")) {
+          // If message table is missing, skip rate limit
+        } else {
+          throw rateError;
+        }
+      } else if (recentMessages && recentMessages >= 10) {
+        return jsonError("RATE_LIMIT_EXCEEDED", "Too many messages. Please wait a minute.", 429);
+      }
+    } catch (e) {
+      // Ignore rate limit errors if table is missing
     }
 
     // Get application and jobseeker email
@@ -51,7 +62,14 @@ export async function POST(
       .eq("id", id)
       .single();
 
-    if (appError || !application) return jsonError("NOT_FOUND", "Application not found.", 404);
+    if (appError) {
+      const msg = appError.message?.toLowerCase() || "";
+      if (msg.includes("schema cache") || msg.includes("does not exist") || msg.includes("relation")) {
+        return jsonError("NOT_FOUND", "Applications feature coming soon", 404);
+      }
+      return jsonError("DB_ERROR", appError.message, 500);
+    }
+    if (!application) return jsonError("NOT_FOUND", "Application not found.", 404);
 
     const { data: userData } = await supabase.auth.admin.getUserById(application.candidate_id);
     const candidateEmail = userData?.user?.email;
@@ -66,7 +84,13 @@ export async function POST(
       .select()
       .single();
 
-    if (msgError) throw msgError;
+    if (msgError) {
+      const msg = msgError.message?.toLowerCase() || "";
+      if (msg.includes("schema cache") || msg.includes("does not exist") || msg.includes("relation")) {
+        return jsonError("NOT_FOUND", "Messaging feature coming soon", 404);
+      }
+      throw msgError;
+    }
 
     if (candidateEmail) {
       await sendEmail(

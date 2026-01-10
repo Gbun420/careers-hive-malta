@@ -18,14 +18,14 @@ export type FulfillmentError = {
 
 export type FulfillmentResult =
   | {
-      ok: true;
-      jobId: string;
-      featuredUntil: string;
-    }
+    ok: true;
+    jobId: string;
+    featuredUntil: string;
+  }
   | {
-      ok: false;
-      error: FulfillmentError;
-    };
+    ok: false;
+    error: FulfillmentError;
+  };
 
 export async function fulfillFeaturedCheckoutSession(
   session: Stripe.Checkout.Session
@@ -221,4 +221,72 @@ export async function fulfillFeaturedCheckoutSession(
     jobId,
     featuredUntil: featuredUntil.toISOString(),
   };
+}
+
+export async function fulfillSubscription(
+  subscriptionId: string,
+  stripe: Stripe
+): Promise<void> {
+  const service = createServiceRoleClient();
+  if (!service) return;
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
+  const employerId = subscription.metadata?.companyId || subscription.metadata?.employerId;
+
+  if (!employerId) {
+    console.error("No employerId found in subscription metadata", subscription.id);
+    return;
+  }
+
+  const { error } = await service.from("subscriptions").upsert({
+    employer_id: employerId,
+    stripe_subscription_id: subscription.id,
+    stripe_customer_id: subscription.customer as string,
+    plan_id: subscription.items?.data?.[0]?.price?.id,
+    status: subscription.status,
+    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+    cancel_at_period_end: subscription.cancel_at_period_end,
+    updated_at: new Date().toISOString(),
+  });
+
+  if (error) {
+    console.error("Failed to fulfill subscription:", error);
+  } else {
+    // Sync employer entitlements
+    const isPro = ["active", "trialing"].includes(subscription.status);
+    const { error: entitlementError } = await service.from("employer_entitlements").upsert({
+      user_id: employerId,
+      plan: isPro ? "PRO" : "FREE",
+      can_post_jobs: isPro,
+      updated_at: new Date().toISOString(),
+    });
+
+    if (entitlementError) {
+      console.error("Failed to sync employer entitlements:", entitlementError);
+    }
+
+    await logAudit({
+      actorId: employerId,
+      action: "subscription_fulfilled",
+      entityType: "profile",
+      entityId: employerId,
+      metadata: { subscription_id: subscriptionId, plan: isPro ? "PRO" : "FREE" },
+    });
+  }
+}
+
+export async function handleSubscriptionDeleted(
+  subscriptionId: string
+): Promise<void> {
+  const service = createServiceRoleClient();
+  if (!service) return;
+
+  const { error } = await service
+    .from("subscriptions")
+    .update({ status: "canceled", updated_at: new Date().toISOString() })
+    .eq("stripe_subscription_id", subscriptionId);
+
+  if (error) {
+    console.error("Failed to handle subscription deletion:", error);
+  }
 }

@@ -1,0 +1,11 @@
+There was a problem loading "/Users/glennbundy/Desktop/careers-hive-malta/.pa11yci":
+SyntaxError: Unexpected token ']', ..."nup",
+    ],
+}
+" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadLocalConfigUnmodified (/Users/glennbundy/Desktop/careers-hive-malta/node_modules/pa11y-ci/bin/pa11y-ci.js:167:15)
+    at /Users/glennbundy/Desktop/careers-hive-malta/node_modules/pa11y-ci/bin/pa11y-ci.js:126:13
+    at new Promise (<anonymous>)
+    at loadConfig (/Users/glennbundy/Desktop/careers-hive-malta/node_modules/pa11y-ci/bin/pa11y-ci.js:122:9)
+    at /Users/glennbundy/Desktop/careers-hive-malta/node_modules/pa11y-ci/bin/pa11y-ci.js:72:10

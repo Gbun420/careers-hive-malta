@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'https://careers-hive-malta-prod.vercel.app';
-const EMAIL = 'bundyglenn@gmail.com'; // Use a test account ideally, but using provided creds for now
-const PASSWORD = 'Floyd420!';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+const EMAIL = process.env.TEST_USER_EMAIL || 'test-employer@example.com';
+const PASSWORD = process.env.TEST_USER_PASSWORD || 'password123';
 
 test.describe('Business Critical Audit', () => {
   

@@ -14,12 +14,8 @@ export function canSignupAsAdmin(email: string): boolean {
   return allowAdminSignup && adminAllowlist.includes(email.toLowerCase());
 }
 
-/**
- * Checks if an email is allowed to access admin features.
- * Enforcement Goal: (ADMIN_ALLOWLIST + ALLOW_ADMIN_SIGNUP === "true")
- */
 export function canAccessAdmin(email: string): boolean {
-  return allowAdminSignup && adminAllowlist.includes(email.toLowerCase());
+  return adminAllowlist.includes(email.toLowerCase());
 }
 
 /** @deprecated Use canSignupAsAdmin or canAccessAdmin */

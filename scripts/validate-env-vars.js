@@ -4,6 +4,10 @@ const requiredVars = {
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     'SUPABASE_SERVICE_ROLE_KEY',
     'NEXT_PUBLIC_SITE_URL',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_WEBHOOK_SECRET',
+    'MEILI_HOST',
+    'MEILI_API_KEY',
   ],
   optional: [
     'RESEND_API_KEY',
