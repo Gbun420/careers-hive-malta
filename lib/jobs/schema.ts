@@ -22,6 +22,7 @@ export const JobSchema = z.object({
   is_aggregated: z.boolean().optional(),
   apply_url: z.string().nullable().optional(),
   application_count: z.number().optional(),
+  views_count: z.number().optional(),
   status: z.enum(["draft", "active", "closed", "filled"]).default("draft"),
 });
 

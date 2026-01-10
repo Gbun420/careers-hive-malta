@@ -20,7 +20,7 @@ type Message = {
   id: string;
   body: string;
   created_at: string;
-  sender_role: 'EMPLOYER' | 'JOBSEEKER';
+  sender_role: 'EMPLOYER' | 'CANDIDATE';
   status: 'sent' | 'delivered' | 'failed';
 };
 

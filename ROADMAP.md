@@ -29,7 +29,7 @@
 - [x] Automated Featured Activation (Stripe webhook integration)
 
 ### WEEK 11-12: Employer ATS & Analytics
-- [ ] Real-time Analytics Dashboard (Views, Clicks, ROI)
+- [x] Real-time Analytics Dashboard (Views, Clicks, ROI)
 - [ ] Applicant Pipeline (ATS-lite view)
 - [ ] Go-Live Production Audit
 

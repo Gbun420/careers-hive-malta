@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     .select(`
         *,
         job:jobs(id, title),
-        candidate:profiles!user_id(id, full_name, headline, skills)
+        candidate:profiles!applications_user_id_fkey(id, full_name, headline, skills)
     `);
 
   if (jobId) {

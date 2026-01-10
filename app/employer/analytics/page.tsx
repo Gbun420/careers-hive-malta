@@ -1,22 +1,50 @@
-import { fetchDynamicMetrics } from "@/lib/metrics";
-import { BarChart3, TrendingUp, Users, Eye, ArrowUpRight, Target } from "lucide-react";
+import { BarChart3, TrendingUp, Users, Eye, ArrowUpRight, Target, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function EmployerAnalyticsPage() {
-  const metrics = await fetchDynamicMetrics({
-    queries: ['total_job_postings', 'avg_applications_per_job', 'placements_30day', 'featured_adoption_rate'],
-    fallbacks: true
-  });
+  const supabase = createRouteHandlerClient();
+  if (!supabase) {
+    return <div>Database connection error.</div>;
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+
+  // 1. Fetch Employer Data
+  const { data: jobs } = await supabase
+    .from("jobs")
+    .select("id, is_active, views_count, application_count")
+    .eq("employer_id", user.id);
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("verification_status")
+    .eq("id", user.id)
+    .single();
+
+  // 2. Aggregate Metrics
+  const activePostings = jobs?.filter(j => j.is_active).length || 0;
+  const totalViews = jobs?.reduce((sum, j) => sum + (j.views_count || 0), 0) || 0;
+  const totalApplications = jobs?.reduce((sum, j) => sum + (j.application_count || 0), 0) || 0;
+  const conversionRate = totalViews > 0 
+    ? ((totalApplications / totalViews) * 100).toFixed(1) + "%" 
+    : "0%";
+
+  const isVerified = profile?.verification_status === 'approved';
 
   const kpis = [
-    { label: "Active Postings", value: "3", icon: BarChart3, trend: "+1 this week" },
-    { label: "Total Views (30d)", value: "1,248", icon: Eye, trend: "+12% vs last month" },
-    { label: "Applications", value: "42", icon: Users, trend: "+8% vs last month" },
-    { label: "Conversion Rate", value: "3.4%", icon: Target, trend: "Top 15% in IT" }
+    { label: "Active Postings", value: activePostings.toString(), icon: BarChart3, trend: "Live" },
+    { label: "Total Views", value: totalViews.toLocaleString(), icon: Eye, trend: "Lifetime" },
+    { label: "Applications", value: totalApplications.toLocaleString(), icon: Users, trend: "Lifetime" },
+    { label: "Conversion Rate", value: conversionRate, icon: Target, trend: "Avg per view" }
   ];
 
   return (
@@ -49,25 +77,22 @@ export default async function EmployerAnalyticsPage() {
       <div className="grid gap-8 lg:grid-cols-2 mt-12">
         <div className="rounded-[2.5rem] border border-navy-100 bg-navy-950 p-10 text-white shadow-xl">
           <h3 className="text-xl font-black">Hiring Efficiency</h3>
-          <p className="mt-2 text-sm text-navy-300 font-medium leading-relaxed">Your average time-to-hire is 14 days, which is 30% faster than the Malta industry average.</p>
+          <p className="mt-2 text-sm text-navy-300 font-medium leading-relaxed">
+            Your verification status and job performance impact your visibility.
+          </p>
           
           <div className="mt-10 space-y-8">
             <div className="space-y-2">
               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-navy-400">
-                <span>Candidate Match Quality</span>
-                <span className="text-white">92%</span>
-              </div>
-              <div className="h-1.5 w-full rounded-full bg-navy-900 overflow-hidden">
-                <div className="h-full w-[92%] bg-brand" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-navy-400">
                 <span>Employer Brand Trust</span>
-                <span className="text-white">Verified</span>
+                <span className={isVerified ? "text-emerald-400" : "text-amber-400"}>
+                  {isVerified ? "Verified" : "Pending / Unverified"}
+                </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-navy-900 overflow-hidden">
-                <div className="h-full w-[100%] bg-emerald-600 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                <div 
+                  className={`h-full transition-all duration-1000 ${isVerified ? "bg-emerald-500 w-full" : "bg-amber-500 w-1/3"}`} 
+                />
               </div>
             </div>
           </div>
@@ -91,5 +116,3 @@ export default async function EmployerAnalyticsPage() {
     </PageShell>
   );
 }
-
-import { ArrowRight } from "lucide-react";

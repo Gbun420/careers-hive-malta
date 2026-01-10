@@ -3,8 +3,9 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const params = await props.params;
   const { id } = params;
   const body = await request.json();
   const { type } = body;
@@ -15,6 +16,10 @@ export async function POST(
 
   const supabase = createServiceRoleClient();
   
+  if (!supabase) {
+    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  }
+
   // Use the RPC function we created in migration 0033
   const { error } = await supabase.rpc('track_job_metric', {
     p_job_id: id,

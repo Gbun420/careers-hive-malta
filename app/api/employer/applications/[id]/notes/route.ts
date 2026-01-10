@@ -25,7 +25,7 @@ export async function GET(
     .from("application_notes")
     .select(`
       *,
-      author:profiles!author_user_id(full_name)
+      author:profiles!application_notes_author_user_id_fkey(full_name)
     `)
     .eq("application_id", id)
     .order("pinned", { ascending: false })
@@ -62,7 +62,7 @@ export async function POST(
       })
       .select(`
         *,
-        author:profiles!author_user_id(full_name)
+        author:profiles!application_notes_author_user_id_fkey(full_name)
       `)
       .single();
 

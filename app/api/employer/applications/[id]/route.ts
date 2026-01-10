@@ -21,7 +21,7 @@ export async function GET(
       .select(`
         *,
         job:jobs(id, title, location),
-        candidate:profiles!user_id(id, full_name, headline, skills, bio, cv_file_path)
+        candidate:profiles!applications_user_id_fkey(id, full_name, headline, skills, bio, cv_file_path)
       `)
       .eq("id", id)
       .single();

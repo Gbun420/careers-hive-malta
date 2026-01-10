@@ -1,0 +1,5 @@
+feat: Implement 3-layer agent architecture and update roadmap
+
+- Created `directives/` and `execution/` folders for the new agent architecture.
+- Updated `ROADMAP.md` to mark "Real-time Analytics Dashboard" as completed.
+- Included changes for the Employer Analytics Dashboard feature (API endpoints, components, schema, migrations).

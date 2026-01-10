@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 
 type Application = {
   id: string;
-  status: 'pending' | 'reviewed' | 'interviewing' | 'rejected' | 'offered';
+  status: 'NEW' | 'REVIEWING' | 'SHORTLIST' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'HIRED';
   created_at: string;
   cover_letter: string;
-  jobs: { id: string; title: string };
-  profiles: { id: string; full_name: string; headline: string; skills: string[] };
+  job: { id: string; title: string };
+  candidate: { id: string; full_name: string; headline: string; skills: string[] };
 };
 
 export default function ApplicantTracker() {
@@ -95,11 +95,11 @@ export default function ApplicantTracker() {
 
   const tabs: { id: Application['status'] | 'all', label: string }[] = [
     { id: 'all', label: 'All' },
-    { id: 'pending', label: 'New' },
-    { id: 'reviewed', label: 'Reviewed' },
-    { id: 'interviewing', label: 'Interviews' },
-    { id: 'offered', label: 'Offers' },
-    { id: 'rejected', label: 'Rejected' }
+    { id: 'NEW', label: 'New' },
+    { id: 'REVIEWING', label: 'Reviewing' },
+    { id: 'INTERVIEW', label: 'Interviews' },
+    { id: 'OFFER', label: 'Offers' },
+    { id: 'REJECTED', label: 'Rejected' }
   ];
 
   return (
@@ -111,7 +111,7 @@ export default function ApplicantTracker() {
               Applicant <span className="gradient-text">Pipeline</span>.
             </h2>
             <p className="text-xs font-medium text-slate-500">
-              Monitoring {applications.length} active candidates across {new Set(applications.map(a => a.jobs.id)).size} roles.
+              Monitoring {applications.length} active candidates across {new Set(applications.map(a => a.job?.id).filter(Boolean)).size} roles.
             </p>
           </div>
         </div>
@@ -153,16 +153,16 @@ export default function ApplicantTracker() {
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <h3 className="font-black text-slate-950 text-base">{app.profiles?.full_name || "Maltese Talent"}</h3>
-                      <Badge variant={app.status === 'pending' ? 'new' : 'default'} className="rounded-lg text-[9px] font-black tracking-widest px-2.5 py-0.5">
-                        {app.status.toUpperCase()}
+                      <h3 className="font-black text-slate-950 text-base">{app.candidate?.full_name || "Maltese Talent"}</h3>
+                      <Badge variant={app.status === 'NEW' ? 'new' : 'default'} className="rounded-lg text-[9px] font-black tracking-widest px-2.5 py-0.5">
+                        {app.status}
                       </Badge>
                     </div>
-                    <p className="text-xs font-bold text-slate-400 italic">{app.profiles?.headline}</p>
+                    <p className="text-xs font-bold text-slate-400 italic">{app.candidate?.headline}</p>
                     <div className="flex items-center gap-6 pt-3">
                       <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
                         <Briefcase className="h-3.5 w-3.5 text-brand" />
-                        <span className="max-w-[150px] truncate">{app.jobs.title}</span>
+                        <span className="max-w-[150px] truncate">{app.job?.title || "Unknown Role"}</span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
                         <Clock className="h-3.5 w-3.5 text-brand" />
@@ -174,20 +174,20 @@ export default function ApplicantTracker() {
 
                 <div className="flex items-center gap-3">
                   <div className="hidden group-hover:flex items-center gap-2 animate-fade-in">
-                    {app.status === 'pending' && (
+                    {app.status === 'NEW' && (
                       <Button
                         size="sm"
-                        onClick={() => updateStatus(app.id, 'reviewed')}
+                        onClick={() => updateStatus(app.id, 'REVIEWING')}
                         disabled={updating === app.id}
                         className="rounded-xl bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest h-9 px-4 hover:bg-brand"
                       >
                         Accept
                       </Button>
                     )}
-                    {app.status === 'reviewed' && (
+                    {app.status === 'REVIEWING' && (
                       <Button
                         size="sm"
-                        onClick={() => updateStatus(app.id, 'interviewing')}
+                        onClick={() => updateStatus(app.id, 'INTERVIEW')}
                         disabled={updating === app.id}
                         className="rounded-xl bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest h-9 px-4"
                       >
