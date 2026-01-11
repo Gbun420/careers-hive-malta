@@ -1,0 +1,198 @@
+{
+  "timestamp": "2026-01-11T12:50:49.882Z",
+  "baseUrl": "https://careers-hive-malta-prod.vercel.app",
+  "allTestsPassed": false,
+  "results": [
+    {
+      "test": "App health endpoint",
+      "endpoint": "/api/health/app/",
+      "status": 200,
+      "expected": 200,
+      "passed": false,
+      "headers": {
+        "age": "0",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-type": "application/json",
+        "date": "Sun, 11 Jan 2026 12:50:46 GMT",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/api/health/app",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "fra1::iad1::fmcql-1768135846063-f05fcece0ffa",
+        "x-xss-protection": "1; mode=block",
+        "transfer-encoding": "chunked"
+      },
+      "body": {
+        "status": "ok",
+        "version": "1.0.0\n",
+        "commit": "placeholder_commit_sha\n"
+      }
+    },
+    {
+      "test": "DB health endpoint",
+      "endpoint": "/api/health/db/",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "headers": {
+        "age": "0",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-type": "application/json",
+        "date": "Sun, 11 Jan 2026 12:50:48 GMT",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/api/health/db",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "fra1::iad1::fmcql-1768135846280-cc2fac99321d",
+        "x-xss-protection": "1; mode=block",
+        "transfer-encoding": "chunked"
+      },
+      "body": {
+        "status": "healthy",
+        "supabaseProjectRef": "jkfwvuluvvyhyxwqnudp",
+        "requiredTables": [
+          "profiles",
+          "jobs",
+          "saved_searches",
+          "notifications",
+          "job_reports",
+          "employer_verifications",
+          "audit_logs",
+          "purchases",
+          "job_featured"
+        ],
+        "presentTables": [
+          "profiles",
+          "jobs",
+          "saved_searches",
+          "notifications",
+          "job_reports",
+          "employer_verifications",
+          "audit_logs",
+          "purchases",
+          "job_featured"
+        ],
+        "tables": [
+          {
+            "name": "profiles",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "jobs",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "saved_searches",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "notifications",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "job_reports",
+            "ok": true,
+            "column": "details"
+          },
+          {
+            "name": "employer_verifications",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "audit_logs",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "purchases",
+            "ok": true,
+            "column": "id"
+          },
+          {
+            "name": "job_featured",
+            "ok": true,
+            "column": "job_id"
+          }
+        ]
+      }
+    },
+    {
+      "test": "Public API caching",
+      "endpoint": "/api/jobs/",
+      "cacheControl": "public",
+      "expected": "public, s-maxage=60",
+      "passed": false,
+      "headers": {
+        "age": "0",
+        "cache-control": "public",
+        "content-type": "application/json",
+        "date": "Sun, 11 Jan 2026 12:50:49 GMT",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/api/jobs",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "fra1::iad1::cxxp9-1768135848219-ca5c0311ed30",
+        "x-xss-protection": "1; mode=block",
+        "transfer-encoding": "chunked"
+      }
+    },
+    {
+      "test": "Dev routes blocked in production",
+      "endpoint": "/api/dev/db/reload-schema/",
+      "status": 404,
+      "expected": 404,
+      "passed": true,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-type": "application/json",
+        "date": "Sun, 11 Jan 2026 12:50:49 GMT",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/api/dev/db/reload-schema",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "fra1::iad1::zh2xj-1768135849315-750ce7f8f2f8",
+        "x-xss-protection": "1; mode=block",
+        "transfer-encoding": "chunked"
+      }
+    },
+    {
+      "test": "Auth gates require authentication",
+      "endpoint": "/api/billing/checkout-featured/",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-type": "application/json",
+        "date": "Sun, 11 Jan 2026 12:50:49 GMT",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/api/billing/checkout-featured",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "fra1::iad1::xxm4z-1768135849675-141127aeae9e",
+        "x-xss-protection": "1; mode=block",
+        "transfer-encoding": "chunked"
+      }
+    }
+  ]
+}

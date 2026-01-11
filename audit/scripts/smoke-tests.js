@@ -60,12 +60,12 @@ class SmokeTester {
   async testHealthEndpoints() {
     console.log('1. Testing health endpoints...');
 
-    const appHealth = await this.makeRequest('/api/health/app');
-    const dbHealth = await this.makeRequest('/api/health/db');
+    const appHealth = await this.makeRequest('/api/health/app/');
+    const dbHealth = await this.makeRequest('/api/health/db/');
 
     this.results.push({
       test: 'App health endpoint',
-      endpoint: '/api/health/app',
+      endpoint: '/api/health/app/',
       status: appHealth.status,
       expected: 200,
       passed: appHealth.status === 200 && appHealth.body.status === 'healthy',
@@ -75,7 +75,7 @@ class SmokeTester {
 
     this.results.push({
       test: 'DB health endpoint',
-      endpoint: '/api/health/db',
+      endpoint: '/api/health/db/',
       status: dbHealth.status,
       expected: 200,
       passed: dbHealth.status === 200 && dbHealth.body.status === 'healthy',
@@ -87,12 +87,12 @@ class SmokeTester {
   async testPublicApiCaching() {
     console.log('2. Testing public API caching...');
 
-    const response = await this.makeRequest('/api/jobs');
+    const response = await this.makeRequest('/api/jobs/');
     const cacheControl = response.headers['cache-control'] || '';
 
     this.results.push({
       test: 'Public API caching',
-      endpoint: '/api/jobs',
+      endpoint: '/api/jobs/',
       cacheControl,
       expected: 'public, s-maxage=60',
       passed: cacheControl.includes('public') && cacheControl.includes('s-maxage=60'),
@@ -103,13 +103,13 @@ class SmokeTester {
   async testDevRoutesBlocked() {
     console.log('3. Testing dev routes are blocked...');
 
-    const response = await this.makeRequest('/api/dev/db/reload-schema', {
+    const response = await this.makeRequest('/api/dev/db/reload-schema/', {
       method: 'POST',
     });
 
     this.results.push({
       test: 'Dev routes blocked in production',
-      endpoint: '/api/dev/db/reload-schema',
+      endpoint: '/api/dev/db/reload-schema/',
       status: response.status,
       expected: 404,
       passed: response.status === 404,
@@ -120,7 +120,7 @@ class SmokeTester {
   async testAuthGates() {
     console.log('4. Testing auth gates...');
 
-    const response = await this.makeRequest('/api/billing/checkout-featured', {
+    const response = await this.makeRequest('/api/billing/checkout-featured/', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -130,7 +130,7 @@ class SmokeTester {
 
     this.results.push({
       test: 'Auth gates require authentication',
-      endpoint: '/api/billing/checkout-featured',
+      endpoint: '/api/billing/checkout-featured/',
       status: response.status,
       expected: 401,
       passed: response.status === 401,
