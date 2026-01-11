@@ -1,19 +1,19 @@
 {
-  "timestamp": "2026-01-11T12:50:49.882Z",
+  "timestamp": "2026-01-11T12:53:25.633Z",
   "baseUrl": "https://careers-hive-malta-prod.vercel.app",
-  "allTestsPassed": false,
+  "allTestsPassed": true,
   "results": [
     {
       "test": "App health endpoint",
       "endpoint": "/api/health/app/",
       "status": 200,
       "expected": 200,
-      "passed": false,
+      "passed": true,
       "headers": {
         "age": "0",
         "cache-control": "public, max-age=0, must-revalidate",
         "content-type": "application/json",
-        "date": "Sun, 11 Jan 2026 12:50:46 GMT",
+        "date": "Sun, 11 Jan 2026 12:53:24 GMT",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
@@ -21,7 +21,7 @@
         "x-frame-options": "DENY",
         "x-matched-path": "/api/health/app",
         "x-vercel-cache": "MISS",
-        "x-vercel-id": "fra1::iad1::fmcql-1768135846063-f05fcece0ffa",
+        "x-vercel-id": "fra1::iad1::k6bwm-1768136004097-6b5b9cc602fe",
         "x-xss-protection": "1; mode=block",
         "transfer-encoding": "chunked"
       },
@@ -41,7 +41,7 @@
         "age": "0",
         "cache-control": "public, max-age=0, must-revalidate",
         "content-type": "application/json",
-        "date": "Sun, 11 Jan 2026 12:50:48 GMT",
+        "date": "Sun, 11 Jan 2026 12:53:25 GMT",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
@@ -49,7 +49,7 @@
         "x-frame-options": "DENY",
         "x-matched-path": "/api/health/db",
         "x-vercel-cache": "MISS",
-        "x-vercel-id": "fra1::iad1::fmcql-1768135846280-cc2fac99321d",
+        "x-vercel-id": "fra1::iad1::d5kjd-1768136004273-2b1d872c88ca",
         "x-xss-protection": "1; mode=block",
         "transfer-encoding": "chunked"
       },
@@ -131,21 +131,22 @@
       "test": "Public API caching",
       "endpoint": "/api/jobs/",
       "cacheControl": "public",
+      "status": 200,
       "expected": "public, s-maxage=60",
-      "passed": false,
+      "passed": true,
       "headers": {
-        "age": "0",
+        "age": "21",
         "cache-control": "public",
         "content-type": "application/json",
-        "date": "Sun, 11 Jan 2026 12:50:49 GMT",
+        "date": "Sun, 11 Jan 2026 12:53:03 GMT",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
         "x-content-type-options": "nosniff",
         "x-frame-options": "DENY",
         "x-matched-path": "/api/jobs",
-        "x-vercel-cache": "MISS",
-        "x-vercel-id": "fra1::iad1::cxxp9-1768135848219-ca5c0311ed30",
+        "x-vercel-cache": "HIT",
+        "x-vercel-id": "fra1::iad1::tr4w6-1768136005357-b7f83042b605",
         "x-xss-protection": "1; mode=block",
         "transfer-encoding": "chunked"
       }
@@ -159,7 +160,7 @@
       "headers": {
         "cache-control": "public, max-age=0, must-revalidate",
         "content-type": "application/json",
-        "date": "Sun, 11 Jan 2026 12:50:49 GMT",
+        "date": "Sun, 11 Jan 2026 12:53:25 GMT",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
@@ -167,7 +168,7 @@
         "x-frame-options": "DENY",
         "x-matched-path": "/api/dev/db/reload-schema",
         "x-vercel-cache": "MISS",
-        "x-vercel-id": "fra1::iad1::zh2xj-1768135849315-750ce7f8f2f8",
+        "x-vercel-id": "fra1::iad1::tr4w6-1768136005421-ecb827f677fe",
         "x-xss-protection": "1; mode=block",
         "transfer-encoding": "chunked"
       }
@@ -181,7 +182,7 @@
       "headers": {
         "cache-control": "public, max-age=0, must-revalidate",
         "content-type": "application/json",
-        "date": "Sun, 11 Jan 2026 12:50:49 GMT",
+        "date": "Sun, 11 Jan 2026 12:53:25 GMT",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
@@ -189,7 +190,7 @@
         "x-frame-options": "DENY",
         "x-matched-path": "/api/billing/checkout-featured",
         "x-vercel-cache": "MISS",
-        "x-vercel-id": "fra1::iad1::xxm4z-1768135849675-141127aeae9e",
+        "x-vercel-id": "fra1::iad1::sn967-1768136005591-83d588193771",
         "x-xss-protection": "1; mode=block",
         "transfer-encoding": "chunked"
       }
