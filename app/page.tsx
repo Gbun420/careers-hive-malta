@@ -1,4 +1,4 @@
-import Hero from "@/components/landing/hero";
+import Hero from "@/components/landing/Hero";
 import TrustStrip from "@/components/landing/trust-strip";
 import CategoryGrid from "@/components/landing/category-grid";
 import EmployerPricingPath from "@/components/landing/employer-pricing-path";

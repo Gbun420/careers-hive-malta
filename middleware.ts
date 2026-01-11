@@ -1,82 +1,115 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from "next/server";
 
-// --- Lightweight Helpers ---
-...
+// --- Lightweight Helpers (No Supabase Imports) ---
+
+const ASSET_EXT = /\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|css|js|map|woff2?|ttf|eot)$/i;
+
+function getMissingSupabaseEnv(): string[] {
+  const requiredEnv = [
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  ];
+  return requiredEnv.filter((key) => !process.env[key]);
+}
+
+function getRoleFromPath(pathname: string): string | null {
+  if (pathname.startsWith("/jobseeker")) return "jobseeker";
+  if (pathname.startsWith("/employer")) return "employer";
+  if (pathname.startsWith("/admin")) return "admin";
+  return null;
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const lowerPath = pathname.toLowerCase();
+
+  // 1. Legacy path normalization FIRST (handles dot-paths like /Careers.mt)
+  if (lowerPath === "/careers.mt" || lowerPath === "/careers.mt/") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url, 308);
+  }
+
+  // 2. Absolute early return for APIs and real static assets
+  if (pathname.startsWith("/api") || pathname.startsWith("/_next") || ASSET_EXT.test(pathname)) {
+    return NextResponse.next();
+  }
+
+  // 3. Production Canonical Host Redirect
+  if (process.env.VERCEL_ENV === "production") {
+    let siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    // Handle empty string or missing protocol
+    if (!siteUrl || !siteUrl.startsWith("http")) {
+      siteUrl = "https://careers-hive-malta-prod.vercel.app";
+    }
+
+    try {
+      const canonicalUrl = new URL(siteUrl);
+      const canonicalHost = canonicalUrl.host;
+      const requestHost = request.headers.get("host");
+
+      if (requestHost && requestHost !== canonicalHost) {
+        const url = request.nextUrl.clone();
+        url.protocol = "https:";
+        url.host = canonicalHost;
+        url.port = ""; // Ensure standard port
+        return NextResponse.redirect(url, 308);
+      }
+    } catch (e) {
+      // If URL parsing fails, skip redirect to prevent 500 error
+      console.error("Failed to parse canonical URL:", siteUrl);
+    }
+  }
+
   const isLocal = request.headers.get("host")?.includes("localhost") || request.headers.get("host")?.includes("127.0.0.1");
 
   const missing = getMissingSupabaseEnv();
 
-  // 4. Supabase Session Refresh (Enhanced)
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-        },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabase.auth.getSession()
+  /* Removed production block for setup to allow viewing Stripe/Meili status */
+  /*
+  if (!isLocal && process.env.NODE_ENV === "production" && missing.length === 0 && (pathname === "/setup" || pathname.startsWith("/setup/"))) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+  */
 
   // Only force /setup if NOT local
   if (!isLocal && missing.length > 0) {
-...
-  if (!isProtectedRoute) {
-    return response;
+    const isSetupPath = pathname === "/setup" || pathname.startsWith("/setup/");
+    if (
+      isSetupPath ||
+      pathname.startsWith("/jobs")
+    ) {
+      return NextResponse.next();
+    }
+
+    const url = request.nextUrl.clone();
+    url.pathname = "/setup";
+    return NextResponse.redirect(url);
   }
 
-  if (!session) {
+  const roleRequired = getRoleFromPath(pathname);
+  const isProtectedRoute = roleRequired || pathname.startsWith("/settings") || pathname.startsWith("/profile");
+
+  if (!isProtectedRoute) {
+    return NextResponse.next();
+  }
+
+  // Lightweight Auth Check: Look for Supabase auth cookies
+  // Supabase SSR cookies typically start with 'sb-'
+  const allCookies = request.cookies.getAll();
+  const hasAuthCookie = allCookies.some(cookie => cookie.name.startsWith('sb-'));
+
+  if (!hasAuthCookie) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirectedFrom", pathname);
     return NextResponse.redirect(url);
   }
 
-  return response;
+  // Session exists (at least a cookie does). 
+  // We allow the request to proceed to the Page (Node.js context) 
+  // where actual role verification and session validation will happen securely.
+  return NextResponse.next();
 }
 
 export const config = {
