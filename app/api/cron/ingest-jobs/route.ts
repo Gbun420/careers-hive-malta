@@ -5,6 +5,7 @@ import { createHash } from "crypto";
 import { publishIndexingNotification } from "@/lib/google/indexing";
 import { trackEvent } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site/url";
+import { deriveRegion, estimateCommuteTime } from "@/lib/jobs/localization";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -86,6 +87,9 @@ export async function POST(request: NextRequest) {
               continue;
             }
 
+            const region = deriveRegion(location);
+            const commuteTime = estimateCommuteTime(region);
+
             const canonicalString = `${source.id}|${title}|${applyUrl}|${location}`;
             const canonicalHash = createHash("sha256").update(canonicalString).digest("hex");
 
@@ -99,6 +103,8 @@ export async function POST(request: NextRequest) {
               title,
               description,
               location,
+              office_region: region,
+              commute_time_mins: commuteTime,
               company_name: companyName,
               source_url: sourceUrl,
               apply_url: applyUrl,

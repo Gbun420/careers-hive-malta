@@ -20,7 +20,8 @@ export async function GET(request: Request) {
     .select(`
         *,
         job:jobs(id, title),
-        candidate:profiles!applications_user_id_fkey(id, full_name, headline, skills)
+        candidate:profiles!applications_user_id_fkey(id, full_name, headline, skills),
+        match:ai_match_scores(score)
     `);
 
   if (jobId) {

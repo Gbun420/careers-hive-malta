@@ -1,8 +1,51 @@
 import "server-only";
+import { Anthropic } from "@anthropic-ai/sdk";
 import { GenerationType, OutputSchemas } from "./types";
 
 export interface AIProvider {
   generate(type: GenerationType, prompt: string): Promise<any>;
+}
+
+export class MiniMaxProvider implements AIProvider {
+  private client: Anthropic;
+
+  constructor(apiKey: string, baseURL?: string) {
+    this.client = new Anthropic({
+      apiKey,
+      baseURL: baseURL || "https://api.minimax.io/anthropic/v1",
+      defaultHeaders: {
+        "Authorization": `Bearer ${apiKey}`,
+      }
+    });
+  }
+
+  async generate(type: GenerationType, prompt: string): Promise<any> {
+    const response = await this.client.messages.create({
+      model: "MiniMax-M2.1",
+      max_tokens: 4096,
+      system: "You are a professional Maltese career coach. You output ONLY valid JSON.",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    });
+
+    const contentBlock = response.content.find((block: any) => block.type === "text");
+    if (!contentBlock || contentBlock.type !== "text") {
+      throw new Error("MiniMax Error: No text content in response");
+    }
+
+    try {
+      const content = JSON.parse(contentBlock.text);
+      // Validate against schema
+      return OutputSchemas[type].parse(content);
+    } catch (e) {
+      console.error("Failed to parse MiniMax JSON:", contentBlock.text);
+      throw new Error("MiniMax Error: Invalid JSON response");
+    }
+  }
 }
 
 export class OpenAIProvider implements AIProvider {
@@ -73,9 +116,17 @@ export class StubProvider implements AIProvider {
 }
 
 export function getAIProvider(): AIProvider {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (apiKey && apiKey !== "stub") {
-    return new OpenAIProvider(apiKey);
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const anthropicBaseUrl = process.env.ANTHROPIC_BASE_URL;
+  
+  // If MiniMax configuration is provided, prefer it
+  if (anthropicKey && anthropicBaseUrl?.includes("minimax")) {
+    return new MiniMaxProvider(anthropicKey, anthropicBaseUrl);
+  }
+
+  const openAIKey = process.env.OPENAI_API_KEY;
+  if (openAIKey && openAIKey !== "stub") {
+    return new OpenAIProvider(openAIKey);
   }
   return new StubProvider();
 }

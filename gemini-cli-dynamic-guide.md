@@ -1,4 +1,5 @@
 # Careers Hive Gemini CLI Enhancement Guide
+
 ## Dynamic Real-Data Integration (Zero Mock Data)
 
 This guide defines the system for integrating real-time data into Careers Hive using Gemini CLI, ensuring zero hardcoded numbers or mock data in marketing copy.
@@ -13,7 +14,7 @@ This guide defines the system for integrating real-time data into Careers Hive u
 ### 📊 DATA SOURCES
 
 | Source | Variable | Refresh |
-|--------|----------|---------|
+| --- | --- | --- |
 | Active Job Seekers | `${active_job_seekers}` | Hourly |
 | Verified Employers | `${verified_employers}` | Daily |
 | Job Postings | `${total_job_postings}` | Real-time |

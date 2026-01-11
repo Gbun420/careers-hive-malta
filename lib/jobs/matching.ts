@@ -48,16 +48,36 @@ export function calculateMatchScore(
     expScore = 50;
   }
 
-  // 3. Location Preference (20% weight)
+  // 3. Location & Region Match (Maltese Factor - 20% weight)
   let locScore = 0;
-  if (!job.location || job.location === "Remote" || job.location.toLowerCase().includes("remote")) {
+  const isRemote = !job.location || job.location === "Remote" || job.location.toLowerCase().includes("remote") || job.office_region === "Remote";
+  
+  if (isRemote) {
     locScore = 100;
     reasons.push("Remote friendly");
+  } else if (profile.preferred_region && job.office_region) {
+    if (profile.preferred_region === "Any" || profile.preferred_region === job.office_region) {
+      locScore = 100;
+      reasons.push(`Located in your preferred region: ${job.office_region}`);
+    } else {
+      locScore = 50;
+    }
   } else {
-    locScore = 100; // Defaulting to 100 for now as most Maltese jobs are close
+    locScore = 100; // Defaulting to 100 for now
   }
 
-  // 4. Salary Fit (20% weight)
+  // 4. Commute Time (Maltese Factor - 10% weight)
+  let commuteScore = 100;
+  if (profile.max_commute_time && job.commute_time_mins) {
+    if (job.commute_time_mins <= profile.max_commute_time) {
+      commuteScore = 100;
+      reasons.push(`Commute time (${job.commute_time_mins}m) fits your preference`);
+    } else {
+      commuteScore = Math.max(0, 100 - (job.commute_time_mins - profile.max_commute_time) * 2);
+    }
+  }
+
+  // 5. Salary Fit (10% weight)
   // Simplified since we don't have seeker salary expectations yet
   let salaryScore = 100; 
 
@@ -66,7 +86,8 @@ export function calculateMatchScore(
     (skillScore * 0.35) + 
     (expScore * 0.25) + 
     (locScore * 0.20) + 
-    (salaryScore * 0.20)
+    (commuteScore * 0.10) +
+    (salaryScore * 0.10)
   );
 
   return {

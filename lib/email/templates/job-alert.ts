@@ -8,13 +8,14 @@ type JobAlertTemplateProps = {
 export function renderJobAlertEmail({ job, baseUrl }: JobAlertTemplateProps) {
   const jobUrl = `${baseUrl}/job/${job.id}`;
   const manageUrl = `${baseUrl}/jobseeker/alerts`;
+  const locationDisplay = job.office_region ? `${job.location ?? "Malta"} (${job.office_region})` : (job.location ?? "Remote/On-site");
 
   return {
     subject: `New match: ${job.title}`,
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #0f172a;">
         <h2 style="margin: 0 0 12px;">${job.title}</h2>
-        <p style="margin: 0 0 8px;">${job.location ?? "Remote/On-site"} · ${job.salary_range ?? "Salary TBD"}</p>
+        <p style="margin: 0 0 8px;">${locationDisplay} · ${job.salary_range ?? "Salary TBD"}</p>
         <p style="margin: 0 0 16px;">${job.description}</p>
         <a href="${jobUrl}" style="display: inline-block; padding: 10px 16px; background: #0d748c; color: #fff; text-decoration: none; border-radius: 999px;">View job</a>
         <p style="margin-top: 16px; font-size: 12px; color: #64748b;">
@@ -38,7 +39,7 @@ export function renderDigestEmail({ baseUrl, jobs, frequency, unsubscribeUrl }: 
     .map(
       (job) =>
         `<li><a href="${baseUrl}/job/${job.id}">${job.title}</a> · ${
-          job.location ?? "Remote/On-site"
+          job.office_region ? `${job.location ?? "Malta"} (${job.office_region})` : (job.location ?? "Remote/On-site")
         }</li>`
     )
     .join("");

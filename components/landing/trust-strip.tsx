@@ -1,61 +1,66 @@
-import { ShieldCheck, Zap, TrendingUp, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { BRAND_NAME } from "@/lib/brand";
+"use client";
+
+import { ShieldCheck, Zap, Users, TrendingUp } from "lucide-react";
+
+const STATS = [
+  {
+    label: "Employer Trust",
+    value: "100%",
+    sub: "Vetted Brands",
+    icon: ShieldCheck,
+    color: "text-brand-navy"
+  },
+  {
+    label: "System Speed",
+    value: "< 2ms",
+    sub: "Alert Latency",
+    icon: Zap,
+    color: "text-brand-gold"
+  },
+  {
+    label: "Market Reach",
+    value: "Global",
+    sub: "Top 1% Talent",
+    icon: Users,
+    color: "text-brand-teal"
+  },
+  {
+    label: "Placements",
+    value: "Active",
+    sub: "Q1 Momentum",
+    icon: TrendingUp,
+    color: "text-primary"
+  }
+];
 
 export default function TrustStrip() {
-  const items = [
-    {
-      label: "Verified employers",
-      detail: "Every company manually checked for Malta compliance.",
-      icon: ShieldCheck,
-      color: "text-brand",
-      bg: "bg-brand/5"
-    },
-    {
-      label: "Fast alerts",
-      detail: "Real-time notifications delivered to your device instantly.",
-      icon: Zap,
-      color: "text-brand",
-      bg: "bg-brand/5"
-    },
-    {
-      label: "Fresh roles",
-      detail: "Daily updates ensuring you only see active opportunities.",
-      icon: TrendingUp,
-      color: "text-brand",
-      bg: "bg-brand/5"
-    },
-    {
-      label: "Malta-first focus",
-      detail: "The only high-performance board dedicated to the islands.",
-      icon: MapPin,
-      color: "text-brand",
-      bg: "bg-brand/5"
-    },
-  ];
-
   return (
-    <section className="bg-background py-14 md:py-20 border-t border-border">
-      <div className="mx-auto max-w-7xl px-6">
-        <h2 className="text-xl font-bold text-center text-foreground mb-12 tracking-tight">
-          Why Professionals Choose {BRAND_NAME}
-        </h2>
-        
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((item) => (
-            <div
-              key={item.label}
-              className="group flex flex-col items-center text-center p-8 rounded-2xl bg-muted/30 border border-border transition-all duration-300 hover:border-brand hover:bg-card hover:shadow-lg hover:-translate-y-1"
+    <section className="py-12 bg-white border-y border-slate-100">
+      <div className="container-wide">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+          {STATS.map((stat, i) => (
+            <div 
+              key={stat.label} 
+              className="flex items-center gap-5 group animate-fade-up"
+              style={{ animationDelay: `${i * 0.1}s` }}
             >
               <div className={cn(
-                "mb-6 flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 shadow-sm",
-                item.bg,
-                item.color
+                "h-14 w-14 rounded-2xl flex items-center justify-center bg-slate-50 transition-all duration-500 group-hover:scale-110",
+                stat.color
               )}>
-                <item.icon className="h-8 w-8" />
+                <stat.icon className="h-7 w-7" />
               </div>
-              <h3 className="text-base font-bold text-foreground mb-3 leading-tight">{item.label}</h3>
-              <p className="text-xs font-medium text-muted-foreground leading-relaxed">{item.detail}</p>
+              <div className="space-y-0.5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  {stat.label}
+                </p>
+                <p className="text-2xl font-black text-brand-navy tracking-tightest">
+                  {stat.value}
+                </p>
+                <p className="text-[10px] font-bold text-slate-400">
+                  {stat.sub}
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -63,3 +68,5 @@ export default function TrustStrip() {
     </section>
   );
 }
+
+import { cn } from "@/lib/utils";

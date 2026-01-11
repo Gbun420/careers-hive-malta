@@ -132,8 +132,14 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
             <div className="flex flex-wrap gap-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-brand" />
-                {job.location || "Malta"}
+                {job.location || "Malta"} {job.office_region && `(${job.office_region})`}
               </div>
+              {job.commute_time_mins && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-brand" />
+                  ~{job.commute_time_mins}m Commute
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Euro className="h-4 w-4 text-brand" />
                 {formatSalary(job)}
@@ -181,6 +187,20 @@ export default function PublicJobDetail({ id }: PublicJobDetailProps) {
           ))}
         </div>
       </div>
+
+      {job.sector_metadata && Object.keys(job.sector_metadata).length > 0 && (
+        <div className="rounded-[2.5rem] border border-brand/20 bg-brand/5 p-8 lg:p-12">
+          <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand mb-8">Sector Insights</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Object.entries(job.sector_metadata).map(([key, value]) => (
+              <div key={key} className="space-y-1">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{key.replace(/_/g, ' ')}</p>
+                <p className="text-lg font-black text-foreground uppercase tracking-tightest">{String(value)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,82 +1,15 @@
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
-  - generic [ref=e2]:
-    - banner [ref=e3]:
-      - generic [ref=e4]:
-        - generic [ref=e5]:
-          - link "Careers.mt" [ref=e6] [cursor=pointer]:
-            - /url: /
-            - img [ref=e8]
-            - generic [ref=e20]: Careers.mt
-          - navigation [ref=e21]:
-            - link "Browse Jobs" [ref=e22] [cursor=pointer]:
-              - /url: /jobs/
-              - text: Browse Jobs
-            - link "For Employers" [ref=e23] [cursor=pointer]:
-              - /url: /for-employers/
-              - text: For Employers
-            - link "Pricing" [ref=e24] [cursor=pointer]:
-              - /url: /pricing/
-              - text: Pricing
-            - link "Blog" [ref=e25] [cursor=pointer]:
-              - /url: /blog/
-              - text: Blog
-        - generic [ref=e27]:
-          - link "Sign In" [ref=e28] [cursor=pointer]:
-            - /url: /login/
-          - link "Post a Job" [ref=e29] [cursor=pointer]:
-            - /url: /signup/?role=employer
-    - main [ref=e30]:
-      - generic [ref=e34]:
-        - heading "Account Settings" [level=2] [ref=e35]
-        - paragraph [ref=e36]: Manage your personal information and preferences.
-    - contentinfo [ref=e37]:
-      - generic [ref=e38]:
-        - generic [ref=e39]:
-          - generic [ref=e40]:
-            - link "C Careers.mt" [ref=e41] [cursor=pointer]:
-              - /url: /
-              - generic [ref=e42]: C
-              - generic [ref=e43]: Careers.mt
-            - paragraph [ref=e44]: Malta's high-performance job feed. Bridging the gap between top talent and verified Maltese brands.
-          - generic [ref=e45]:
-            - heading "Platform" [level=4] [ref=e46]
-            - list [ref=e47]:
-              - listitem [ref=e48]:
-                - link "Browse Jobs" [ref=e49] [cursor=pointer]:
-                  - /url: /jobs/
-              - listitem [ref=e50]:
-                - link "For Employers" [ref=e51] [cursor=pointer]:
-                  - /url: /for-employers/
-              - listitem [ref=e52]:
-                - link "Pricing" [ref=e53] [cursor=pointer]:
-                  - /url: /pricing/
-              - listitem [ref=e54]:
-                - link "Blog" [ref=e55] [cursor=pointer]:
-                  - /url: /blog/
-          - generic [ref=e56]:
-            - heading "Support" [level=4] [ref=e57]
-            - list [ref=e58]:
-              - listitem [ref=e59]:
-                - link "Contact Us" [ref=e60] [cursor=pointer]:
-                  - /url: "#"
-              - listitem [ref=e61]:
-                - link "Help Center" [ref=e62] [cursor=pointer]:
-                  - /url: "#"
-              - listitem [ref=e63]:
-                - link "Privacy Policy" [ref=e64] [cursor=pointer]:
-                  - /url: "#"
-              - listitem [ref=e65]:
-                - link "Terms of Service" [ref=e66] [cursor=pointer]:
-                  - /url: "#"
-        - generic [ref=e67]:
-          - paragraph [ref=e68]: © 2026 Careers.mt. All Rights Reserved.
-          - generic [ref=e69]:
-            - link "Sitemap" [ref=e70] [cursor=pointer]:
-              - /url: /sitemap.xml
-            - link "Robots" [ref=e71] [cursor=pointer]:
-              - /url: /robots.txt
-  - alert [ref=e72]
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "Unable to connect" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Firefox can’t establish a connection to the server at localhost:3000.
+    - paragraph
+    - list [ref=e8]:
+      - listitem [ref=e9]: The site could be temporarily unavailable or too busy. Try again in a few moments.
+      - listitem [ref=e10]: If you are unable to load any pages, check your computer’s network connection.
+      - listitem [ref=e11]: If your computer or network is protected by a firewall or proxy, make sure that Nightly is permitted to access the web.
+      - listitem [ref=e12]: If you are trying to load a local network page, please check that Nightly has been granted Local Network permissions in the macOS Privacy & Security settings.
+  - button "Try Again" [active] [ref=e14]
 ```

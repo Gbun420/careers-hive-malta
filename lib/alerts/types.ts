@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const JobAlertFiltersSchema = z.object({
   location: z.string().optional(),
+  region: z.string().optional(),
   sector: z.string().optional(),
   employmentType: z.string().optional(),
   remote: z.boolean().optional(),

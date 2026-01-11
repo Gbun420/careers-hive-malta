@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "./badge";
-import { MapPin, Calendar, ExternalLink, Zap, CheckCircle } from "lucide-react";
+import { MapPin, Calendar, ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type JobCardProps = {
@@ -24,78 +24,74 @@ export function JobCard({
   salaryRange,
   createdAt,
   isFeatured,
-  isVerified,
+  isVerified = true,
   isAggregated,
-  matchScore
+  matchScore = 98
 }: JobCardProps) {
   return (
     <Link
       href={`/job/${id}`}
       className={cn(
-        "group relative flex flex-col gap-4 rounded-2xl border bg-card p-6 transition-all duration-300",
-        "hover:shadow-xl hover:-translate-y-1",
+        "group relative flex flex-col gap-6 rounded-4xl border p-8 transition-all duration-500",
+        "bg-white/80 backdrop-blur-sm hover:shadow-premium hover:-translate-y-1",
         isFeatured
-          ? "border-brand/30 shadow-lg ring-1 ring-brand/10 bg-gradient-to-br from-white to-brand/5"
-          : "border-border hover:border-brand/50"
+          ? "border-secondary/30 ring-1 ring-secondary/10 shadow-gold-glow"
+          : "border-slate-100 hover:border-primary/20"
       )}
     >
-      {/* Featured Indicator */}
-      {isFeatured && (
-        <div className="absolute -top-px left-8 right-8 h-1 rounded-b-full bg-gradient-to-r from-brand to-brand-accent" />
-      )}
-
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          {/* Badges */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            {isFeatured && (
-              <Badge className="bg-gradient-to-r from-brand to-brand-light text-white border-none shadow-sm">
-                ★ Featured
-              </Badge>
-            )}
+        <div className="space-y-4 flex-1">
+          <div className="flex flex-wrap items-center gap-3">
             {isVerified && (
-              <Badge className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" /> Verified
-              </Badge>
-            )}
-            {isAggregated && (
-              <Badge variant="default" className="text-muted-foreground bg-muted">
-                External
-              </Badge>
-            )}
-            {matchScore && matchScore >= 50 && (
-              <div className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-brand/10 text-brand">
-                <Zap className="h-3 w-3 mr-1 fill-brand" />
-                {matchScore}% Match
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-teal/10 text-brand-teal text-[10px] font-black uppercase tracking-widest">
+                <ShieldCheck className="h-3 w-3" />
+                Vetted Brand
               </div>
             )}
+            {isFeatured && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary-foreground text-[10px] font-black uppercase tracking-widest">
+                Premium Partner
+              </div>
+            )}
+            {isAggregated && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest">
+                Aggregated
+              </div>
+            )}
+            <div className="ml-auto inline-flex items-center gap-1 text-brand-navy font-black text-xs">
+              <Zap className="h-3 w-3 fill-secondary text-secondary" />
+              {matchScore}% Match
+            </div>
           </div>
 
-          {/* Title */}
-          <h3 className="text-lg font-bold text-foreground group-hover:text-brand transition-colors leading-tight">
+          <h3 className="text-2xl font-black text-brand-navy leading-tightest group-hover:gradient-text transition-all">
             {title}
           </h3>
-          <p className="text-sm font-medium text-muted-foreground">{employerName}</p>
+          
+          <div className="flex items-center gap-3 text-sm font-bold text-slate-400 uppercase tracking-widest">
+            {employerName}
+          </div>
         </div>
 
-        {/* Arrow Icon */}
-        <div className="rounded-xl bg-muted/50 p-3 text-muted-foreground group-hover:bg-brand group-hover:text-white transition-all duration-300">
-          <ExternalLink className="h-5 w-5" />
+        <div className="h-14 w-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-navy group-hover:text-white transition-all duration-500 shadow-sm">
+          <ArrowRight className="h-6 w-6" />
         </div>
       </div>
 
-      {/* Meta Info */}
-      <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <MapPin className="h-4 w-4 text-brand" />
-          <span>{location}</span>
+      <div className="mt-4 pt-6 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-500">
+            <MapPin className="h-3.5 w-3.5 text-primary" />
+            {location}
+          </div>
+          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-500">
+            <Calendar className="h-3.5 w-3.5 text-primary" />
+            {new Date(createdAt).toLocaleDateString()}
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Calendar className="h-4 w-4 text-brand" />
-          <span>{new Date(createdAt).toLocaleDateString()}</span>
-        </div>
+        
         {salaryRange && (
-          <div className="ml-auto inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold text-foreground bg-green-50 border border-green-100">
+          <div className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-black text-brand-navy bg-slate-50 border border-slate-100 shadow-sm">
             {salaryRange}
           </div>
         )}

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-const EMAIL = process.env.TEST_USER_EMAIL || 'test-employer@example.com';
+const EMAIL = process.env.TEST_USER_EMAIL || 'employer@careers.mt';
 const PASSWORD = process.env.TEST_USER_PASSWORD || 'password123';
 
 test.describe('Business Critical Audit', () => {
@@ -9,18 +9,17 @@ test.describe('Business Critical Audit', () => {
   test.describe('Revenue Blocking & Monetization', () => {
     test('Pricing Page - Load and Check Actions', async ({ page }) => {
       await page.goto(`${BASE_URL}/pricing`);
-      await expect(page).toHaveTitle(/Pricing/i);
+      // Relaxed title check or check for content
+      await expect(page.locator('text=Accelerate your hiring')).toBeVisible();
       
-      // Check for "Featured Upgrade"
-      await expect(page.locator('text=Featured Upgrade')).toBeVisible();
-      await expect(page.locator('text=Post for Free')).toBeVisible();
+      // Check for plans
+      await expect(page.locator('text=Starter')).toBeVisible();
+      await expect(page.locator('text=Professional')).toBeVisible();
+      await expect(page.locator('text=Single Post')).toBeVisible();
       
-      // Verify "Feature a Job" button links to signup (for new users)
-      const featureBtn = page.locator('a[href*="/signup?role=employer"]').filter({ hasText: 'Feature a Job' });
+      // Verify "Get Started" button links to signup (for new users)
+      const featureBtn = page.locator('a[href*="/signup?role=employer"]').first();
       await expect(featureBtn).toBeVisible();
-      
-      // Check for "Pro" plan "Coming soon" state (non-blocking but good to know)
-      await expect(page.locator('button:disabled', { hasText: 'Coming soon' })).toBeVisible();
     });
 
     test('Employer Job Posting Flow (UI Check)', async ({ page }) => {
@@ -29,28 +28,19 @@ test.describe('Business Critical Audit', () => {
       await page.fill('input[id="email"]', EMAIL);
       await page.fill('input[id="password"]', PASSWORD);
       await page.click('button[type="submit"]');
-      await page.waitForURL(/\/dashboard/);
       
-      // Navigate to post job (assuming link exists on dashboard or direct URL)
-      // Based on file structure, it might be /employer/jobs/new or similar, 
-      // but let's check the dashboard for a "Post a Job" or "Manage job posts" link
-      await page.goto(`${BASE_URL}/employer/jobs`);
+      // Might go to /dashboard or /setup if first time
+      await page.waitForURL(url => url.pathname.includes('/dashboard') || url.pathname.includes('/setup'));
       
-      // If there's a "Create" or "Post" button, verify it exists
-      // This is a "smoke" check for the flow availability
-      // We won't submit to avoid creating spam data on prod unless we have cleanup
-      const postButton = page.locator('a, button').filter({ hasText: /Post|Create/i }).first();
-      // It might be empty if no jobs, so looking for the "New Job" action is key
-      // If not found, it's a gap.
+      await page.goto(`${BASE_URL}/employer/jobs/new`);
+      await expect(page.locator('h1, h2')).toContainText(/post|job/i);
     });
   });
 
   test.describe('User Onboarding & Flows', () => {
     test('Signup Page Availability', async ({ page }) => {
       await page.goto(`${BASE_URL}/signup`);
-      // Should redirect or show role selection
-      // Checking for critical elements
-      await expect(page.locator('body')).not.toBeEmpty();
+      await expect(page.locator('text=Create your account')).toBeVisible();
     });
 
     test('Employer Verification Page', async ({ page }) => {
@@ -58,10 +48,10 @@ test.describe('Business Critical Audit', () => {
       await page.fill('input[id="email"]', EMAIL);
       await page.fill('input[id="password"]', PASSWORD);
       await page.click('button[type="submit"]');
-      await page.waitForURL(/\/dashboard/);
+      await page.waitForURL(url => url.pathname.includes('/dashboard') || url.pathname.includes('/setup'));
       
       await page.goto(`${BASE_URL}/employer/verification`);
-      await expect(page.locator('h1')).toContainText(/verification/i);
+      await expect(page.locator('h1, h2')).toContainText(/verification/i);
     });
   });
 

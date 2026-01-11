@@ -24,6 +24,17 @@ export const JobSchema = z.object({
   application_count: z.number().optional(),
   views_count: z.number().optional(),
   status: z.enum(["draft", "active", "closed", "filled"]).default("draft"),
+  commute_time_mins: z.number().nullable().optional(),
+  office_region: z.enum([
+    "Northern",
+    "Northern Harbour",
+    "South Eastern",
+    "Southern Harbour",
+    "Western",
+    "Gozo",
+    "Remote"
+  ]).nullable().optional(),
+  sector_metadata: z.record(z.any()).optional(),
 });
 
 export const JobseekerProfileSchema = z.object({
@@ -36,6 +47,17 @@ export const JobseekerProfileSchema = z.object({
   education: z.array(z.any()).optional(),
   skills: z.array(z.string()).optional(),
   created_at: z.string(),
+  preferred_region: z.enum([
+    "Northern",
+    "Northern Harbour",
+    "South Eastern",
+    "Southern Harbour",
+    "Western",
+    "Gozo",
+    "Remote",
+    "Any"
+  ]).nullable().optional(),
+  max_commute_time: z.number().nullable().optional(),
 });
 
 export const JobCreateSchema = z.object({
@@ -63,6 +85,17 @@ export const JobCreateSchema = z.object({
   application_email: z.string().trim().email("Invalid email").optional().or(z.literal("")),
   is_active: z.boolean().optional(),
   status: z.enum(["draft", "active", "closed", "filled"]).default("draft"),
+  commute_time_mins: z.number().min(0).max(180).optional(),
+  office_region: z.enum([
+    "Northern",
+    "Northern Harbour",
+    "South Eastern",
+    "Southern Harbour",
+    "Western",
+    "Gozo",
+    "Remote"
+  ]).optional(),
+  sector_metadata: z.record(z.any()).optional(),
 }).refine((data) => {
   if (data.application_method === "url") {
     return !!data.application_url;
@@ -103,6 +136,17 @@ export const JobUpdateSchema = z.object({
   application_url: z.string().trim().url().optional().or(z.literal("")),
   application_email: z.string().trim().email().optional().or(z.literal("")),
   is_active: z.boolean().optional(),
+  commute_time_mins: z.number().min(0).max(180).optional(),
+  office_region: z.enum([
+    "Northern",
+    "Northern Harbour",
+    "South Eastern",
+    "Southern Harbour",
+    "Western",
+    "Gozo",
+    "Remote"
+  ]).optional(),
+  sector_metadata: z.record(z.any()).optional(),
 }).refine((data) => {
   // Only validate if method is being updated or if we want strictness, 
   // but for updates we might not have all fields. 

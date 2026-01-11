@@ -9,7 +9,7 @@ export async function fetchMatchingJobs(
 ) {
   let dbQuery = supabase
     .from("jobs")
-    .select("id, title, description, location, company_name, salary_range, salary_min, salary_max, created_at")
+    .select("id, title, description, location, office_region, commute_time_mins, company_name, salary_range, salary_min, salary_max, created_at")
     .eq("is_active", true)
     .gt("posted_at", since.toISOString());
 
@@ -20,6 +20,10 @@ export async function fetchMatchingJobs(
   
   if (filters.location) {
     dbQuery = dbQuery.ilike("location", `%${filters.location}%`);
+  }
+
+  if (filters.region) {
+    dbQuery = dbQuery.eq("office_region", filters.region);
   }
 
   if (filters.employmentType) {
