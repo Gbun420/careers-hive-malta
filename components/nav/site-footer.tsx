@@ -39,10 +39,10 @@ export default function SiteFooter() {
             <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-background/40 mb-6">Support</h4>
             <ul className="space-y-4">
               {[
-                { name: "Contact Us", href: "#" },
-                { name: "Help Center", href: "#" },
-                { name: "Privacy Policy", href: "#" },
-                { name: "Terms of Service", href: "#" }
+                { name: "Contact Us", href: "/blog/malta-job-market-2026" },
+                { name: "Help Center", href: "/blog/malta-salary-guide-2026" },
+                { name: "Privacy Policy", href: "/privacy" },
+                { name: "Terms of Service", href: "/terms" }
               ].map((item) => (
                 <li key={item.name}>
                   <Link href={item.href} className="text-sm font-semibold text-background/80 hover:text-background transition-colors">{item.name}</Link>

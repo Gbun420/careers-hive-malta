@@ -10,12 +10,6 @@ import { Check, Zap, Building2, Briefcase, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import CheckoutButton from "@/components/billing/CheckoutButton";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Pricing | Careers.mt",
-  description: "Simple, transparent pricing for employers in Malta.",
-};
 
 export default function PricingPage() {
   const [user, setUser] = useState<any>(null);
