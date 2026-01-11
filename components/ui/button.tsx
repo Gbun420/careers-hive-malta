@@ -1,32 +1,46 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type ButtonVariant = "default" | "outline" | "ghost" | "secondary" | "destructive" | "premium";
+type ButtonVariant = 
+  | "default"
+  | "primary" 
+  | "secondary" 
+  | "tertiary" 
+  | "premium"
+  | "outline" 
+  | "ghost" 
+  | "destructive";
 
-type ButtonSize = "default" | "lg" | "sm" | "icon";
+type ButtonSize = "default" | "lg" | "sm" | "xl" | "icon";
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:bg-muted disabled:text-muted-foreground active:scale-[0.98]";
+  "inline-flex items-center justify-center rounded-2xl font-black uppercase tracking-widest transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald-500 focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.96] hover-lift";
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-primary text-primary-foreground hover:opacity-90 shadow-cta",
+    "bg-brand-emerald-600 text-white shadow-cta hover:bg-brand-emerald-500 hover:shadow-cta-hover",
+  primary:
+    "bg-brand-emerald-600 text-white shadow-cta hover:bg-brand-emerald-500 hover:shadow-cta-hover",
   secondary:
-    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    "bg-brand-slate-900 text-white hover:bg-brand-slate-800 shadow-xl",
+  tertiary:
+    "bg-white text-brand-slate-900 border-2 border-brand-slate-100 hover:border-brand-emerald-500/30 hover:bg-brand-emerald-50/50",
+  premium:
+    "bg-brand-emerald-600 text-white shadow-cta hover:bg-brand-emerald-500 hover:shadow-cta-hover",
   outline:
-    "border border-border bg-transparent text-foreground hover:bg-muted",
-  ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
+    "border-2 border-brand-slate-200 bg-transparent text-brand-slate-600 hover:border-brand-emerald-500/40 hover:text-brand-emerald-600",
+  ghost: 
+    "text-brand-slate-500 hover:bg-brand-slate-100 hover:text-brand-slate-900",
   destructive:
-    "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  premium: 
-    "bg-brand text-white shadow-cta hover:shadow-cta-hover hover:-translate-y-0.5",
+    "bg-red-600 text-white hover:bg-red-500 shadow-sm",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  default: "h-11 px-6 text-sm",
-  lg: "h-14 px-8 text-base",
-  sm: "h-9 px-4 text-xs",
-  icon: "h-10 w-10",
+  default: "h-12 px-6 text-xs",
+  lg: "h-14 px-8 text-sm",
+  xl: "h-16 px-10 text-base",
+  sm: "h-10 px-4 text-[10px]",
+  icon: "h-12 w-12",
 };
 
 export interface ButtonProps

@@ -82,35 +82,39 @@ export default function SiteHeader() {
           <div className="hidden sm:flex items-center gap-2 lg:gap-4">
             {user ? (
               <>
-                <Link
-                  href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}
-                  className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-brand transition-colors px-3 py-2 rounded-lg"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
-                </Link>
-                {role === 'jobseeker' && (
+                <Button asChild variant="tertiary" size="sm">
                   <Link
-                    href="/jobseeker/applications"
-                    className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-brand transition-colors px-3 py-2 rounded-lg"
+                    href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}
+                    className="flex items-center gap-2"
                   >
-                    <FileText className="h-4 w-4" />
-                    My Applications
+                    <LayoutDashboard className="h-3.5 w-3.5" />
+                    Dashboard
                   </Link>
+                </Button>
+                {role === 'jobseeker' && (
+                  <Button asChild variant="ghost" size="sm">
+                    <Link
+                      href="/jobseeker/applications"
+                      className="flex items-center gap-2"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                      Applications
+                    </Link>
+                  </Button>
                 )}
                 <Link
                   href="/profile"
-                  className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-brand/10 hover:text-brand transition-all"
+                  className="h-10 w-10 rounded-2xl bg-brand-slate-100 flex items-center justify-center text-brand-slate-500 hover:bg-brand-emerald-500/10 hover:text-brand-emerald-600 transition-all border-2 border-transparent hover:border-brand-emerald-500/20"
                 >
                   <User className="h-5 w-5" />
                 </Link>
               </>
             ) : (
               <>
-                <Button asChild variant="ghost" className="font-bold text-muted-foreground hover:text-brand h-10 px-4">
+                <Button asChild variant="ghost" size="sm" className="font-bold">
                   <Link href="/login">Sign In</Link>
                 </Button>
-                <Button asChild variant="default" className="rounded-xl h-10 px-6 shadow-cta hover:shadow-cta-hover transition-all bg-brand text-white border-none">
+                <Button asChild variant="primary" size="sm">
                   <Link href="/signup?role=employer">Post a Job</Link>
                 </Button>
               </>
@@ -148,24 +152,24 @@ export default function SiteHeader() {
             <div className="flex flex-col gap-3">
               {user ? (
                 <>
-                  <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl font-bold border-border" onClick={() => setIsMenuOpen(false)}>
+                  <Button asChild variant="tertiary" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
                     <Link href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}>Dashboard</Link>
                   </Button>
                   {role === 'jobseeker' && (
-                    <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl font-bold border-border" onClick={() => setIsMenuOpen(false)}>
+                    <Button asChild variant="ghost" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
                       <Link href="/jobseeker/applications">My Applications</Link>
                     </Button>
                   )}
-                  <Button asChild variant="ghost" className="w-full justify-center h-12 rounded-xl font-bold" onClick={() => setIsMenuOpen(false)}>
+                  <Button asChild variant="ghost" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
                     <Link href="/profile">Profile Settings</Link>
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button asChild variant="outline" className="w-full justify-center h-12 rounded-xl font-bold border-border" onClick={() => setIsMenuOpen(false)}>
+                  <Button asChild variant="tertiary" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
                     <Link href="/login">Sign In</Link>
                   </Button>
-                  <Button asChild variant="default" className="w-full justify-center h-12 rounded-xl font-bold shadow-lg bg-brand text-white" onClick={() => setIsMenuOpen(false)}>
+                  <Button asChild variant="primary" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
                     <Link href="/signup?role=employer">Post a Job</Link>
                   </Button>
                 </>

@@ -32,13 +32,15 @@ export default function Hero({ employerSignupHref }: { employerSignupHref: strin
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-            <Button asChild size="lg" className="h-16 px-10 rounded-2xl bg-brand-navy text-white hover:bg-primary shadow-premium group btn-premium">
-              <Link href="/signup" className="flex items-center gap-3 text-base font-black uppercase tracking-widest">
+            <Button asChild variant="primary" size="xl" className="group">
+              <Link href="/signup" className="flex items-center gap-3">
                 Join the Network <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-16 px-10 rounded-2xl border-2 border-slate-200 text-slate-600 hover:border-primary/40 hover:text-primary bg-white/50 backdrop-blur-sm text-base font-black uppercase tracking-widest">
-              <Link href="/jobs">Explore Intelligence</Link>
+            <Button asChild variant="tertiary" size="xl">
+              <Link href="/jobs" className="flex items-center gap-2">
+                Explore Intelligence <Zap className="h-4 w-4 text-brand-emerald-500" />
+              </Link>
             </Button>
           </div>
 
