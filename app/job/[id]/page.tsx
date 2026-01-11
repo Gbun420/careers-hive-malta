@@ -67,6 +67,26 @@ export async function generateMetadata({
     alternates: {
       canonical: `${SITE_URL}/job/${id}`,
     },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/job/${id}`,
+      type: "article",
+      images: [
+        {
+          url: "/brand/og-image.jpg", // Placeholder until dynamic OG generation
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/brand/og-image.jpg"],
+    },
   };
 }
 

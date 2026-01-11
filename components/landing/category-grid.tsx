@@ -30,18 +30,18 @@ export default function CategoryGrid() {
           </p>
         </div>
 
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {industries.map((industry) => (
             <Link
               key={industry.slug}
               href={`/jobs/industry/${industry.slug}`}
-              className="group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-card border border-border transition-all duration-300 hover:border-brand hover:shadow-lg hover:-translate-y-1"
+              className="group flex flex-col items-center justify-center gap-3 md:gap-4 p-6 md:p-8 rounded-2xl bg-card border border-border transition-all duration-300 hover:border-brand hover:shadow-lg hover:-translate-y-1"
               aria-label={`Browse ${industry.name} jobs in Malta`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground shadow-sm transition-all duration-300 group-hover:bg-brand group-hover:text-white group-hover:scale-110">
-                <industry.icon className="h-6 w-6" />
+              <div className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground shadow-sm transition-all duration-300 group-hover:bg-brand group-hover:text-white group-hover:scale-110">
+                <industry.icon className="h-5 w-5 md:h-6 md:w-6" />
               </div>
-              <h3 className="text-xs font-bold text-foreground transition-colors group-hover:text-brand uppercase tracking-wider text-center">
+              <h3 className="text-[10px] md:text-xs font-bold text-foreground transition-colors group-hover:text-brand uppercase tracking-wider text-center truncate w-full">
                 {industry.name}
               </h3>
             </Link>

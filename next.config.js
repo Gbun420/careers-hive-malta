@@ -2,10 +2,17 @@
 const nextConfig = {
   // Ensure proper handling of Supabase
   serverExternalPackages: ['@supabase/supabase-js'],
-  // Cloudflare Pages specific settings
-  output: 'standalone',
+  // Optimize image delivery
   images: {
-    unoptimized: true
+    unoptimized: false,
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
   // Add trailing slash for better compatibility
   trailingSlash: true,

@@ -14,7 +14,7 @@ type ButtonVariant =
 type ButtonSize = "default" | "lg" | "sm" | "xl" | "icon";
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-2xl font-black uppercase tracking-widest transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald-500 focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.96] hover-lift";
+  "inline-flex items-center justify-center rounded-2xl font-black uppercase tracking-widest transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald-500 focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.96] hover:-translate-y-0.5";
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:

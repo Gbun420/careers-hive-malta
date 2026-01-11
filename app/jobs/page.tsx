@@ -6,14 +6,20 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Briefcase } from "lucide-react";
 import { getJobs } from "@/lib/jobs/get-jobs";
-import { SITE_URL } from "@/lib/site/url";
+import { SITE_URL, SITE_NAME } from "@/lib/site/url";
 
 export const metadata: Metadata = {
-  title: "Latest jobs in Malta | Careers.mt",
+  title: "Latest jobs in Malta",
   description:
-    "Discover new jobs in Malta with instant alerts and verified employers.",
+    "Discover new jobs in Malta with instant alerts and verified employers. Filter by industry, salary, and location.",
   alternates: {
     canonical: `${SITE_URL}/jobs`,
+  },
+  openGraph: {
+    title: `Latest jobs in Malta | ${SITE_NAME}`,
+    description: "Browse high-performance job listings from verified Maltese brands.",
+    url: `${SITE_URL}/jobs`,
+    images: ["/brand/og-image.jpg"],
   },
 };
 
