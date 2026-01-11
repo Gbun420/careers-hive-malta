@@ -1,10 +1,18 @@
 import Link from "next/link";
 import ApplicantTracker from "@/components/employer/applicant-tracker";
+import DashboardStats from "@/components/employer/dashboard-stats";
 import { PageShell } from "@/components/ui/page-shell";
 import { Briefcase, ShieldCheck, Settings, Eye, BarChart3, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { getEmployerStats } from "@/lib/employer/dashboard";
 
-export default function EmployerDashboard() {
+export default async function EmployerDashboard() {
+  const supabase = createRouteHandlerClient();
+  const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+  
+  const stats = user ? await getEmployerStats(user.id) : { jobCount: 0, applicationCount: 0, featuredJobs: [] };
+
   const operations = [
     {
       title: "Manage job posts",
@@ -42,7 +50,7 @@ export default function EmployerDashboard() {
 
   return (
     <PageShell>
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 animate-fade-down">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 animate-fade-down">
         <div className="space-y-2">
           <h1 className="text-4xl font-black tracking-tightest text-slate-950 uppercase">
             Employer <span className="gradient-text">Command</span>.
@@ -66,6 +74,8 @@ export default function EmployerDashboard() {
           </Link>
         </div>
       </header>
+
+      <DashboardStats stats={stats} />
 
       <section className="grid gap-12 lg:grid-cols-[1fr_2.5fr]">
         <div className="space-y-8 animate-fade-left">

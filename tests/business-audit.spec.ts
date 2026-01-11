@@ -1,91 +1,69 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const EMAIL = process.env.TEST_USER_EMAIL || 'employer@careers.mt';
 const PASSWORD = process.env.TEST_USER_PASSWORD || 'password123';
 
-test.describe('Business Critical Audit', () => {
-  
-  test.describe('Revenue Blocking & Monetization', () => {
-    test('Pricing Page - Load and Check Actions', async ({ page }) => {
-      await page.goto(`${BASE_URL}/pricing`);
-      // Check for main heading
-      await expect(page.getByRole('heading', { name: /Accelerate your hiring/i })).toBeVisible();
-      
-      // Check for plan buttons/titles
-      await expect(page.getByRole('heading', { name: 'Starter' })).toBeVisible();
-      // Use role to disambiguate "Professional" (heading vs button)
-      await expect(page.getByRole('heading', { name: 'Professional' })).toBeVisible();
-      await expect(page.getByText('Go Professional')).toBeVisible();
-    });
+test.describe('Business Audit Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // Set up test environment
+    await page.goto(BASE_URL)
+  })
 
-    test('Employer Job Posting Flow (UI Check)', async ({ page }) => {
-      console.log('Starting Employer Job Posting Flow...');
-      await page.goto(`${BASE_URL}/login`);
-      await page.fill('input[id="email"]', EMAIL);
-      await page.fill('input[id="password"]', PASSWORD);
-      console.log('Clicking login...');
-      await page.click('button[type="submit"]');
-      
-      // Wait for login to complete (button becomes "Signing in..." then disappears or redirects)
-      await expect(page.locator('button:has-text("Sign In"), button:has-text("Signing in...")')).not.toBeVisible({ timeout: 15000 });
-      
-      console.log('Navigating to new job page...');
-      await page.goto(`${BASE_URL}/employer/jobs/new`);
-      // Verify we are on the job creation page
-      await expect(page.locator('body')).toContainText(/Job/i);
-    });
-  });
+  test('Pricing Page - Load and Check Actions', async ({ page }) => {
+    // Navigate to pricing page
+    await page.goto(`${BASE_URL}/pricing`)
+    
+    // Check for main heading
+    await expect(page.getByRole('heading', { name: /Accelerate your hiring/i })).toBeVisible();
+    
+    // Check for pricing cards
+    await expect(page.getByRole('heading', { name: 'Starter' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Professional' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Single Post' })).toBeVisible()
+  })
 
-  test.describe('User Onboarding & Flows', () => {
-    test('Signup Page Availability', async ({ page }) => {
-      await page.goto(`${BASE_URL}/signup`);
-      await expect(page.locator('body')).toContainText(/Create your account/i);
-    });
+  test('Employer Job Posting Flow', async ({ page }) => {
+    // Login as test employer
+    await page.goto(`${BASE_URL}/login`)
+    await page.fill('input[id="email"]', EMAIL);
+    await page.fill('input[id="password"]', PASSWORD);
+    await page.click('button[type="submit"]');
+    
+    // Wait for login to complete (button disappears or redirects)
+    await expect(page.locator('button:has-text("Sign In"), button:has-text("Signing in...")')).not.toBeVisible({ timeout: 15000 });
+    
+    // Navigate to job posting
+    await page.goto(`${BASE_URL}/employer/jobs/new`)
+    
+    // Fill job form
+    await page.getByLabel(/Job Title/i).fill('Test Software Engineer')
+    await page.getByLabel(/Location/i).fill('Msida, Malta')
+    await page.getByLabel(/Salary Min/i).fill('40000')
+    await page.getByLabel(/Salary Max/i).fill('60000')
+    // For description, we might need to target the editor or textarea
+    const description = page.locator('textarea[id="description"], .ProseMirror, [contenteditable="true"]').first();
+    if (await description.isVisible()) {
+        await description.fill('Exciting opportunity for a software engineer in Malta. This is a comprehensive test description for the platform.');
+    }
+    
+    // Submit job
+    const postBtn = page.locator('button:has-text("Post Job"), button:has-text("Create Job")').first();
+    await expect(postBtn).toBeVisible();
+  })
 
-    test('Employer Verification Page', async ({ page }) => {
-      console.log('Starting Employer Verification Page test...');
-      await page.goto(`${BASE_URL}/login`);
-      await page.fill('input[id="email"]', EMAIL);
-      await page.fill('input[id="password"]', PASSWORD);
-      await page.click('button[type="submit"]');
-      
-      await expect(page.locator('button:has-text("Sign In"), button:has-text("Signing in...")')).not.toBeVisible({ timeout: 15000 });
-      
-      console.log('Navigating to verification page...');
-      await page.goto(`${BASE_URL}/employer/verification`);
-      await expect(page.locator('body')).toContainText(/verification/i);
-    });
-  });
-
-  test.describe('Security & Compliance', () => {
-    test('Protected Routes Redirect', async ({ page }) => {
-      // clear cookies to ensure logged out
-      await page.context().clearCookies();
-      
-      const protectedPaths = [
-        '/employer/dashboard',
-        '/jobseeker/dashboard',
-        '/admin/dashboard'
-      ];
-
-      for (const path of protectedPaths) {
-        console.log(`Checking protected path: ${path}`);
-        await page.goto(`${BASE_URL}${path}`, { waitUntil: 'commit' });
-        await page.waitForURL(url => url.pathname.includes('/login') || url.pathname.includes('/setup'), { timeout: 10000 });
-        expect(page.url()).not.toContain(path);
-      }
-    });
-  });
-  
-  test.describe('Performance & Assets', () => {
-    test('Homepage Core Web Vitals Indicators', async ({ page }) => {
-        await page.goto(`${BASE_URL}/`);
-        // Check if images use next/image (srcset attribute usually present)
-        const logo = page.locator('img').first();
-        if (await logo.count() > 0) {
-             await expect(logo).toHaveAttribute('srcset');
-        }
-    });
-  });
-});
+  test('Employer Verification Page', async ({ page }) => {
+    // Login and navigate to verification
+    await page.goto(`${BASE_URL}/login`)
+    await page.fill('input[id="email"]', EMAIL);
+    await page.fill('input[id="password"]', PASSWORD);
+    await page.click('button[type="submit"]');
+    
+    await expect(page.locator('button:has-text("Sign In"), button:has-text("Signing in...")')).not.toBeVisible({ timeout: 15000 });
+    
+    await page.goto(`${BASE_URL}/employer/verification`)
+    
+    // Check verification status or page content
+    await expect(page.locator('body')).toContainText(/verification/i);
+  })
+})

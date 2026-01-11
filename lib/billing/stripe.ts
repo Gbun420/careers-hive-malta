@@ -66,6 +66,49 @@ export function createStripeClient(): Stripe | null {
   });
 }
 
+export async function createCheckoutSession(
+  userId: string,
+  priceId: string,
+  mode: 'payment' | 'subscription' = 'payment'
+) {
+  const stripe = createStripeClient();
+  if (!stripe) throw new Error('Stripe not configured');
+
+  const session = await stripe.checkout.sessions.create({
+    mode,
+    payment_method_types: ['card'],
+    line_items: [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ],
+    success_url: `${SITE_URL}/employer/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${SITE_URL}/pricing`,
+    metadata: {
+      user_id: userId,
+      price_id: priceId,
+    },
+  });
+
+  return { sessionId: session.id, url: session.url };
+}
+
+export async function handleWebhookEvent(payload: string | Buffer, sig: string) {
+  const stripe = createStripeClient();
+  if (!stripe || !stripeWebhookSecret) throw new Error('Stripe or Webhook secret not configured');
+  
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(payload, sig, stripeWebhookSecret);
+  } catch (err) {
+    throw new Error(`Webhook signature verification failed: ${err}`);
+  }
+
+  return event;
+}
+
 type StripeErrorInfo = {
   code: ErrorCode;
   message: string;
