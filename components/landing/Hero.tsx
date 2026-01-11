@@ -33,12 +33,12 @@ export default function Hero({ employerSignupHref }: { employerSignupHref: strin
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
             <Button asChild variant="primary" size="xl" className="group">
-              <Link href="/signup" className="flex items-center gap-3">
+              <Link href="/signup">
                 Join the Network <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
               </Link>
             </Button>
             <Button asChild variant="tertiary" size="xl">
-              <Link href="/jobs" className="flex items-center gap-2">
+              <Link href="/jobs">
                 Explore Intelligence <Zap className="h-4 w-4 text-brand-emerald-500" />
               </Link>
             </Button>

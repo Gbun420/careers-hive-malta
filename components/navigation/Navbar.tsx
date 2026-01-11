@@ -52,7 +52,7 @@ export default function SiteHeader() {
         <div className="flex items-center gap-8 lg:gap-12">
           <div className="flex items-center gap-2">
             <DynamicLogo />
-            <span className="hidden items-center gap-1 rounded-full border border-brand-accent/20 bg-brand-accent/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brand-accent sm:inline-flex">
+            <span className="hidden items-center gap-1 rounded-full border border-brand-emerald-500/20 bg-brand-emerald-500/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brand-emerald-600 sm:inline-flex">
               <ShieldCheck className="h-3 w-3" aria-hidden="true" />
               Verified
             </span>
@@ -64,13 +64,13 @@ export default function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-sm font-semibold transition-all duration-300 hover:text-brand relative group",
-                  pathname === item.href ? "text-brand" : "text-muted-foreground"
+                  "text-sm font-semibold transition-all duration-300 hover:text-brand-emerald-600 relative group",
+                  pathname === item.href ? "text-brand-emerald-600" : "text-muted-foreground"
                 )}
               >
                 {item.name}
                 <span className={cn(
-                  "absolute -bottom-1 left-0 h-0.5 bg-brand transition-all duration-300",
+                  "absolute -bottom-1 left-0 h-0.5 bg-brand-emerald-600 transition-all duration-300",
                   pathname === item.href ? "w-full" : "w-0 group-hover:w-full"
                 )} />
               </Link>

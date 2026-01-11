@@ -39,6 +39,10 @@
   .btn-premium {
     @apply relative overflow-hidden transition-all duration-300 hover:shadow-gold-glow hover:-translate-y-0.5 active:translate-y-0;
   }
+
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1 active:translate-y-0 active:scale-95;
+  }
   
   .luxury-grid {
     @apply grid gap-8 md:grid-cols-2 lg:grid-cols-3;
