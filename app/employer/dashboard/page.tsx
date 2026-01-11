@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { getEmployerStats } from "@/lib/employer/dashboard";
 
+export const dynamic = "force-dynamic";
+
 export default async function EmployerDashboard() {
   const supabase = createRouteHandlerClient();
   const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };

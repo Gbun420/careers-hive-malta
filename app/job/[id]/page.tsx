@@ -15,6 +15,7 @@ import { SITE_URL } from "@/lib/site/url";
 import { BRAND_NAME } from "@/lib/brand";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const buildDescription = (text?: string | null) => {
   if (!text) {
