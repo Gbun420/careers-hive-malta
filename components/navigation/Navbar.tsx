@@ -5,8 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import DynamicLogo from "@/components/nav/dynamic-logo";
-import { Menu, X, ShieldCheck, LayoutDashboard, FileText, User } from "lucide-react";
+import { Menu, X, ShieldCheck, LayoutDashboard, FileText, User, Sparkles } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import { getUserRole } from "@/lib/auth/roles";
 
@@ -47,30 +46,31 @@ export default function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 md:h-20 max-w-7xl items-center justify-between px-6">
-        <div className="flex items-center gap-8 lg:gap-12">
-          <div className="flex items-center gap-2">
-            <DynamicLogo />
-            <span className="hidden items-center gap-1 rounded-full border border-brand-emerald-500/20 bg-brand-emerald-500/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brand-emerald-600 sm:inline-flex">
-              <ShieldCheck className="h-3 w-3" aria-hidden="true" />
-              Verified
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-20 md:h-24 max-w-[1440px] items-center justify-between px-6 md:px-12">
+        <div className="flex items-center gap-10">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-secondary transition-transform group-hover:rotate-12">
+               <Sparkles className="h-6 w-6" />
+            </div>
+            <span className="font-display text-2xl font-black text-primary tracking-tightest">
+              THE HIVE<span className="text-secondary">.</span>
             </span>
-          </div>
+          </Link>
 
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-sm font-semibold transition-all duration-300 hover:text-brand-emerald-600 relative group",
-                  pathname === item.href ? "text-brand-emerald-600" : "text-muted-foreground"
+                  "text-[13px] font-bold uppercase tracking-widest transition-all duration-300 relative group",
+                  pathname === item.href ? "text-primary" : "text-slate-400 hover:text-primary"
                 )}
               >
                 {item.name}
                 <span className={cn(
-                  "absolute -bottom-1 left-0 h-0.5 bg-brand-emerald-600 transition-all duration-300",
+                  "absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 bg-secondary transition-all duration-300",
                   pathname === item.href ? "w-full" : "w-0 group-hover:w-full"
                 )} />
               </Link>
@@ -78,53 +78,38 @@ export default function SiteHeader() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4">
-          <div className="hidden sm:flex items-center gap-2 lg:gap-4">
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-6">
             {user ? (
               <>
-                <Button asChild variant="tertiary" size="sm">
-                  <Link
-                    href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}
-                    className="flex items-center gap-2"
-                  >
-                    <LayoutDashboard className="h-3.5 w-3.5" />
+                <Button asChild variant="ghost" className="font-bold text-slate-500 hover:text-primary">
+                  <Link href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'} className="flex items-center gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
                 </Button>
-                {role === 'jobseeker' && (
-                  <Button asChild variant="ghost" size="sm">
-                    <Link
-                      href="/jobseeker/applications"
-                      className="flex items-center gap-2"
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                      Applications
-                    </Link>
-                  </Button>
-                )}
                 <Link
                   href="/profile"
-                  className="h-10 w-10 rounded-2xl bg-brand-slate-100 flex items-center justify-center text-brand-slate-500 hover:bg-brand-emerald-500/10 hover:text-brand-emerald-600 transition-all border-2 border-transparent hover:border-brand-emerald-500/20"
+                  className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all shadow-sm"
                 >
                   <User className="h-5 w-5" />
                 </Link>
               </>
             ) : (
               <>
-                <Button asChild variant="ghost" size="sm" className="font-bold">
-                  <Link href="/login">Sign In</Link>
-                </Button>
-                <Button asChild variant="primary" size="sm">
-                  <Link href="/signup?role=employer">Post a Job</Link>
+                <Link href="/login" className="text-sm font-bold text-slate-500 hover:text-primary transition-colors">
+                  Sign In
+                </Link>
+                <Button asChild size="lg" className="bg-primary text-white hover:bg-primary/90 rounded-2xl px-6 font-black uppercase tracking-widest text-[10px] shadow-sm">
+                  <Link href="/signup?role=employer">Post A Job</Link>
                 </Button>
               </>
             )}
           </div>
 
           <button
-            className="lg:hidden p-2 text-muted-foreground hover:text-brand transition-colors"
+            className="lg:hidden p-3 rounded-2xl bg-slate-50 text-primary hover:bg-slate-100 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Close mobile menu" : "Open mobile menu"}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -133,47 +118,37 @@ export default function SiteHeader() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-background animate-fade-in shadow-xl">
-          <nav className="flex flex-col p-6 gap-4">
+        <div className="lg:hidden fixed inset-0 top-20 bg-white z-50 p-8 animate-in slide-in-from-right duration-300">
+          <nav className="flex flex-col gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMenuOpen(false)}
                 className={cn(
-                  "text-lg font-bold transition-all px-2 py-1 rounded-lg",
-                  pathname === item.href ? "text-brand bg-brand/5" : "text-foreground hover:bg-muted"
+                  "text-3xl font-display font-black tracking-tightest uppercase",
+                  pathname === item.href ? "text-secondary" : "text-primary"
                 )}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="h-px bg-border my-2" />
-            <div className="flex flex-col gap-3">
-              {user ? (
-                <>
-                  <Button asChild variant="tertiary" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
-                    <Link href={role === 'admin' ? '/admin/dashboard' : role === 'employer' ? '/employer/dashboard' : '/jobseeker/dashboard'}>Dashboard</Link>
-                  </Button>
-                  {role === 'jobseeker' && (
-                    <Button asChild variant="ghost" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
-                      <Link href="/jobseeker/applications">My Applications</Link>
-                    </Button>
-                  )}
-                  <Button asChild variant="ghost" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/profile">Profile Settings</Link>
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button asChild variant="tertiary" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/login">Sign In</Link>
-                  </Button>
-                  <Button asChild variant="primary" className="w-full justify-center h-14" onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/signup?role=employer">Post a Job</Link>
-                  </Button>
-                </>
-              )}
+            <div className="h-px bg-slate-100 w-full" />
+            <div className="flex flex-col gap-4">
+               {user ? (
+                 <Button asChild size="xl" className="w-full bg-primary rounded-3xl h-20 text-xl font-black uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/dashboard">Dashboard</Link>
+                 </Button>
+               ) : (
+                 <>
+                   <Button asChild size="xl" className="w-full bg-primary rounded-3xl h-20 text-xl font-black uppercase tracking-widest text-white" onClick={() => setIsMenuOpen(false)}>
+                      <Link href="/signup?role=employer">Post A Job</Link>
+                   </Button>
+                   <Button asChild variant="outline" size="xl" className="w-full rounded-3xl h-20 text-xl font-black uppercase tracking-widest border-2" onClick={() => setIsMenuOpen(false)}>
+                      <Link href="/login">Sign In</Link>
+                   </Button>
+                 </>
+               )}
             </div>
           </nav>
         </div>

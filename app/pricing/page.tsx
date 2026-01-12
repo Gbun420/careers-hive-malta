@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PageShell } from "@/components/ui/page-shell";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Zap, Building2, Briefcase, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Check, ArrowRight, ShieldCheck, Zap, Globe, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import CheckoutButton from "@/components/billing/CheckoutButton";
@@ -30,150 +27,173 @@ export default function PricingPage() {
   const plans = [
     {
       name: "Starter",
-      price: "Free",
-      description: "Perfect for testing the platform or occasional hiring.",
+      price: "€49",
+      period: "/post",
+      description: "One-time urgent listing for a specific role.",
       features: [
         "1 Standard Job Posting",
-        "Basic Applicant Tracker",
-        "Community Support",
-        "Standard Visibility",
+        "7 Days Featured Badge",
+        "Basic Applicant Feed",
+        "Manual Moderation",
       ],
-      cta: "Get Started",
-      href: "/signup?role=employer",
+      cta: "Post Once",
+      product: "JOB_POST" as const,
       highlight: false,
     },
     {
-      name: "Professional",
-      price: "€9.99",
-      period: "/month",
-      description: "Unlimited hiring with priority support and tools.",
+      name: "Hive Pro",
+      price: "€199",
+      period: "/mo",
+      description: "The membership of choice for Malta's fastest-growing brands.",
       features: [
-        "Unlimited Job Postings",
-        "Full ATS Integration",
-        "Priority Search Placement",
-        "Applicant Matching (AI)",
-        "Premium Support",
+        "Unlimited Active Jobs",
+        "Unlimited Match AI Usage",
+        "Permanent Verified Status",
+        "Early Talent Access",
+        "Priority Search Indexing",
       ],
-      cta: "Go Professional",
+      cta: "Join The Hive",
       product: "PRO_SUB" as const,
       highlight: true,
     },
     {
-      name: "Single Post",
-      price: "€4.99",
-      period: "/post",
-      description: "One-time premium listing for specific urgent roles.",
+      name: "Enterprise",
+      price: "Custom",
+      period: "",
+      description: "Scalable recruiting for Malta's market leaders.",
       features: [
-        "7 Days Featured Status",
-        "Instant Email Alerts",
-        "Social Media Promotion",
-        "Malta-wide Coverage",
+        "Dedicated Account Manager",
+        "ATS API Integration",
+        "Custom Branding Slots",
+        "White-glove Verification",
       ],
-      cta: "Post Now",
-      product: "JOB_POST" as const,
+      cta: "Contact Sales",
       highlight: false,
     },
   ];
 
   return (
-    <PageShell>
-      <div className="max-w-6xl mx-auto space-y-16">
-        <header className="text-center space-y-4">
-          <Badge variant="verified" className="px-4 py-1 text-xs uppercase font-black tracking-widest">Pricing for Employers</Badge>
-          <SectionHeading
-            title="Accelerate your hiring in Malta"
-            subtitle="Choose the plan that fits your growth. From single urgent roles to scaling your entire team."
-          />
+    <div className="min-h-screen bg-[#F8FAFC] pt-32 pb-20 px-4">
+      <div className="max-w-7xl mx-auto space-y-20">
+        <header className="text-center space-y-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[10px] font-black uppercase tracking-widest border border-secondary/20">
+            <Sparkles className="h-3 w-3" />
+            Pricing & Membership
+          </div>
+          <h1 className="font-display text-5xl md:text-7xl text-primary tracking-tightest leading-[0.9]">
+            Scale Your Team <br />
+            With <span className="text-secondary italic">Excellence.</span>
+          </h1>
+          <p className="text-slate-500 font-medium text-lg leading-relaxed">
+            Stop sorting through noise. Join the network that delivers high-performance 
+            Maltese talent with zero friction.
+          </p>
         </header>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3 items-stretch">
           {plans.map((plan) => (
-            <Card
+            <div
               key={plan.name}
-              className={`relative flex flex-col rounded-[2.5rem] border-2 transition-all duration-300 hover:shadow-xl ${
+              className={`relative flex flex-col p-10 rounded-[2.5rem] transition-all duration-500 ${
                 plan.highlight
-                  ? "border-brand shadow-premium scale-105 z-10"
-                  : "border-slate-100 hover:border-brand/20"
+                  ? "bg-primary text-white shadow-cta scale-105 z-10"
+                  : "bg-white border border-slate-200 hover:border-secondary/30 shadow-sm"
               }`}
             >
               {plan.highlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-cta">
-                  Most Popular
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-primary text-[10px] font-black uppercase tracking-widest px-6 py-1.5 rounded-full shadow-lg">
+                  Most Preferred
                 </div>
               )}
-              <CardHeader className="p-8 pb-4">
-                <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tightest">
-                  {plan.name}
-                </CardTitle>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-brand">{plan.price}</span>
-                  {plan.period && (
-                    <span className="text-sm font-bold text-slate-400">{plan.period}</span>
-                  )}
+
+              <div className="space-y-6 flex-1">
+                <div className="space-y-2">
+                  <h3 className={`text-sm font-black uppercase tracking-widest ${plan.highlight ? 'text-secondary' : 'text-slate-400'}`}>
+                    {plan.name}
+                  </h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-display text-5xl font-black">{plan.price}</span>
+                    <span className={`text-sm font-bold opacity-60`}>{plan.period}</span>
+                  </div>
+                  <p className={`text-sm font-medium leading-relaxed ${plan.highlight ? 'text-slate-300' : 'text-slate-500'}`}>
+                    {plan.description}
+                  </p>
                 </div>
-                <p className="mt-4 text-sm font-medium text-slate-500 leading-relaxed italic">
-                  {plan.description}
-                </p>
-              </CardHeader>
-              <CardContent className="p-8 pt-0 flex-1 flex flex-col">
-                <div className="space-y-4 mb-8 flex-1">
+
+                <div className="h-px w-full bg-current opacity-10" />
+
+                <div className="space-y-4">
                   {plan.features.map((feature) => (
-                    <div key={feature} className="flex items-start gap-3">
-                      <div className="h-5 w-5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
-                        <Check className="h-3 w-3 text-emerald-600" />
+                    <div key={feature} className="flex items-start gap-3 group">
+                      <div className={`mt-1 h-4 w-4 rounded-full flex items-center justify-center shrink-0 ${plan.highlight ? 'bg-secondary/20 text-secondary' : 'bg-slate-50 text-slate-400'}`}>
+                        <Check className="h-2.5 w-2.5" />
                       </div>
-                      <span className="text-sm font-bold text-slate-700">{feature}</span>
+                      <span className={`text-[13px] font-bold ${plan.highlight ? 'text-slate-200' : 'text-slate-600'}`}>
+                        {feature}
+                      </span>
                     </div>
                   ))}
                 </div>
+              </div>
 
+              <div className="pt-10">
                 {!loadingAuth ? (
                   plan.product && user ? (
                     <CheckoutButton 
                       product={plan.product} 
                       companyId={user.id}
-                      className="w-full rounded-2xl h-14 font-black uppercase tracking-widest text-xs border-none bg-brand text-white shadow-cta"
+                      className={`w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] border-none transition-all ${
+                        plan.highlight
+                          ? "bg-secondary text-primary hover:bg-secondary/90 shadow-cta"
+                          : "bg-primary text-white hover:bg-primary/90"
+                      }`}
                     >
-                      {plan.cta} <ArrowRight className="h-4 w-4 ml-2" />
+                      {plan.cta} <ArrowRight className="h-3 w-3 ml-2" />
                     </CheckoutButton>
                   ) : (
                     <Button
                       asChild
-                      className={`w-full rounded-2xl h-14 font-black uppercase tracking-widest text-xs border-none ${
+                      className={`w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] border-none transition-all ${
                         plan.highlight
-                          ? "bg-brand text-white shadow-cta"
-                          : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                          ? "bg-secondary text-primary hover:bg-secondary/90 shadow-cta"
+                          : "bg-primary text-white hover:bg-primary/90"
                       }`}
                     >
                       <Link href={user ? "/employer/jobs/new" : "/signup?role=employer"} className="gap-2">
                         {plan.cta}
-                        <ArrowRight className="h-4 w-4" />
+                        <ArrowRight className="h-3 w-3" />
                       </Link>
                     </Button>
                   )
                 ) : (
-                  <Button disabled className="w-full rounded-2xl h-14 bg-slate-50 text-slate-300">
-                    Checking Access...
+                  <Button disabled className="w-full h-14 rounded-2xl bg-slate-100 text-slate-300">
+                    Syncing...
                   </Button>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
-        <footer className="bg-slate-50 rounded-[3rem] p-12 text-center border border-slate-100">
-          <div className="max-w-2xl mx-auto space-y-6">
-            <Building2 className="h-12 w-12 text-brand mx-auto opacity-50" />
-            <h3 className="text-2xl font-black text-slate-900 uppercase">Enterprise Solutions</h3>
-            <p className="text-slate-500 font-medium">
-              Hiring more than 50 people per year? Get a custom quote with unlimited featured slots, multi-user accounts, and dedicated account management.
-            </p>
-            <Button variant="outline" size="lg" className="rounded-2xl border-brand text-brand font-black uppercase tracking-widest px-10">
-              Contact Sales
-            </Button>
-          </div>
-        </footer>
+        {/* Brand Promise Bento */}
+        <div className="grid md:grid-cols-3 gap-6 pt-10">
+           <div className="bg-white p-8 rounded-[2rem] border border-slate-200 space-y-4 shadow-sm hover-lift">
+              <ShieldCheck className="h-8 w-8 text-secondary" />
+              <h4 className="font-display text-xl font-black text-primary uppercase">Verified Network</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">Every employer and job seeker is manually vetted to ensure market quality.</p>
+           </div>
+           <div className="bg-white p-8 rounded-[2rem] border border-slate-200 space-y-4 shadow-sm hover-lift">
+              <Zap className="h-8 w-8 text-secondary" />
+              <h4 className="font-display text-xl font-black text-primary uppercase">AI Matching</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">Our semantic engine matches candidates based on skills, not just keywords.</p>
+           </div>
+           <div className="bg-white p-8 rounded-[2rem] border border-slate-200 space-y-4 shadow-sm hover-lift">
+              <Globe className="h-8 w-8 text-secondary" />
+              <h4 className="font-display text-xl font-black text-primary uppercase">Local Expertise</h4>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">Deeply rooted in the Maltese business ecosystem with first-party data.</p>
+           </div>
+        </div>
       </div>
-    </PageShell>
+    </div>
   );
 }

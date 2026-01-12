@@ -1,91 +1,84 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Zap, Globe, Users, ArrowUpRight } from "lucide-react";
+import { Zap, ArrowUpRight, ShieldCheck, Globe, Users, TrendingUp } from "lucide-react";
 
 export default function Hero({ employerSignupHref }: { employerSignupHref: string }) {
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-20 pb-16 overflow-hidden">
-      {/* Optimized Background Image */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=2070&auto=format&fit=crop"
-          alt="Premium Malta Business Landscape"
-          fill
-          priority
-          quality={85}
-          className="object-cover object-center scale-105 animate-slow-zoom"
-          sizes="100vw"
-        />
-        {/* Readability & Branding Overlays */}
-        <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-slate-50/50 via-transparent to-brand-slate-50" />
+    <section className="relative min-h-[95vh] flex items-center pt-32 pb-20 overflow-hidden bg-[#F8FAFC]">
+      {/* Dynamic Background Pattern */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-secondary/10 blur-[120px] rounded-full" />
       </div>
       
       <div className="container-wide relative z-10">
-        <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-up">
-          {/* Elite Status Badge */}
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white shadow-premium border border-primary/10 mb-4 hover-scale cursor-default">
-            <div className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
-            <span className="text-[11px] font-black uppercase tracking-widest-plus text-primary/80">
-              Malta&apos;s Premium Talent Exchange
+        <div className="max-w-5xl mx-auto text-center space-y-12">
+          {/* Status Chip */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest animate-fade-in">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
             </span>
+            The Talent Network for Malta&apos;s Elite
           </div>
 
-          <h1 className="text-display-lg text-brand-navy leading-[0.95] tracking-tightest">
-            The <span className="gradient-text font-black italic">Fastest</span> Path <br />
-            To Maltese Excellence.
-          </h1>
+          {/* Main Headline */}
+          <div className="space-y-6">
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-primary leading-[0.9] tracking-tightest">
+              Hire <span className="text-secondary italic">Brilliant</span> <br />
+              Maltese Talent.
+            </h1>
+            <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed font-body">
+              Join the Hive. A high-performance ecosystem connecting verified brands 
+              with the top 1% of Malta&apos;s professional network.
+            </p>
+          </div>
 
-          <p className="text-xl md:text-2xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
-            Where elite Maltese brands meet high-performance professionals. 
-            Powered by semantic AI matching.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-            <Button asChild variant="primary" size="xl" className="group">
+          {/* Action Hub */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 pt-4">
+            <Button asChild size="xl" className="group bg-secondary text-primary hover:bg-secondary/90 border-none px-8 py-8 text-lg font-black rounded-2xl shadow-cta hover:shadow-cta-hover transition-all">
               <Link href="/signup">
-                Join the Network <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                Get Access Now <ArrowUpRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
               </Link>
             </Button>
-            <Button asChild variant="tertiary" size="xl">
+            <Button asChild variant="outline" size="xl" className="border-2 border-primary/10 hover:border-primary/20 bg-white/50 backdrop-blur-sm px-8 py-8 text-lg font-bold rounded-2xl transition-all">
               <Link href="/jobs">
-                Explore Intelligence <Zap className="h-4 w-4 text-brand-emerald-500" />
+                Explore The Feed
               </Link>
             </Button>
           </div>
 
-          {/* Real-time Trust Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-8 pt-16 md:pt-20 border-t border-slate-200/60 max-w-5xl mx-auto px-4 md:px-0">
-            <div className="space-y-1 group">
-              <div className="flex items-center justify-center gap-2 text-brand-navy transition-transform group-hover:scale-110">
-                <ShieldCheck className="h-5 w-5" />
-                <span className="text-xl md:text-2xl font-black tracking-tighter">100%</span>
+          {/* Value Bento Strip */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-20 max-w-4xl mx-auto">
+            <div className="hive-border p-6 rounded-3xl space-y-3 hover-lift">
+              <ShieldCheck className="h-6 w-6 text-primary" />
+              <div className="text-left">
+                <p className="text-2xl font-black text-primary tracking-tightest">100%</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Vetted Brands</p>
               </div>
-              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Vetted Brands</p>
             </div>
-            <div className="space-y-1 group">
-              <div className="flex items-center justify-center gap-2 text-brand-navy transition-transform group-hover:scale-110">
-                <Zap className="h-5 w-5 text-brand-gold" />
-                <span className="text-xl md:text-2xl font-black tracking-tighter">&lt; 2ms</span>
+            <div className="hive-border p-6 rounded-3xl space-y-3 hover-lift">
+              <Zap className="h-6 w-6 text-secondary" />
+              <div className="text-left">
+                <p className="text-2xl font-black text-primary tracking-tightest">&lt; 1ms</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Match Speed</p>
               </div>
-              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Alert Latency</p>
             </div>
-            <div className="space-y-1 group">
-              <div className="flex items-center justify-center gap-2 text-brand-navy transition-transform group-hover:scale-110">
-                <Globe className="h-5 w-5" />
-                <span className="text-xl md:text-2xl font-black tracking-tighter">Local</span>
+            <div className="hive-border p-6 rounded-3xl space-y-3 hover-lift">
+              <Globe className="h-6 w-6 text-brand-violet" />
+              <div className="text-left">
+                <p className="text-2xl font-black text-primary tracking-tightest">Local</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">First-Party</p>
               </div>
-              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Market Focus</p>
             </div>
-            <div className="space-y-1 group">
-              <div className="flex items-center justify-center gap-2 text-brand-navy transition-transform group-hover:scale-110">
-                <Users className="h-5 w-5 text-brand-teal" />
-                <span className="text-xl md:text-2xl font-black tracking-tighter">Verified</span>
+            <div className="hive-border p-6 rounded-3xl space-y-3 hover-lift">
+              <TrendingUp className="h-6 w-6 text-primary" />
+              <div className="text-left">
+                <p className="text-2xl font-black text-primary tracking-tightest">Active</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Placements</p>
               </div>
-              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Talent Pool</p>
             </div>
           </div>
         </div>

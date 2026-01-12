@@ -4,52 +4,56 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 210 100% 41.6%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 222 47% 11%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 42 100% 50%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 84 81% 44%;
+    --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 239 84% 67%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 1rem;
+    --ring: 222 47% 11%;
+    --radius: 0.75rem;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-premium;
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-premium;
   }
   
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-navy via-primary to-brand-teal;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-navy via-brand-violet to-secondary;
   }
 
   .btn-premium {
-    @apply relative overflow-hidden transition-all duration-300 hover:shadow-gold-glow hover:-translate-y-0.5 active:translate-y-0;
+    @apply relative overflow-hidden transition-all duration-300 hover:shadow-cta hover:-translate-y-0.5 active:translate-y-0 active:scale-95;
   }
 
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1 active:translate-y-0 active:scale-95;
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-95;
   }
   
   .luxury-grid {
-    @apply grid gap-8 md:grid-cols-2 lg:grid-cols-3;
+    @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3;
   }
 
   .container-wide {
     @apply w-full max-w-[1440px] mx-auto px-4 md:px-8;
+  }
+
+  .hive-border {
+    @apply border border-slate-200/60 bg-white/50 backdrop-blur-sm;
   }
 }
 
@@ -62,5 +66,15 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-brand-gold/50 transition-colors;
+  @apply bg-slate-200 rounded-full hover:bg-secondary/50 transition-colors;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }

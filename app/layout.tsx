@@ -1,15 +1,23 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/navigation/Footer";
 import { SITE_URL, SITE_NAME } from "@/lib/site/url";
 import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-body",
+});
+
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ["latin"],
+  variable: "--font-display",
+});
 
 export const viewport: Viewport = {
-  themeColor: "#0B5E7F",
+  themeColor: "#0F172A", // Midnight Navy
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -78,7 +86,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-body bg-slate-50 antialiased`}>
         <Navbar />
         <main>{children}</main>
         <Footer />

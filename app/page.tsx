@@ -1,5 +1,4 @@
 import Hero from "@/components/landing/Hero";
-import TrustStrip from "@/components/landing/trust-strip";
 import CategoryGrid from "@/components/landing/category-grid";
 import EmployerPricingPath from "@/components/landing/employer-pricing-path";
 import FeaturedCarousel from "@/components/jobs/featured-carousel";
@@ -10,19 +9,21 @@ export default async function Home() {
   const employerSignupHref = "/signup?role=employer";
 
   return (
-    <div className="bg-background">
-      <main>
+    <div className="bg-[#F8FAFC]">
+      <main className="space-y-0">
         <Hero employerSignupHref={employerSignupHref} />
         
-        <TrustStrip />
-        
-        <FeaturedCarousel />
+        <div className="py-20">
+          <FeaturedCarousel />
+        </div>
         
         <CategoryGrid />
         
-        <EmployerPricingPath 
-          employerSignupHref={employerSignupHref} 
-        />
+        <div className="bg-primary py-32 mt-32">
+          <EmployerPricingPath 
+            employerSignupHref={employerSignupHref} 
+          />
+        </div>
       </main>
     </div>
   );
