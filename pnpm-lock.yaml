@@ -45,8 +45,8 @@ importers:
         specifier: ^1.6.1
         version: 1.6.1(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       ai:
-        specifier: ^6.0.27
-        version: 6.0.27(zod@3.25.76)
+        specifier: ^6.0.28
+        version: 6.0.28(zod@3.25.76)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1754,8 +1754,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  ai@6.0.27:
-    resolution: {integrity: sha512-a4ToMt5+4xOzHuYdoTy2GQXuNa2/Tpuhxfs5QESHtEV/Vf2HAzSwmTwikrIs8CDKPuMWV1I9YqAvaN5xexMCiQ==}
+  ai@6.0.28:
+    resolution: {integrity: sha512-TshF7p7Vhg8Ty8MMijiUKB3k334GTqgD7eK5XQzaxAcrc4JXuZClRrS0nhxrbs0LOtCVbqYTRLb7qJ7VG2djnQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5851,7 +5851,7 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@6.0.27(zod@3.25.76):
+  ai@6.0.28(zod@3.25.76):
     dependencies:
       '@ai-sdk/gateway': 3.0.11(zod@3.25.76)
       '@ai-sdk/provider': 3.0.2
