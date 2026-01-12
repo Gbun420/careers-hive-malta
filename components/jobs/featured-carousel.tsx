@@ -36,27 +36,41 @@ const MOCK_JOBS = [
     created_at: new Date().toISOString(),
     is_featured: true,
     employer_verified: true,
-  }
+  },
 ];
 
 export default function FeaturedCarousel() {
-  const [jobs, setJobs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState<any[]>(MOCK_JOBS.slice(0, 3)); // Start with mock data
+  const [loading, setLoading] = useState(false); // Start as not loading
 
   useEffect(() => {
-    fetch("/api/jobs/featured")
-      .then((res) => res.json())
-      .then((payload) => {
-        const data = payload.data ?? [];
-        // If API returns fewer than 3, mix in mock data to maintain grid density
-        if (data.length < 3) {
-          setJobs([...data, ...MOCK_JOBS.slice(0, 3 - data.length)]);
-        } else {
-          setJobs(data);
-        }
-      })
-      .catch(() => setJobs(MOCK_JOBS))
-      .finally(() => setLoading(false));
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      // Only fetch if component is still mounted
+      if (!controller.signal.aborted) {
+        fetch("/api/jobs/featured", { signal: controller.signal })
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to fetch");
+            return res.json();
+          })
+          .then((payload) => {
+            const data = payload.data ?? [];
+            // Update with real data if available
+            if (data.length > 0) {
+              setJobs(data);
+            }
+          })
+          .catch(() => {
+            // Keep mock data on error
+            console.log("Using mock data for featured jobs");
+          });
+      }
+    }, 100); // Small delay to prioritize LCP
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, []);
 
   if (loading) {
@@ -86,18 +100,23 @@ export default function FeaturedCarousel() {
               Featured Opportunities.
             </h2>
           </div>
-          <Link href="/jobs" className="group flex items-center gap-2 text-sm font-bold text-primary hover:text-emerald-600 transition-all" aria-label="View all active job listings in Malta">
-            View all active roles <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <Link
+            href="/jobs"
+            className="group flex items-center gap-2 text-sm font-bold text-primary hover:text-emerald-600 transition-all"
+            aria-label="View all active job listings in Malta"
+          >
+            View all active roles{" "}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {jobs.slice(0, 6).map((job) => (
-            <JobCard 
+            <JobCard
               key={job.id}
               id={job.id}
               title={job.title}
-              employerName={job.profiles?.email?.split('@')[0] || "Verified Employer"}
+              employerName={job.profiles?.email?.split("@")[0] || "Verified Employer"}
               location={job.location || "Malta"}
               salaryRange={job.salary_range}
               createdAt={job.created_at}

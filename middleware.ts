@@ -1,23 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-// --- Lightweight Helpers (No Supabase Imports) ---
-
+// --- Optimized Constants ---
 const ASSET_EXT = /\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|css|js|map|woff2?|ttf|eot)$/i;
+const REQUIRED_ENV = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"] as const;
+const PROTECTED_PREFIXES = ["/settings", "/profile"] as const;
+const ROLE_PREFIXES = ["/jobseeker", "/employer", "/admin"] as const;
 
-function getMissingSupabaseEnv(): string[] {
-  const requiredEnv = [
-    "NEXT_PUBLIC_SUPABASE_URL",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-  ];
-  return requiredEnv.filter((key) => !process.env[key]);
-}
+// --- Optimized Helpers ---
+const getMissingEnv = (): string[] => REQUIRED_ENV.filter((key) => !process.env[key]);
 
-function getRoleFromPath(pathname: string): string | null {
-  if (pathname.startsWith("/jobseeker")) return "jobseeker";
-  if (pathname.startsWith("/employer")) return "employer";
-  if (pathname.startsWith("/admin")) return "admin";
-  return null;
-}
+const getRoleFromPath = (pathname: string): string | null =>
+  ROLE_PREFIXES.find((prefix) => pathname.startsWith(prefix)) || null;
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -61,9 +54,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const isLocal = request.headers.get("host")?.includes("localhost") || request.headers.get("host")?.includes("127.0.0.1");
+  const isLocal =
+    request.headers.get("host")?.includes("localhost") ||
+    request.headers.get("host")?.includes("127.0.0.1");
 
-  const missing = getMissingSupabaseEnv();
+  const missing = getMissingEnv();
 
   /* Removed production block for setup to allow viewing Stripe/Meili status */
   /*
@@ -75,10 +70,7 @@ export async function middleware(request: NextRequest) {
   // Only force /setup if NOT local
   if (!isLocal && missing.length > 0) {
     const isSetupPath = pathname === "/setup" || pathname.startsWith("/setup/");
-    if (
-      isSetupPath ||
-      pathname.startsWith("/jobs")
-    ) {
+    if (isSetupPath || pathname.startsWith("/jobs")) {
       return NextResponse.next();
     }
 
@@ -88,16 +80,15 @@ export async function middleware(request: NextRequest) {
   }
 
   const roleRequired = getRoleFromPath(pathname);
-  const isProtectedRoute = roleRequired || pathname.startsWith("/settings") || pathname.startsWith("/profile");
+  const isProtectedRoute =
+    roleRequired || PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
   if (!isProtectedRoute) {
     return NextResponse.next();
   }
 
-  // Lightweight Auth Check: Look for Supabase auth cookies
-  // Supabase SSR cookies typically start with 'sb-'
-  const allCookies = request.cookies.getAll();
-  const hasAuthCookie = allCookies.some(cookie => cookie.name.startsWith('sb-'));
+  // Lightweight Auth Check: Look for Supabase auth cookies (prefix 'sb-')
+  const hasAuthCookie = request.cookies.getAll().some((cookie) => cookie.name.startsWith("sb-"));
 
   if (!hasAuthCookie) {
     const url = request.nextUrl.clone();
@@ -106,8 +97,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Session exists (at least a cookie does). 
-  // We allow the request to proceed to the Page (Node.js context) 
+  // Session exists (at least a cookie does).
+  // We allow the request to proceed to the Page (Node.js context)
   // where actual role verification and session validation will happen securely.
   return NextResponse.next();
 }

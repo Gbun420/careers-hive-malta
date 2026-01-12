@@ -1,10 +1,16 @@
 const allowAdminSignup = process.env.ALLOW_ADMIN_SIGNUP === "true";
 const rawAllowlist = process.env.ADMIN_ALLOWLIST ?? "";
 
+// Enhanced email validation and security
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) && email.length <= 254;
+};
+
 const adminAllowlist = rawAllowlist
   .split(",")
   .map((value) => value.trim().toLowerCase())
-  .filter(Boolean);
+  .filter((email) => email && isValidEmail(email));
 
 /**
  * Checks if an email is eligible to sign up as an admin.
