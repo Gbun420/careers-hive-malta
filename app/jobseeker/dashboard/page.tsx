@@ -1,5 +1,5 @@
 import Link from "next/link";
-import RecommendedJobs from "@/components/jobs/recommended-jobs";
+import EnhancedRecommendedJobs from "@/components/jobs/enhanced-recommended-jobs";
 import ProfileCompleteness from "@/components/profile/profile-completeness";
 import { PageShell } from "@/components/ui/page-shell";
 import { Bell, User, Settings, Sparkles, ArrowRight } from "lucide-react";
@@ -96,7 +96,7 @@ export default function JobseekerDashboard() {
           </div>
         </div>
 
-        <div className="space-y-6 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+        <div className="space-y-6 animate-fade-up" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-brand animate-pulse" />
@@ -104,12 +104,15 @@ export default function JobseekerDashboard() {
                 AI-Powered Recommendations
               </h2>
             </div>
-            <Link href="/jobs" className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">
+            <Link
+              href="/jobs"
+              className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline"
+            >
               View Feed →
             </Link>
           </div>
           <div className="glass-card rounded-[3rem] border-border/40 p-1 overflow-hidden">
-            <RecommendedJobs />
+            <EnhancedRecommendedJobs />
           </div>
         </div>
       </section>

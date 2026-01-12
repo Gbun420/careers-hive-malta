@@ -1,6 +1,6 @@
 import Link from "next/link";
 import ApplicantTracker from "@/components/employer/applicant-tracker";
-import DashboardStats from "@/components/employer/dashboard-stats";
+import EnhancedDashboardStats from "@/components/employer/enhanced-dashboard-stats";
 import { PageShell } from "@/components/ui/page-shell";
 import { Briefcase, ShieldCheck, Settings, Eye, BarChart3, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,9 +11,20 @@ export const dynamic = "force-dynamic";
 
 export default async function EmployerDashboard() {
   const supabase = createRouteHandlerClient();
-  const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
-  
-  const stats = user ? await getEmployerStats(user.id) : { jobCount: 0, applicationCount: 0, featuredJobs: [] };
+  const {
+    data: { user },
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+
+  const stats = user
+    ? await getEmployerStats(user.id)
+    : {
+        jobCount: 0,
+        applicationCount: 0,
+        featuredJobs: [],
+        views: 0,
+        avgTimeToHire: 21,
+        conversionRate: 15,
+      };
 
   const operations = [
     {
@@ -77,7 +88,7 @@ export default async function EmployerDashboard() {
         </div>
       </header>
 
-      <DashboardStats stats={stats} />
+      <EnhancedDashboardStats stats={stats} />
 
       <section className="grid gap-12 lg:grid-cols-[1fr_2.5fr]">
         <div className="space-y-8 animate-fade-left">
@@ -114,23 +125,31 @@ export default async function EmployerDashboard() {
           <div className="rounded-[2.5rem] bg-slate-950 p-8 text-white relative overflow-hidden group shadow-2xl">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-brand/20 blur-[80px] group-hover:bg-brand/30 transition-colors" />
             <div className="relative z-10 space-y-4">
-              <h3 className="font-black italic text-xl uppercase tracking-tighter">Pro Recruiter</h3>
+              <h3 className="font-black italic text-xl uppercase tracking-tighter">
+                Pro Recruiter
+              </h3>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Featured posts get 3x more visibility on the main feed and weekly newsletter.
               </p>
-              <Link href="/pricing" className="block text-center rounded-xl bg-white/10 hover:bg-white/20 px-4 py-3 text-xs font-black uppercase tracking-widest transition-all">
+              <Link
+                href="/pricing"
+                className="block text-center rounded-xl bg-white/10 hover:bg-white/20 px-4 py-3 text-xs font-black uppercase tracking-widest transition-all"
+              >
                 Upgrade Now
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="space-y-6 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+        <div className="space-y-6 animate-fade-up" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center justify-between">
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
               Active Applicant Pipeline
             </h2>
-            <Link href="/employer/applications" className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">
+            <Link
+              href="/employer/applications"
+              className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline"
+            >
               Full Tracker →
             </Link>
           </div>

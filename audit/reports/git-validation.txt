@@ -1,6 +1,0 @@
-=== GIT VALIDATION ===
-Current branch: feat/production-launch-system
-❌ Working tree has uncommitted changes
-Please commit or stash changes before deployment
-
-exit_code:1

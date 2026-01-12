@@ -1,6 +1,6 @@
 import { requireAdminPage } from "@/lib/auth/requireAdmin";
 import AdminSignOutButton from "@/components/admin/sign-out-button";
-import DashboardStats from "@/components/admin/dashboard-stats";
+import EnhancedDashboardStats from "@/components/admin/enhanced-dashboard-stats";
 import ReloadSchemaButton from "@/components/admin/reload-schema-button";
 import { MainTrendChart } from "@/components/admin/main-trend-chart";
 import Link from "next/link";
@@ -24,7 +24,8 @@ export default async function AdminDashboard() {
 
   // Fetch trend data for the server-side chart component
   const fourteenDaysAgo = formatISO(startOfDay(subDays(new Date(), 14)));
-  const { data: jobTrend } = await supabase.from("jobs")
+  const { data: jobTrend } = await supabase
+    .from("jobs")
     .select("created_at")
     .gte("created_at", fourteenDaysAgo)
     .order("created_at", { ascending: true });
@@ -32,7 +33,7 @@ export default async function AdminDashboard() {
   const processTrend = (data: any[] | null) => {
     if (!data) return [];
     const counts: Record<string, number> = {};
-    data.forEach(item => {
+    data.forEach((item) => {
       const date = item.created_at.split("T")[0];
       counts[date] = (counts[date] || 0) + 1;
     });
@@ -101,15 +102,11 @@ export default async function AdminDashboard() {
         </div>
       </header>
 
-      <DashboardStats />
+      <EnhancedDashboardStats />
 
       <section className="grid gap-12 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-12">
-          <MainTrendChart
-            data={trendData}
-            title="Platform Activity"
-            color="#6366f1"
-          />
+          <MainTrendChart data={trendData} title="Platform Activity" color="#6366f1" />
 
           <div className="space-y-6">
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
@@ -149,17 +146,25 @@ export default async function AdminDashboard() {
                     link.className
                   )}
                 >
-                  <p className={cn(
-                    "text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors",
-                    link.badge ? "text-brand group-hover:text-brand-accent" : "text-slate-950 group-hover:text-brand"
-                  )}>
+                  <p
+                    className={cn(
+                      "text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors",
+                      link.badge
+                        ? "text-brand group-hover:text-brand-accent"
+                        : "text-slate-950 group-hover:text-brand"
+                    )}
+                  >
                     {link.title}
-                    {link.badge && <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />}
+                    {link.badge && (
+                      <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
+                    )}
                   </p>
-                  <p className={cn(
-                    "mt-3 text-xs font-medium leading-relaxed",
-                    link.badge ? "text-brand/70" : "text-slate-500"
-                  )}>
+                  <p
+                    className={cn(
+                      "mt-3 text-xs font-medium leading-relaxed",
+                      link.badge ? "text-brand/70" : "text-slate-500"
+                    )}
+                  >
                     {link.description}
                   </p>
                 </Link>
