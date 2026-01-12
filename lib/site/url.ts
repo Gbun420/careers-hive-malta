@@ -1,8 +1,12 @@
 const DEFAULT_SITE_URL = "http://localhost:3000";
 
 export function getSafeSiteUrl() {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL;
+  let raw = process.env.NEXT_PUBLIC_SITE_URL;
   if (raw && raw.startsWith("http")) {
+    // Sanitize common typos
+    if (raw.includes(".vercel.appy")) {
+      raw = raw.replace(".vercel.appy", ".vercel.app");
+    }
     return raw.replace(/\/$/, "");
   }
   return DEFAULT_SITE_URL;

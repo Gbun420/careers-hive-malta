@@ -48,12 +48,42 @@ class VercelDeployer {
   }
 
   async setEnvironmentVariables() {
-    console.log('\nSetting environment variables...');
+    console.log('\nSetting environment variables from .env.production...');
+    
+    if (!fs.existsSync('.env.production')) {
+      console.warn('⚠️  .env.production not found, skipping environment variable sync');
+      return;
+    }
+
+    const envContent = fs.readFileSync('.env.production', 'utf8');
+    const envLines = envContent.split('\n');
+    const envMap = {};
+
+    envLines.forEach(line => {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        const key = match[1];
+        let value = match[2] || '';
+        if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+        if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
+        envMap[key] = value;
+      }
+    });
+
     for (const envVar of this.requiredEnvVars) {
-      try {
-        console.log(`Setting ${envVar}...`);
-      } catch (error) {
-        console.warn(`⚠️  Could not set ${envVar}: ${error.message}`);
+      const value = envMap[envVar];
+      if (value) {
+        try {
+          console.log(`Setting ${envVar}...`);
+          // Use 'echo' to pipe the value to avoid shell expansion issues
+          execSync(`echo "${value}" | npx vercel env add ${envVar} production --force`, {
+            stdio: ['pipe', 'pipe', 'inherit'],
+          });
+        } catch (error) {
+          console.warn(`⚠️  Could not set ${envVar}: ${error.message}`);
+        }
+      } else {
+        console.warn(`⚠️  Value for ${envVar} not found in .env.production`);
       }
     }
   }

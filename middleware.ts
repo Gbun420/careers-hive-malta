@@ -36,6 +36,11 @@ export async function middleware(request: NextRequest) {
       siteUrl = "https://careers-hive-malta-prod.vercel.app";
     }
 
+    // Sanitize common typos in siteUrl (like .vercel.appy)
+    if (siteUrl.includes(".vercel.appy")) {
+      siteUrl = siteUrl.replace(".vercel.appy", ".vercel.app");
+    }
+
     try {
       const canonicalUrl = new URL(siteUrl);
       const canonicalHost = canonicalUrl.host;
