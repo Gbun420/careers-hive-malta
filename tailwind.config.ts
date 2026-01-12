@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+      fontFamily: {
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
+      },
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
@@ -16,12 +20,12 @@ const config: Config = {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			primary: {
-  				DEFAULT: '#1565C0', // Mediterranean Blue
-  				foreground: '#FFFFFF'
+  				DEFAULT: '#0F172A', // Midnight Navy (Premium Authority)
+  				foreground: '#F8FAFC'
   			},
   			secondary: {
-  				DEFAULT: '#FFB300', // Sun Gold
-  				foreground: '#1A1A1A'
+  				DEFAULT: '#84CC16', // Electric Lime (High Energy Action)
+  				foreground: '#020617'
   			},
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
@@ -32,8 +36,8 @@ const config: Config = {
   				foreground: 'hsl(var(--muted-foreground))'
   			},
   			accent: {
-  				DEFAULT: '#E3F2FD', // Soft Sky Blue
-  				foreground: '#1565C0'
+  				DEFAULT: '#F1F5F9', // Crisp Slate
+  				foreground: '#0F172A'
   			},
   			popover: {
   				DEFAULT: 'hsl(var(--popover))',
@@ -44,10 +48,11 @@ const config: Config = {
   				foreground: 'hsl(var(--card-foreground))'
   			},
         brand: {
-          navy: '#0D47A1',
-          gold: '#FFA000',
-          sand: '#F5F5F5',
-          teal: '#00897B',
+          navy: '#020617',   // Deepest Void
+          gold: '#F59E0B',   // Amber Alert
+          sand: '#F8FAFC',   // Clean White
+          violet: '#6366F1', // AI/Tech Intelligence
+          teal: '#00897B',   // Legacy support
           emerald: {
             50: '#ecfdf5',
             100: '#d1fae5',
@@ -85,10 +90,10 @@ const config: Config = {
         '4xl': '2rem',
   		},
       boxShadow: {
-        'premium': '0 10px 40px -10px rgba(21, 101, 192, 0.1)',
-        'cta': '0 4px 14px 0 rgba(16, 185, 129, 0.39)',
-        'cta-hover': '0 6px 20px rgba(16, 185, 129, 0.23)',
-        'gold-glow': '0 0 20px rgba(255, 179, 0, 0.2)',
+        'premium': '0 20px 40px -10px rgba(2, 6, 23, 0.15)', // Deeper, sharper shadow
+        'cta': '0 4px 14px 0 rgba(132, 204, 22, 0.39)', // Lime glow
+        'cta-hover': '0 6px 20px rgba(132, 204, 22, 0.23)',
+        'gold-glow': '0 0 20px rgba(245, 158, 11, 0.2)', // Amber glow
       },
       letterSpacing: {
         'tightest': '-0.04em',
