@@ -197,14 +197,14 @@ export default function EmployerJobList({
             <div className="space-y-1">
               <p className="text-xl font-bold text-slate-950 tracking-tightest">{job.title}</p>
               <div className="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
-                <span className={job.is_active ? "text-emerald-600" : "text-amber-600"}>
+                <span className={job.is_active ? "text-secondary" : "text-amber-600"}>
                   {job.is_active ? "Active" : "Draft"}
                 </span>
                 <span>·</span>
                 <span>{job.location || "No location"}</span>
               </div>
               {job.is_featured && job.featured_until ? (
-                <p className="mt-2 text-[10px] font-extrabold uppercase tracking-widest text-emerald-700">
+                <p className="mt-2 text-[10px] font-extrabold uppercase tracking-widest text-secondary">
                   ★ Featured until{" "}
                   {new Date(job.featured_until).toLocaleDateString()}
                 </p>

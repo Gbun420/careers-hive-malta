@@ -97,19 +97,19 @@ export default function OpsChecklist() {
   return (
     <div className="space-y-16">
       <div className={`p-8 rounded-[2.5rem] border-2 flex flex-col md:flex-row items-center justify-between gap-8 transition-all ${
-        isGo ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"
+        isGo ? "bg-secondary/10 border-emerald-200" : "bg-rose-50 border-rose-200"
       }`}>
         <div className="flex items-center gap-6">
           <div className={`h-16 w-16 rounded-[1.5rem] flex items-center justify-center shadow-sm ${
-            isGo ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
+            isGo ? "bg-secondary/100 text-white" : "bg-rose-500 text-white"
           }`}>
             {isGo ? <Rocket className="h-8 w-8" /> : <AlertTriangle className="h-8 w-8" />}
           </div>
           <div>
-            <p className={`text-[10px] font-black uppercase tracking-widest ${isGo ? "text-emerald-600" : "text-rose-600"}`}>
+            <p className={`text-[10px] font-black uppercase tracking-widest ${isGo ? "text-secondary" : "text-rose-600"}`}>
               Current Gate Status
             </p>
-            <p className={`text-3xl font-black uppercase tracking-tightest ${isGo ? "text-emerald-900" : "text-rose-900"}`}>
+            <p className={`text-3xl font-black uppercase tracking-tightest ${isGo ? "text-primary" : "text-rose-900"}`}>
               {isGo ? "GO FOR LAUNCH" : "NO-GO (P0 BLOCKED)"}
             </p>
           </div>
@@ -119,7 +119,7 @@ export default function OpsChecklist() {
           <div className="flex items-center gap-2 mt-1">
             <div className="h-2 w-32 bg-slate-200 rounded-full overflow-hidden">
               <div 
-                className={`h-full transition-all duration-500 ${isGo ? 'bg-emerald-500' : 'bg-rose-500'}`}
+                className={`h-full transition-all duration-500 ${isGo ? 'bg-secondary/100' : 'bg-rose-500'}`}
                 style={{ width: `${(p0PassCount / p0Total) * 100}%` }}
               />
             </div>
@@ -156,7 +156,7 @@ export default function OpsChecklist() {
                   <div className="p-8 flex flex-col lg:flex-row gap-8">
                     <div className="flex-1 space-y-4">
                       <div className="flex items-center gap-3">
-                        {check.status === 'PASS' ? <CheckCircle2 className="h-5 w-5 text-emerald-500" /> : 
+                        {check.status === 'PASS' ? <CheckCircle2 className="h-5 w-5 text-secondary" /> : 
                          check.status === 'FAIL' ? <XCircle className="h-5 w-5 text-rose-500" /> : 
                          <Clock className="h-5 w-5 text-slate-300" />}
                         <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight">{check.title}</h4>
@@ -182,7 +182,7 @@ export default function OpsChecklist() {
                             onClick={() => updateStatus(check.id, 'PASS')}
                             disabled={updatingId === check.id}
                             className={`rounded-xl h-10 font-black uppercase text-[10px] tracking-widest border-none ${
-                              check.status === 'PASS' ? 'bg-emerald-500 text-white shadow-cta' : 'bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600'
+                              check.status === 'PASS' ? 'bg-secondary/100 text-white shadow-cta' : 'bg-slate-50 text-slate-400 hover:bg-secondary/10 hover:text-secondary'
                             }`}
                           >
                             Pass

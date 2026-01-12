@@ -50,7 +50,7 @@ export default async function EmployerDashboard() {
       href: "/employer/analytics",
       icon: BarChart3,
       color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
+      bg: "bg-secondary/10",
     },
     {
       title: "Account settings",

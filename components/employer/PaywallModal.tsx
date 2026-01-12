@@ -51,11 +51,11 @@ export default function PaywallModal({
             <p className="text-2xl font-black text-slate-900 mb-4">€49</p>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2 text-xs text-slate-600 font-medium">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <Check className="h-3.5 w-3.5 text-secondary shrink-0 mt-0.5" />
                 30 days visibility
               </li>
               <li className="flex items-start gap-2 text-xs text-slate-600 font-medium">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <Check className="h-3.5 w-3.5 text-secondary shrink-0 mt-0.5" />
                 Standard placement
               </li>
             </ul>
@@ -85,11 +85,11 @@ export default function PaywallModal({
                 Unlimited postings
               </li>
               <li className="flex items-start gap-2 text-xs text-slate-700 font-bold">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <Check className="h-3.5 w-3.5 text-secondary shrink-0 mt-0.5" />
                 Featured credits
               </li>
               <li className="flex items-start gap-2 text-xs text-slate-700 font-bold">
-                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <Check className="h-3.5 w-3.5 text-secondary shrink-0 mt-0.5" />
                 ATS Tools
               </li>
             </ul>

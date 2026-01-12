@@ -117,12 +117,12 @@ export default function JobEdit({
           <li>• Highlighted for active jobseekers</li>
         </ul>
         {job?.employer_verified ? (
-          <p className="mt-3 text-xs text-emerald-700">
+          <p className="mt-3 text-xs text-secondary">
             Verified employers stand out to jobseekers.
           </p>
         ) : null}
         {job?.is_featured && job.featured_until ? (
-          <p className="mt-4 text-sm font-semibold text-emerald-700">
+          <p className="mt-4 text-sm font-semibold text-secondary">
             Featured until {new Date(job.featured_until).toLocaleDateString()}
           </p>
         ) : (

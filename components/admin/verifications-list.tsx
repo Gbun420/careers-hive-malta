@@ -131,7 +131,7 @@ export default function AdminVerificationsList() {
                   <Button 
                     onClick={() => handleVerify(employer.id, 'APPROVE')}
                     disabled={updatingId === employer.id}
-                    className="w-full rounded-xl h-12 bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase text-[10px] tracking-widest border-none shadow-cta transition-all"
+                    className="w-full rounded-xl h-12 bg-secondary hover:bg-emerald-600 text-white font-black uppercase text-[10px] tracking-widest border-none shadow-cta transition-all"
                   >
                     {updatingId === employer.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Approve & Verify"}
                   </Button>

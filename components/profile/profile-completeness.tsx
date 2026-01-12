@@ -77,7 +77,7 @@ export default function ProfileCompleteness() {
             )}
           >
             {check.complete ? (
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <CheckCircle2 className="h-4 w-4 text-secondary" />
             ) : (
               <Circle className="h-4 w-4 text-slate-200" />
             )}

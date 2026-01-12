@@ -127,7 +127,7 @@ export default function EnhancedRecommendedJobs() {
                   <span className="font-black text-slate-600">Better matching</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3 text-emerald-500" />
+                  <TrendingUp className="h-3 w-3 text-secondary" />
                   <span className="font-black text-slate-600">Higher response rates</span>
                 </div>
                 <div className="flex items-center gap-1">

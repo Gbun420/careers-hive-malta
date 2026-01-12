@@ -172,7 +172,7 @@ export default function AdminReportsList() {
                     <Button 
                       onClick={() => handleAction(report.id, 'RESOLVE')}
                       disabled={updatingId === report.id}
-                      className="w-full rounded-xl h-12 bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase text-[10px] tracking-widest border-none shadow-cta transition-all"
+                      className="w-full rounded-xl h-12 bg-secondary hover:bg-emerald-600 text-white font-black uppercase text-[10px] tracking-widest border-none shadow-cta transition-all"
                     >
                       Resolve Only
                     </Button>

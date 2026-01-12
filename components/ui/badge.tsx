@@ -12,7 +12,7 @@ export function Badge({ children, variant = 'default', className }: BadgeProps) 
     verified: "bg-brand/10 text-brand border-brand/20",
     featured: "bg-brand-accent/10 text-brand-accent border-brand-accent/20 shadow-sm",
     new: "bg-brand/10 text-brand border-brand/20",
-    success: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    success: "bg-secondary/10 text-secondary border-emerald-500/20",
     warning: "bg-brand-accent/10 text-brand-accent border-brand-accent/20",
     error: "bg-rose-500/10 text-rose-600 border-rose-500/20",
   };

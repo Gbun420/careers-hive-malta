@@ -257,7 +257,7 @@ export default function JobseekerApplicationDetailPage({ params }: { params: Pro
                 <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-slate-100">
                   <div className="relative flex items-start gap-6 group">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white border border-slate-100 shadow-sm z-10">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      <CheckCircle2 className="h-4 w-4 text-secondary" />
                     </div>
                     <div className="flex flex-col gap-1 pt-1.5 pb-6 border-b border-slate-50 w-full">
                       <div className="flex items-center justify-between">

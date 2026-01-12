@@ -222,7 +222,7 @@ export default function JobPostingWizard() {
               
               {error && <p className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-700">{error}</p>}
 
-              <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-sm font-medium">
+              <div className="p-6 rounded-2xl bg-secondary/5 border border-emerald-100 text-secondary text-sm font-medium">
                 ✓ Ready for instant synchronization with alert streams.
               </div>
 

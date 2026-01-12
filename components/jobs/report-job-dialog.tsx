@@ -89,7 +89,7 @@ export default function ReportJobDialog({ jobId }: ReportJobDialogProps) {
             </div>
 
             {success ? (
-              <p className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700">
+              <p className="mt-4 rounded-2xl border border-emerald-200 bg-secondary/10 px-4 py-2 text-sm text-secondary">
                 Report submitted. Thanks for helping keep listings safe.
               </p>
             ) : null}

@@ -32,7 +32,7 @@ function SuccessContent() {
         </div>
       ) : (
         <div className="space-y-8 animate-fade-in">
-          <div className="h-24 w-24 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+          <div className="h-24 w-24 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mx-auto shadow-sm">
             <CheckCircle2 className="h-12 w-12" />
           </div>
           

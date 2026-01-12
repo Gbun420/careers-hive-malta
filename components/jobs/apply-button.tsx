@@ -38,7 +38,7 @@ export default function ApplyButton({ jobId, jobTitle }: ApplyButtonProps) {
 
   if (status === 'success') {
     return (
-      <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-emerald-700 font-bold border border-emerald-100">
+      <div className="flex items-center gap-2 rounded-xl bg-secondary/10 px-4 py-2 text-secondary font-bold border border-emerald-100">
         <Check className="h-4 w-4" /> Application Sent
       </div>
     );

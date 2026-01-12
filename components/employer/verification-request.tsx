@@ -94,7 +94,7 @@ export default function VerificationRequest() {
           </p>
 
           {status === "approved" && (
-            <div className="mt-8 flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest bg-emerald-50 p-4 rounded-xl">
+            <div className="mt-8 flex items-center gap-2 text-secondary font-bold text-xs uppercase tracking-widest bg-secondary/10 p-4 rounded-xl">
               <CheckCircle2 className="h-4 w-4" /> Priority Trust Badge Active
             </div>
           )}
@@ -127,7 +127,7 @@ export default function VerificationRequest() {
         </div>
 
         {successMessage && (
-          <p className="mb-6 rounded-xl bg-emerald-50 p-4 text-sm font-bold text-emerald-700 border border-emerald-100">
+          <p className="mb-6 rounded-xl bg-secondary/10 p-4 text-sm font-bold text-secondary border border-emerald-100">
             {successMessage}
           </p>
         )}

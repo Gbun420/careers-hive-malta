@@ -118,7 +118,7 @@ export default function ProfilePage() {
         </header>
 
         {success && (
-          <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 px-5 py-4 text-sm font-bold text-emerald-700 animate-scale-in">
+          <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-secondary/5 px-5 py-4 text-sm font-bold text-secondary animate-scale-in">
             <CheckCircle2 className="h-5 w-5" />
             Profile updated successfully!
           </div>
@@ -171,7 +171,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex items-center gap-3 border-b border-border/40 pb-6 pt-4">
-                <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
+                <div className="p-2 rounded-lg bg-secondary/10 text-secondary">
                   <Sparkles className="h-4 w-4" />
                 </div>
                 <h3 className="text-xs font-black uppercase tracking-widest text-slate-950">Professional Branding</h3>
@@ -225,7 +225,7 @@ export default function ProfilePage() {
                 Profiles with full names and verified emails are 40% more likely to be matched with premium Maltese employers.
               </p>
               <div className="pt-2">
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-500">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-secondary">
                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Visibility Active
                 </div>

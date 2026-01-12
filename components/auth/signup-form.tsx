@@ -167,7 +167,7 @@ export default function SignupForm({
           </p>
         ) : null}
         {message ? (
-          <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">
+          <p className="rounded-xl border border-emerald-200 bg-secondary/5 px-4 py-2 text-sm font-bold text-secondary">
             {message}
           </p>
         ) : null}

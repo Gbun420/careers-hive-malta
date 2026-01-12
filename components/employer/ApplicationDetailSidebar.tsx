@@ -58,7 +58,7 @@ export default function ApplicationDetailSidebar({
           <div className="grid grid-cols-2 gap-2 pt-2">
             <Button 
               variant="outline"
-              className="rounded-xl border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[10px] font-black uppercase tracking-widest h-10"
+              className="rounded-xl border-emerald-100 bg-secondary/10 text-secondary hover:bg-emerald-100 text-[10px] font-black uppercase tracking-widest h-10"
               disabled={isUpdating}
               onClick={() => onStatusChange("HIRED")}
             >

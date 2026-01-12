@@ -15,8 +15,8 @@ type DashboardStatsProps = {
 
 export default function EnhancedDashboardStats({ stats }: DashboardStatsProps) {
   const conversionTrend = stats.conversionRate > 15 ? "up" : "down";
-  const timeToHireColor = stats.avgTimeToHire < 30 ? "text-emerald-600" : "text-amber-600";
-  const timeToHireBg = stats.avgTimeToHire < 30 ? "bg-emerald-50" : "bg-amber-50";
+  const timeToHireColor = stats.avgTimeToHire < 30 ? "text-secondary" : "text-amber-600";
+  const timeToHireBg = stats.avgTimeToHire < 30 ? "bg-secondary/10" : "bg-amber-50";
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-12 animate-fade-down">
@@ -36,8 +36,8 @@ export default function EnhancedDashboardStats({ stats }: DashboardStatsProps) {
               Total listings
             </p>
             <div className="flex items-center gap-1">
-              <TrendingUp className="h-3 w-3 text-emerald-500" />
-              <span className="text-[9px] text-emerald-500 font-black uppercase">+12%</span>
+              <TrendingUp className="h-3 w-3 text-secondary" />
+              <span className="text-[9px] text-secondary font-black uppercase">+12%</span>
             </div>
           </div>
         </CardContent>
@@ -48,7 +48,7 @@ export default function EnhancedDashboardStats({ stats }: DashboardStatsProps) {
           <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-400">
             Applications
           </CardTitle>
-          <div className="p-2 rounded-xl bg-emerald-50 text-emerald-500 group-hover:scale-110 transition-transform">
+          <div className="p-2 rounded-xl bg-secondary/10 text-secondary group-hover:scale-110 transition-transform">
             <Users className="h-4 w-4" />
           </div>
         </CardHeader>
@@ -107,8 +107,8 @@ export default function EnhancedDashboardStats({ stats }: DashboardStatsProps) {
               This month
             </p>
             <div className="flex items-center gap-1">
-              <TrendingUp className="h-3 w-3 text-emerald-500" />
-              <span className="text-[9px] text-emerald-500 font-black uppercase">+24%</span>
+              <TrendingUp className="h-3 w-3 text-secondary" />
+              <span className="text-[9px] text-secondary font-black uppercase">+24%</span>
             </div>
           </div>
         </CardContent>
@@ -137,14 +137,14 @@ export default function EnhancedDashboardStats({ stats }: DashboardStatsProps) {
             </p>
             <div className="flex items-center gap-1">
               {stats.avgTimeToHire < 30 ? (
-                <TrendingDown className="h-3 w-3 text-emerald-500" />
+                <TrendingDown className="h-3 w-3 text-secondary" />
               ) : (
                 <TrendingUp className="h-3 w-3 text-amber-500" />
               )}
               <span
                 className={cn(
                   "text-[9px] font-black uppercase",
-                  stats.avgTimeToHire < 30 ? "text-emerald-500" : "text-amber-500"
+                  stats.avgTimeToHire < 30 ? "text-secondary" : "text-amber-500"
                 )}
               >
                 {stats.avgTimeToHire < 30 ? "Good" : "Slow"}
@@ -171,14 +171,14 @@ export default function EnhancedDashboardStats({ stats }: DashboardStatsProps) {
             </p>
             <div className="flex items-center gap-1">
               {conversionTrend === "up" ? (
-                <TrendingUp className="h-3 w-3 text-emerald-500" />
+                <TrendingUp className="h-3 w-3 text-secondary" />
               ) : (
                 <TrendingDown className="h-3 w-3 text-amber-500" />
               )}
               <span
                 className={cn(
                   "text-[9px] font-black uppercase",
-                  conversionTrend === "up" ? "text-emerald-500" : "text-amber-500"
+                  conversionTrend === "up" ? "text-secondary" : "text-amber-500"
                 )}
               >
                 {conversionTrend === "up" ? "Strong" : "Needs work"}

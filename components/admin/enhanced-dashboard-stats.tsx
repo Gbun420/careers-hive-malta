@@ -107,8 +107,8 @@ export default function DashboardStats() {
       value: metrics.pending_employer_verifications,
       icon: ShieldCheck,
       href: "/admin/employers/verifications",
-      color: metrics.pending_employer_verifications > 5 ? "text-rose-600" : "text-emerald-600",
-      bg: metrics.pending_employer_verifications > 5 ? "bg-rose-500/10" : "bg-emerald-500/10",
+      color: metrics.pending_employer_verifications > 5 ? "text-rose-600" : "text-secondary",
+      bg: metrics.pending_employer_verifications > 5 ? "bg-rose-500/10" : "bg-secondary/10",
       trend: metrics.trends.users.filter((_, i) => i % 2 === 0),
       trendText: metrics.pending_employer_verifications > 5 ? "Action required" : "On track",
       isUp: false,
@@ -142,7 +142,7 @@ export default function DashboardStats() {
   const systemHealth = (
     <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
       <div className="flex items-center gap-1">
-        <Activity className="h-3 w-3 text-emerald-500 animate-pulse" />
+        <Activity className="h-3 w-3 text-secondary animate-pulse" />
         <span>Systems Online</span>
       </div>
       <div className="flex items-center gap-1">
@@ -184,14 +184,14 @@ export default function DashboardStats() {
               <div className="flex items-center gap-2">
                 <span
                   className={`text-[10px] font-black uppercase tracking-widest ${
-                    card.isUp ? "text-emerald-500" : "text-slate-400"
+                    card.isUp ? "text-secondary" : "text-slate-400"
                   }`}
                 >
                   {card.trendText}
                 </span>
-                {card.badge && <Target className="h-3 w-3 text-emerald-500" />}
+                {card.badge && <Target className="h-3 w-3 text-secondary" />}
                 {card.isUp ? (
-                  <TrendingUp className="h-3 w-3 text-emerald-500" />
+                  <TrendingUp className="h-3 w-3 text-secondary" />
                 ) : (
                   <TrendingDown className="h-3 w-3 text-slate-400" />
                 )}

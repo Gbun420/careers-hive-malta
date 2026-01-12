@@ -65,7 +65,7 @@ export default function ActivityTab({ application, notes, messages }: ActivityTa
 
   const getIcon = (type: ActivityEvent['type']) => {
     switch (type) {
-      case 'APPLIED': return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
+      case 'APPLIED': return <CheckCircle2 className="h-4 w-4 text-secondary" />;
       case 'NOTE_ADDED': return <StickyNote className="h-4 w-4 text-slate-400" />;
       case 'MESSAGE_SENT': return <Mail className="h-4 w-4 text-brand" />;
       case 'STATUS_CHANGE': return <ArrowRightCircle className="h-4 w-4 text-amber-500" />;

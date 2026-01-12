@@ -97,7 +97,7 @@ export default function SecondMeSettingsPage() {
             <CardContent className="p-8 space-y-6 bg-white">
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>

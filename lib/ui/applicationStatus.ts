@@ -40,8 +40,8 @@ export const APPLICATION_STATUS_META: Record<ApplicationStatus, { label: string;
   },
   HIRED: { 
     label: 'Hired', 
-    color: 'text-emerald-700', 
-    bgColor: 'bg-emerald-50' 
+    color: 'text-secondary', 
+    bgColor: 'bg-secondary/10' 
   },
 };
 

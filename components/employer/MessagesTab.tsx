@@ -50,7 +50,7 @@ export default function MessagesTab({ messages, onSendMessage, isSending }: Mess
   const renderStatusIcon = (status: Message['status']) => {
     switch (status) {
       case 'sent': return <Check className="h-3 w-3" />;
-      case 'delivered': return <CheckCheck className="h-3 w-3 text-emerald-500" />;
+      case 'delivered': return <CheckCheck className="h-3 w-3 text-secondary" />;
       case 'failed': return <AlertCircle className="h-3 w-3 text-rose-500" />;
       default: return null;
     }

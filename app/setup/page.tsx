@@ -52,7 +52,7 @@ export default function SetupPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-emerald-600 font-bold">
+              <p className="text-sm text-secondary font-bold">
                 Database synchronization is active. You can now <Link href="/login" className="underline decoration-2 underline-offset-4">Sign in to your account</Link>.
               </p>
             )}
@@ -81,7 +81,7 @@ export default function SetupPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-emerald-600 font-bold">
+              <p className="text-sm text-secondary font-bold">
                 Payment gateway is fully configured for Malta job board.
               </p>
             )}

@@ -156,7 +156,7 @@ export default function SecondMePanel({ jobId, isEnabled }: SecondMePanelProps) 
                       <ul className="space-y-2">
                         {outputs.FIT_SUMMARY.match_points.map((p: string, i: number) => (
                           <li key={i} className="flex gap-2 text-sm font-medium text-slate-600">
-                            <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {p}
+                            <Check className="h-4 w-4 text-secondary shrink-0 mt-0.5" /> {p}
                           </li>
                         ))}
                       </ul>
@@ -195,7 +195,7 @@ export default function SecondMePanel({ jobId, isEnabled }: SecondMePanelProps) 
                         className="absolute right-2 top-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => copyToClipboard(b, `bullet-${i}`)}
                       >
-                        {copied === `bullet-${i}` ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+                        {copied === `bullet-${i}` ? <Check className="h-4 w-4 text-secondary" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </div>
                   ))}
