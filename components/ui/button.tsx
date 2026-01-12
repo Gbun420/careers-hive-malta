@@ -14,23 +14,23 @@ type ButtonVariant =
 type ButtonSize = "default" | "lg" | "sm" | "xl" | "icon";
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-2xl font-black uppercase tracking-widest transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald-500 focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.96] hover:-translate-y-0.5";
+  "inline-flex items-center justify-center rounded-2xl font-black uppercase tracking-widest transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.96] hover:-translate-y-0.5";
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    "bg-brand-emerald-600 text-white shadow-cta hover:bg-brand-emerald-500 hover:shadow-cta-hover",
+    "bg-secondary text-brand-navy shadow-cta hover:bg-[#a3e635] hover:shadow-cta-hover",
   primary:
-    "bg-brand-emerald-600 text-white shadow-cta hover:bg-brand-emerald-500 hover:shadow-cta-hover",
+    "bg-secondary text-brand-navy shadow-cta hover:bg-[#a3e635] hover:shadow-cta-hover",
   secondary:
-    "bg-brand-slate-900 text-white hover:bg-brand-slate-800 shadow-xl",
+    "bg-primary text-white hover:bg-slate-800 shadow-xl",
   tertiary:
-    "bg-white text-brand-slate-900 border-2 border-brand-slate-100 hover:border-brand-emerald-500/30 hover:bg-brand-emerald-50/50",
+    "bg-white text-primary border-2 border-slate-100 hover:border-secondary/30 hover:bg-secondary/5",
   premium:
-    "bg-brand-emerald-600 text-white shadow-cta hover:bg-brand-emerald-500 hover:shadow-cta-hover",
+    "bg-secondary text-brand-navy shadow-cta hover:bg-[#a3e635] hover:shadow-cta-hover",
   outline:
-    "border-2 border-brand-slate-200 bg-transparent text-brand-slate-600 hover:border-brand-emerald-500/40 hover:text-brand-emerald-600",
+    "border-2 border-slate-200 bg-transparent text-slate-600 hover:border-secondary/40 hover:text-primary",
   ghost: 
-    "text-brand-slate-500 hover:bg-brand-slate-100 hover:text-brand-slate-900",
+    "text-slate-500 hover:bg-slate-100 hover:text-primary",
   destructive:
     "bg-red-600 text-white hover:bg-red-500 shadow-sm",
 };

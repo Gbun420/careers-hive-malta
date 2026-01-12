@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   :root {
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
@@ -23,7 +27,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222 47% 11%;
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 }
 
@@ -33,7 +37,7 @@
   }
   
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-navy via-brand-violet to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-brand-violet to-secondary;
   }
 
   .btn-premium {

@@ -43,7 +43,7 @@ export function JobCard({
         <div className="space-y-4 flex-1">
           <div className="flex flex-wrap items-center gap-3">
             {isVerified && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-teal/10 text-brand-teal text-[10px] font-black uppercase tracking-widest">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[10px] font-black uppercase tracking-widest">
                 <ShieldCheck className="h-3 w-3" />
                 Vetted Brand
               </div>
@@ -58,13 +58,13 @@ export function JobCard({
                 Aggregated
               </div>
             )}
-            <div className="ml-auto inline-flex items-center gap-1 text-brand-navy font-black text-xs">
+            <div className="ml-auto inline-flex items-center gap-1 text-primary font-black text-xs">
               <Zap className="h-3 w-3 fill-secondary text-secondary" />
               {matchScore}% Match
             </div>
           </div>
 
-          <h3 className="text-2xl font-black text-brand-navy leading-tightest group-hover:gradient-text transition-all">
+          <h3 className="text-2xl font-black text-primary leading-tightest group-hover:gradient-text transition-all">
             {title}
           </h3>
           
@@ -73,7 +73,7 @@ export function JobCard({
           </div>
         </div>
 
-        <div className="h-14 w-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-navy group-hover:text-white transition-all duration-500 shadow-sm">
+        <div className="h-14 w-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm">
           <ArrowRight className="h-6 w-6" />
         </div>
       </div>
@@ -91,7 +91,7 @@ export function JobCard({
         </div>
         
         {salaryRange && (
-          <div className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-black text-brand-navy bg-slate-50 border border-slate-100 shadow-sm">
+          <div className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-black text-primary bg-slate-50 border border-slate-100 shadow-sm">
             {salaryRange}
           </div>
         )}

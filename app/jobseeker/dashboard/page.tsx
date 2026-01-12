@@ -4,6 +4,7 @@ import ProfileCompleteness from "@/components/profile/profile-completeness";
 import { PageShell } from "@/components/ui/page-shell";
 import { Bell, User, Settings, Sparkles, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export default function JobseekerDashboard() {
   const operations = [
@@ -20,8 +21,8 @@ export default function JobseekerDashboard() {
       description: "Sync your resume and manage skills.",
       href: "/profile",
       icon: User,
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
+      color: "text-secondary",
+      bg: "bg-secondary/10",
     },
     {
       title: "Account settings",
@@ -35,37 +36,39 @@ export default function JobseekerDashboard() {
 
   return (
     <PageShell>
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 animate-fade-down">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-black tracking-tightest text-slate-950 uppercase">
-            Jobseeker <span className="gradient-text">Command</span>.
-          </h1>
-          <p className="text-lg font-medium text-slate-500 max-w-xl">
-            Streamline your career growth and stay ahead in the Maltese market.
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/jobs"
-            className="flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-brand/90 hover-lift shadow-brand/20 transition-all"
-          >
-            Explore All Jobs <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </header>
+      <ScrollReveal>
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
+          <div className="space-y-2">
+            <h1 className="font-display text-4xl md:text-5xl font-black tracking-tightest text-primary uppercase leading-none">
+              Jobseeker <span className="text-secondary">Hub</span>.
+            </h1>
+            <p className="text-lg font-medium text-slate-500 max-w-xl">
+              Streamline your career growth and stay ahead in the Maltese market.
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/jobs"
+              className="flex items-center gap-2 rounded-2xl bg-primary px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-primary/90 hover-lift shadow-sm transition-all"
+            >
+              Explore All Jobs <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </header>
+      </ScrollReveal>
 
       <section className="grid gap-12 lg:grid-cols-[1fr_2.5fr]">
-        <div className="space-y-10 animate-fade-left">
-          <div className="space-y-4">
+        <div className="space-y-10">
+          <ScrollReveal delay={100} className="space-y-4">
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
               Match Readiness
             </h2>
-            <div className="glass-card rounded-[2.5rem] border-border/40 p-1 overflow-hidden">
+            <div className="bg-white rounded-[2.5rem] border border-slate-200 p-2 overflow-hidden shadow-sm">
               <ProfileCompleteness />
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="space-y-4">
+          <ScrollReveal delay={200} className="space-y-4">
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
               Operations Center
             </h2>
@@ -74,16 +77,16 @@ export default function JobseekerDashboard() {
                 <Link
                   key={op.href}
                   href={op.href}
-                  className="glass-card hover-lift rounded-3xl group border-border/40 p-6 flex flex-col gap-4"
+                  className="bg-white hover-lift rounded-[2rem] group border border-slate-200 hover:border-secondary/40 p-6 flex flex-col gap-4 shadow-sm transition-all"
                 >
                   <div className="flex items-center justify-between">
-                    <div className={cn("p-2.5 rounded-xl", op.bg, op.color)}>
+                    <div className={cn("p-3 rounded-xl transition-colors", "bg-slate-50 group-hover:bg-secondary/20", "text-slate-400 group-hover:text-secondary")}>
                       <op.icon className="h-5 w-5" />
                     </div>
-                    <div className="h-1.5 w-1.5 rounded-full bg-brand opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                   <div>
-                    <h3 className="font-black text-slate-950 group-hover:text-brand transition-colors uppercase tracking-widest text-[11px]">
+                    <h3 className="font-display font-black text-primary group-hover:text-primary transition-colors uppercase tracking-widest text-[11px]">
                       {op.title}
                     </h3>
                     <p className="mt-2 text-xs font-medium text-slate-500 leading-relaxed">
@@ -93,28 +96,28 @@ export default function JobseekerDashboard() {
                 </Link>
               ))}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
 
-        <div className="space-y-6 animate-fade-up" style={{ animationDelay: "0.2s" }}>
+        <ScrollReveal delay={300} className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-brand animate-pulse" />
+              <Sparkles className="h-4 w-4 text-secondary animate-pulse" />
               <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
                 AI-Powered Recommendations
               </h2>
             </div>
             <Link
               href="/jobs"
-              className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline"
+              className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-secondary transition-colors"
             >
               View Feed →
             </Link>
           </div>
-          <div className="glass-card rounded-[3rem] border-border/40 p-1 overflow-hidden">
+          <div className="bg-white rounded-[3rem] border border-slate-200 p-2 overflow-hidden shadow-sm">
             <EnhancedRecommendedJobs />
           </div>
-        </div>
+        </ScrollReveal>
       </section>
     </PageShell>
   );

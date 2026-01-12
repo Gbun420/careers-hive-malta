@@ -158,7 +158,7 @@ export default function ApplicantTracker() {
                       <User className="h-8 w-8" />
                     </div>
                     {app.match_score && (
-                      <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-brand-navy flex items-center justify-center text-[10px] font-black text-white ring-4 ring-white shadow-premium animate-fade-in">
+                      <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-[10px] font-black text-brand-navy ring-4 ring-white shadow-premium animate-fade-in">
                         {app.match_score}
                       </div>
                     )}
@@ -166,7 +166,7 @@ export default function ApplicantTracker() {
                   
                   <div className="space-y-2">
                     <div className="flex items-center gap-4">
-                      <h3 className="text-lg font-black text-brand-navy tracking-tight">{app.candidate?.full_name || "Anonymous Elite"}</h3>
+                      <h3 className="text-lg font-black text-primary tracking-tight">{app.candidate?.full_name || "Anonymous Elite"}</h3>
                       <Badge variant="default" className="rounded-lg text-[9px] font-black tracking-widest px-2.5 py-1 uppercase bg-slate-50 border-slate-200">
                         {app.status}
                       </Badge>
@@ -183,8 +183,8 @@ export default function ApplicantTracker() {
                         {new Date(app.created_at).toLocaleDateString()}
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Zap className="h-3 w-3 fill-brand-gold text-brand-gold" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-navy">AI Verified Match</span>
+                        <Zap className="h-3 w-3 fill-secondary text-secondary" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-primary">AI Verified Match</span>
                       </div>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ export default function ApplicantTracker() {
                         size="sm"
                         onClick={() => updateStatus(app.id, 'REVIEWING')}
                         disabled={updating === app.id}
-                        className="rounded-xl bg-brand-navy text-white text-[10px] font-black uppercase tracking-widest h-11 px-6 hover:bg-primary shadow-premium transition-all"
+                        className="rounded-xl bg-primary text-white text-[10px] font-black uppercase tracking-widest h-11 px-6 hover:bg-slate-800 shadow-premium transition-all"
                       >
                         Accept Review
                       </Button>
@@ -207,7 +207,7 @@ export default function ApplicantTracker() {
                         size="sm"
                         onClick={() => updateStatus(app.id, 'INTERVIEW')}
                         disabled={updating === app.id}
-                        className="rounded-xl bg-brand-teal text-white text-[10px] font-black uppercase tracking-widest h-11 px-6 shadow-premium transition-all"
+                        className="rounded-xl bg-brand-violet text-white text-[10px] font-black uppercase tracking-widest h-11 px-6 shadow-premium transition-all"
                       >
                         Request Interview
                       </Button>

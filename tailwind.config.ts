@@ -103,10 +103,25 @@ const config: Config = {
         'slow-zoom': {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.1)' },
+        },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'scale-in': {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'slide-in-right': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
         }
       },
       animation: {
         'slow-zoom': 'slow-zoom 20s ease-in-out infinite alternate',
+        'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
+        'scale-in': 'scale-in 0.5s ease-out forwards',
+        'slide-in-right': 'slide-in-right 0.5s ease-out forwards',
       }
   	}
   },

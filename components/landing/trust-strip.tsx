@@ -8,21 +8,21 @@ const STATS = [
     value: "100%",
     sub: "Vetted Brands",
     icon: ShieldCheck,
-    color: "text-brand-navy"
+    color: "text-primary"
   },
   {
     label: "System Speed",
     value: "< 2ms",
     sub: "Alert Latency",
     icon: Zap,
-    color: "text-brand-gold"
+    color: "text-secondary"
   },
   {
     label: "Market Reach",
     value: "Global",
     sub: "Top 1% Talent",
     icon: Users,
-    color: "text-brand-teal"
+    color: "text-brand-violet"
   },
   {
     label: "Placements",
