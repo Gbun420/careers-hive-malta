@@ -17,10 +17,16 @@ const adminAllowlist = rawAllowlist
  * Requires ALLOW_ADMIN_SIGNUP=true and the email to be in the ADMIN_ALLOWLIST.
  */
 export function canSignupAsAdmin(email: string): boolean {
-  return allowAdminSignup && adminAllowlist.includes(email.toLowerCase());
+  if (!allowAdminSignup || !isValidEmail(email)) {
+    return false;
+  }
+  return adminAllowlist.includes(email.toLowerCase());
 }
 
 export function canAccessAdmin(email: string): boolean {
+  if (!isValidEmail(email)) {
+    return false;
+  }
   return adminAllowlist.includes(email.toLowerCase());
 }
 
